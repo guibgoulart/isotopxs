@@ -1,0 +1,419 @@
+/* ==========================================================================
+   ISOTOPXS — site oficial
+   estética: contaminação radioativa + geocities anos 2000 + grafite/funk
+   CSS puro, sem framework. Comentários marcam onde trocar placeholder.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Nosifer&family=Bungee&family=Bungee+Shade&family=VT323&family=Special+Elite&display=swap');
+
+:root{
+  --void:      #08080a;
+  --void-2:    #111008;
+  --blood:     #8c0f0f;
+  --blood-dk:  #4a0808;
+  --toxic:     #79ff1a;
+  --toxic-dim: #3d7d10;
+  --hazard:    #f5d90a;
+  --rust:      #3a2410;
+  --bone:      #ddd6bd;
+  --bone-dim:  #a39c86;
+  --glitch-a:  #ff00c8;
+  --glitch-b:  #00e5ff;
+
+  --f-logo: 'Nosifer', cursive;
+  --f-street: 'Bungee', cursive;
+  --f-street2: 'Bungee Shade', cursive;
+  --f-term: 'VT323', monospace;
+  --f-type: 'Special Elite', monospace;
+}
+
+*{ box-sizing: border-box; }
+
+html{ scrollbar-color: var(--toxic-dim) var(--void); }
+
+body{
+  margin:0;
+  background: var(--void);
+  color: var(--bone);
+  font-family: var(--f-term);
+  font-size: 19px;
+  line-height: 1.45;
+  cursor: crosshair;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(122,15,15,.35), transparent 55%),
+    radial-gradient(ellipse at 85% 15%, rgba(63,125,16,.25), transparent 45%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0px, rgba(255,255,255,.02) 1px, transparent 1px, transparent 3px);
+}
+
+/* film grain / static overlay, pure CSS, no image asset needed */
+body::before{
+  content:"";
+  position: fixed; inset:0;
+  pointer-events:none;
+  z-index: 9999;
+  mix-blend-mode: overlay;
+  opacity:.35;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  animation: grain 1s steps(2) infinite;
+}
+@keyframes grain{
+  0%{ transform: translate(0,0); }
+  50%{ transform: translate(-2%,1%); }
+  100%{ transform: translate(1%,-2%); }
+}
+
+/* scanlines, CRT vibe */
+body::after{
+  content:"";
+  position: fixed; inset:0;
+  pointer-events:none;
+  z-index: 9998;
+  background: repeating-linear-gradient(180deg, rgba(0,0,0,.18) 0px, rgba(0,0,0,.18) 1px, transparent 2px, transparent 4px);
+  opacity:.5;
+}
+
+a{ color: var(--toxic); text-decoration: none; }
+a:hover{ color: var(--hazard); text-shadow: 0 0 6px var(--toxic); }
+a:visited{ color: #b7ff7a; }
+
+img{ max-width:100%; display:block; }
+
+::selection{ background: var(--toxic); color:#000; }
+
+/* ---------- hazard tape divider ---------- */
+.hazard-tape{
+  height: 22px;
+  background: repeating-linear-gradient(45deg, var(--hazard) 0 20px, #111 20px 40px);
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+  box-shadow: 0 0 12px rgba(245,217,10,.4);
+}
+
+/* ---------- marquee ---------- */
+.marquee-wrap{
+  overflow:hidden;
+  background: var(--blood-dk);
+  border-bottom: 2px dashed var(--toxic-dim);
+  white-space: nowrap;
+  padding: 4px 0;
+}
+.marquee-track{
+  display:inline-block;
+  padding-left: 100%;
+  animation: marquee 18s linear infinite;
+  font-family: var(--f-term);
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--hazard);
+}
+@keyframes marquee{
+  0%{ transform: translateX(0); }
+  100%{ transform: translateX(-100%); }
+}
+
+/* ---------- topbar / branding ---------- */
+.topbar{
+  padding: 26px 16px 10px;
+  text-align:center;
+  position:relative;
+}
+.logo{
+  font-family: var(--f-logo);
+  font-size: clamp(46px, 10vw, 108px);
+  color: var(--blood);
+  text-shadow:
+    0 0 8px var(--toxic),
+    3px 3px 0 #000,
+    -2px 0 var(--glitch-a),
+    2px 0 var(--glitch-b);
+  margin: 0;
+  letter-spacing: 3px;
+  animation: flicker 4s infinite;
+}
+@keyframes flicker{
+  0%,19%,21%,23%,52%,54%,89%,100%{ opacity:1; }
+  20%,22%,53%,90%{ opacity:.72; }
+}
+.tagline{
+  font-family: var(--f-street);
+  color: var(--toxic);
+  font-size: clamp(13px, 2.4vw, 20px);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-top: -6px;
+}
+.tagline span{ color: var(--hazard); }
+
+.badge-row{
+  display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+  margin: 14px 0 4px;
+}
+.badge{
+  border: 2px solid var(--toxic-dim);
+  background: #000a;
+  color: var(--toxic);
+  font-family: var(--f-term);
+  font-size: 15px;
+  padding: 3px 10px;
+  display:flex; align-items:center; gap:6px;
+}
+.badge .spin{
+  display:inline-block;
+  animation: spin 3s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* ---------- nav ---------- */
+nav.mainnav{
+  background: var(--void-2);
+  border-top: 3px solid var(--toxic);
+  border-bottom: 3px solid var(--toxic);
+  display:flex; flex-wrap:wrap; justify-content:center;
+}
+nav.mainnav a{
+  font-family: var(--f-street);
+  font-size: 15px;
+  color: var(--bone);
+  padding: 12px 18px;
+  border-right: 1px solid var(--rust);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+nav.mainnav a:last-child{ border-right:none; }
+nav.mainnav a:hover, nav.mainnav a.active{
+  background: var(--blood);
+  color: var(--hazard);
+}
+
+/* ---------- layout ---------- */
+main{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 30px 18px 60px;
+}
+.panel{
+  background: linear-gradient(180deg, rgba(20,16,10,.9), rgba(10,9,6,.94));
+  border: 2px solid var(--rust);
+  outline: 1px solid #000;
+  box-shadow: 0 0 0 1px var(--toxic-dim) inset, 0 8px 24px rgba(0,0,0,.6);
+  padding: 22px 22px 26px;
+  margin-bottom: 30px;
+  position: relative;
+}
+.panel::before{ /* corner bolt */
+  content:"☢";
+  position:absolute; top:-14px; left:-14px;
+  background: var(--void);
+  color: var(--toxic);
+  border-radius:50%;
+  width:28px; height:28px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px;
+  border: 2px solid var(--toxic-dim);
+}
+h1,h2,h3{
+  font-family: var(--f-street);
+  color: var(--hazard);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 #000;
+}
+h1{ font-size: clamp(24px,4vw,34px); border-bottom: 3px solid var(--blood); padding-bottom:8px; }
+h2{ font-size: clamp(19px,3vw,24px); color: var(--toxic); }
+p{ color: var(--bone-dim); }
+strong{ color: var(--bone); }
+
+blockquote{
+  border-left: 4px solid var(--toxic);
+  margin: 14px 0; padding: 6px 14px;
+  font-family: var(--f-type);
+  color: var(--bone);
+  background: rgba(121,255,26,.05);
+}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-block;
+  font-family: var(--f-street);
+  font-size: 14px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color: var(--void);
+  background: var(--toxic);
+  padding: 10px 18px;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 var(--blood);
+  transition: transform .1s;
+}
+.btn:hover{
+  transform: translate(-2px,-2px);
+  box-shadow: 5px 5px 0 var(--blood);
+  color:#000;
+}
+.btn-ghost{
+  background: transparent;
+  color: var(--toxic);
+  border-color: var(--toxic);
+  box-shadow: 3px 3px 0 var(--rust);
+}
+
+/* ---------- tabs (musica) ---------- */
+.tab-bar{ display:flex; flex-wrap:wrap; gap:4px; margin-bottom: -2px; position:relative; z-index:1; }
+.tab-btn{
+  font-family: var(--f-street);
+  font-size: 13px;
+  background: var(--void-2);
+  color: var(--bone-dim);
+  border: 2px solid var(--rust);
+  border-bottom: none;
+  padding: 10px 14px;
+  cursor:pointer;
+  text-transform: uppercase;
+}
+.tab-btn.active{
+  background: var(--blood-dk);
+  color: var(--hazard);
+  border-color: var(--toxic-dim);
+}
+.tab-panel{
+  border: 2px solid var(--toxic-dim);
+  background: rgba(0,0,0,.4);
+  padding: 18px;
+  display:none;
+}
+.tab-panel.active{ display:block; }
+.lyrics{
+  font-family: var(--f-type);
+  white-space: pre-line;
+  color: var(--bone);
+  line-height: 1.9;
+}
+.track-meta{
+  font-family: var(--f-term);
+  color: var(--toxic);
+  font-size: 16px;
+}
+
+/* ---------- tables (shows) ---------- */
+table{ width:100%; border-collapse: collapse; font-family: var(--f-term); font-size:17px; }
+th,td{ border: 1px solid var(--rust); padding: 8px 10px; text-align:left; }
+th{ background: var(--blood-dk); color: var(--hazard); text-transform:uppercase; font-family: var(--f-street); font-size:12px; letter-spacing:1px; }
+tr:nth-child(even) td{ background: rgba(255,255,255,.03); }
+
+/* ---------- stage plot ---------- */
+.stageplot{
+  display:grid;
+  grid-template-columns: repeat(5,1fr);
+  grid-template-rows: repeat(3,70px);
+  gap:6px;
+  background: repeating-linear-gradient(45deg, #000 0 10px, #0d0d0d 10px 20px);
+  border: 2px dashed var(--hazard);
+  padding: 14px;
+  margin: 16px 0;
+}
+.sp-item{
+  background: var(--void-2);
+  border:1px solid var(--toxic-dim);
+  color: var(--toxic);
+  font-family: var(--f-term);
+  font-size: 13px;
+  display:flex; align-items:center; justify-content:center;
+  text-align:center;
+  padding:4px;
+}
+.sp-item.drums{ grid-column: 3; grid-row: 1 / span 2; background:#1a0505; }
+.sp-item.guitar{ grid-column: 1 / span 2; grid-row: 2; }
+.sp-item.bass{ grid-column: 4 / span 2; grid-row: 2; }
+.sp-item.vox{ grid-column: 2 / span 3; grid-row: 3; background: var(--blood-dk); color: var(--hazard); }
+.sp-item.dj{ grid-column: 1; grid-row: 3; }
+.sp-item.wedge{ grid-column: 5; grid-row: 3; }
+
+/* ---------- store cards ---------- */
+.store-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(190px,1fr)); gap:16px; }
+.store-card{
+  border: 2px solid var(--rust);
+  background: var(--void-2);
+  padding: 14px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.store-card .stamp{
+  position:absolute; top:14px; right:-34px;
+  background: var(--blood);
+  color:#fff;
+  font-family: var(--f-street);
+  font-size:11px;
+  padding: 3px 40px;
+  transform: rotate(35deg);
+  box-shadow: 0 0 0 2px #000;
+}
+.store-card .thumb{
+  height:120px;
+  background: repeating-linear-gradient(45deg, var(--hazard) 0 12px, #111 12px 24px);
+  margin-bottom:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--f-street2);
+  color:#000;
+  font-size: 22px;
+}
+.store-card h3{ font-size:15px; margin:6px 0 2px; }
+.store-card .price{ color: var(--toxic); font-family: var(--f-term); font-size:18px; }
+
+#shopify-buy-target{ min-height: 40px; }
+
+/* ---------- guestbook ---------- */
+.gb-form{ display:flex; flex-direction:column; gap:8px; max-width:420px; }
+.gb-form input, .gb-form textarea{
+  background:#000; border:2px solid var(--toxic-dim); color: var(--bone);
+  font-family: var(--f-term); font-size:17px; padding:8px;
+}
+.gb-entry{ border-bottom:1px dotted var(--rust); padding:8px 0; }
+.gb-entry .who{ color: var(--hazard); font-family: var(--f-street); font-size:13px; }
+.gb-entry .when{ color: var(--bone-dim); font-size:13px; }
+
+/* ---------- footer ---------- */
+footer{
+  text-align:center;
+  padding: 24px 12px 40px;
+  font-family: var(--f-term);
+  color: var(--bone-dim);
+  font-size:15px;
+}
+footer .lastmod{ color: var(--toxic); }
+.visitor-counter{
+  display:inline-flex; gap:2px; margin: 8px 0;
+  font-family: 'VT323', monospace;
+}
+.visitor-counter span{
+  background:#000; color: var(--toxic);
+  border:1px solid var(--toxic-dim);
+  padding: 2px 6px;
+  font-size: 20px;
+}
+.dontcare{ font-size:12px; opacity:.7; }
+
+.audio-toggle{
+  position: fixed; bottom:14px; right:14px; z-index:10000;
+  background: var(--blood); color:#fff;
+  border:2px solid #000; font-family: var(--f-term); font-size:15px;
+  padding:8px 12px; cursor:pointer; box-shadow: 3px 3px 0 #000;
+}
+
+/* ---------- glitch heading util ---------- */
+.glitch{ position:relative; display:inline-block; }
+.glitch::before, .glitch::after{
+  content: attr(data-text);
+  position:absolute; left:0; top:0; width:100%; overflow:hidden;
+}
+.glitch::before{ color: var(--glitch-a); clip-path: inset(0 0 60% 0); animation: gl1 2.6s infinite linear; }
+.glitch::after{ color: var(--glitch-b); clip-path: inset(60% 0 0 0); animation: gl2 3.1s infinite linear; }
+@keyframes gl1{ 0%,90%,100%{ transform:none; } 92%{ transform: translate(-3px,-1px); } 94%{ transform: translate(3px,1px); } }
+@keyframes gl2{ 0%,90%,100%{ transform:none; } 91%{ transform: translate(2px,1px); } 95%{ transform: translate(-2px,-1px); } }
+
+@media (max-width:640px){
+  nav.mainnav a{ flex:1 1 45%; text-align:center; border-bottom:1px solid var(--rust); }
+  .stageplot{ grid-template-rows: repeat(3,56px); }
+  body{ font-size:17px; }
+}

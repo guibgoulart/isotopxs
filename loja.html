@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loja — ISOTOPXS</title>
+<meta name="description" content="Loja oficial de ISOTOPXS.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">☢ LOJA EM PROCESSO DE CONTAMINAÇÃO — QUANDO A CONTA SHOPIFY EXISTIR, É SÓ COLAR O BUY BUTTON AQUI ☢</div>
+</div>
+
+<header class="topbar">
+  <h1 class="logo glitch" data-text="ISOTOPXS" style="font-size:clamp(30px,6vw,54px);">ISOTOPXS</h1>
+  <div class="tagline">loja <span>/// merch oficial</span></div>
+</header>
+
+<nav class="mainnav">
+  <a href="index.html">Início</a>
+  <a href="musica.html">Música &amp; Letra</a>
+  <a href="release.html">Release &amp; Stage Plot</a>
+  <a href="shows.html">Shows &amp; Contato</a>
+  <a href="loja.html">Loja</a>
+</nav>
+
+<div class="hazard-tape"></div>
+
+<main>
+
+  <section class="panel" style="text-align:center;">
+    <h1>loja em construção</h1>
+    <p>a gente ainda tá montando os produtos. quando a conta Shopify estiver pronta com camiseta, moletom,
+    vinil e adesivo, o botão de compra aparece exatamente aqui embaixo — sem sair da estética do site.</p>
+  </section>
+
+  <section class="panel">
+    <h2>o que vem por aí</h2>
+    <div class="store-grid">
+      <div class="store-card">
+        <span class="stamp">EM BREVE</span>
+        <div class="thumb">CAMISETA</div>
+        <h3>Camiseta "Meia-Vida"</h3>
+        <div class="price">R$ --,--</div>
+      </div>
+      <div class="store-card">
+        <span class="stamp">EM BREVE</span>
+        <div class="thumb">MOLETOM</div>
+        <h3>Moletom Zona de Exclusão</h3>
+        <div class="price">R$ --,--</div>
+      </div>
+      <div class="store-card">
+        <span class="stamp">EM BREVE</span>
+        <div class="thumb">VINIL</div>
+        <h3>EP "Contaminação Zero" (vinil)</h3>
+        <div class="price">R$ --,--</div>
+      </div>
+      <div class="store-card">
+        <span class="stamp">EM BREVE</span>
+        <div class="thumb">ADESIVO</div>
+        <h3>Kit adesivos radioativos</h3>
+        <div class="price">R$ --,--</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>integração com a Shopify (pra quando a conta existir)</h2>
+    <p>este bloco já está pronto para o <strong>Shopify Buy Button</strong> — o jeito mais leve de vender sem sair
+    do visual do site (o checkout roda seguro dentro da Shopify, mas a vitrine continua com a cara da ISOTOPXS).</p>
+    <div id="shopify-buy-target">
+      <!--
+        PASSO A PASSO (fazer depois de criar a loja Shopify):
+        1. No admin da Shopify: Vendas em canais > Buy Button > escolher o produto > "Create Buy Button".
+        2. A Shopify gera um <script> com uma chamada tipo:
+             ShopifyBuyInit(); client.product.fetchAll()...
+           Copiar esse script gerado e colar aqui dentro, substituindo este comentário.
+        3. O botão gerado herda pouco estilo — depois ajustamos as opções de "moneyFormat" e "styles"
+           que a própria Shopify entrega no snippet pra combinar com as cores do site (--toxic, --hazard, --blood).
+        4. Repetir para cada produto, ou usar uma "collection component" pra listar a coleção inteira de uma vez.
+      -->
+      <p style="font-size:14px; color:var(--bone-dim);">[ botões de compra aparecerão aqui assim que a loja Shopify existir ]</p>
+    </div>
+  </section>
+
+</main>
+
+<button class="audio-toggle">▶ TOCAR TEMA</button>
+<audio id="bg-audio" loop></audio>
+
+<footer>
+  <p>última atualização: <span class="lastmod"></span></p>
+  <p>© 1997-2026 ISOTOPXS.</p>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

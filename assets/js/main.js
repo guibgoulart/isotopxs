@@ -97,27 +97,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ---- rastro tóxico atrás do cursor (leve, sem libs) ---- */
-  let last = 0;
-  window.addEventListener('pointermove', (e) => {
-    const now = Date.now();
-    if (now - last < 40) return; // limita taxa de criação
-    last = now;
-    const dot = document.createElement('span');
-    dot.className = 'toxic-trail-dot';
-    dot.style.cssText = `
-      position:fixed; left:${e.clientX}px; top:${e.clientY}px;
-      width:6px; height:6px; border-radius:50%;
-      background:#79ff1a; box-shadow:0 0 8px #79ff1a;
-      pointer-events:none; z-index:99999; opacity:.8;
-      transition: transform .6s ease, opacity .6s ease;
-      transform: translate(-50%,-50%);
-    `;
-    document.body.appendChild(dot);
-    requestAnimationFrame(() => {
-      dot.style.transform = 'translate(-50%,-50%) scale(2.5)';
-      dot.style.opacity = '0';
-    });
-    setTimeout(() => dot.remove(), 650);
-  });
 });

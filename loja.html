@@ -11,12 +11,20 @@
 <body>
 
 <div class="marquee-wrap">
-  <div class="marquee-track">☢ LOJA EM PROCESSO DE CONTAMINAÇÃO — QUANDO A CONTA SHOPIFY EXISTIR, É SÓ COLAR O BUY BUTTON AQUI ☢</div>
+  <div class="marquee-track">LOJA EM MONTAGEM — <b>QUANDO A CONTA SHOPIFY EXISTIR, É SÓ COLAR O BUY BUTTON AQUI</b></div>
 </div>
 
 <header class="topbar">
-  <h1 class="logo glitch" data-text="ISOTOPXS" style="font-size:clamp(30px,6vw,54px);">ISOTOPXS</h1>
-  <div class="tagline">loja <span>/// merch oficial</span></div>
+  <svg class="logo-svg small" viewBox="0 0 700 150" role="img" aria-label="ISOTOPXS">
+    <defs>
+      <filter id="roughen" x="-20%" y="-30%" width="140%" height="160%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.15" numOctaves="3" seed="9" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+    <text x="50%" y="74%" text-anchor="middle" filter="url(#roughen)">ISOTOPXS</text>
+  </svg>
+  <div class="tagline">loja <b>//</b> merch oficial</div>
 </header>
 
 <nav class="mainnav">
@@ -27,17 +35,19 @@
   <a href="loja.html">Loja</a>
 </nav>
 
-<div class="hazard-tape"></div>
+<div class="warnstrip"></div>
 
 <main>
 
   <section class="panel" style="text-align:center;">
+    <div class="tape"></div>
     <h1>loja em construção</h1>
     <p>a gente ainda tá montando os produtos. quando a conta Shopify estiver pronta com camiseta, moletom,
     vinil e adesivo, o botão de compra aparece exatamente aqui embaixo — sem sair da estética do site.</p>
   </section>
 
   <section class="panel">
+    <div class="tape"></div>
     <h2>o que vem por aí</h2>
     <div class="store-grid">
       <div class="store-card">
@@ -68,6 +78,7 @@
   </section>
 
   <section class="panel">
+    <div class="tape"></div>
     <h2>integração com a Shopify (pra quando a conta existir)</h2>
     <p>este bloco já está pronto para o <strong>Shopify Buy Button</strong> — o jeito mais leve de vender sem sair
     do visual do site (o checkout roda seguro dentro da Shopify, mas a vitrine continua com a cara da ISOTOPXS).</p>
@@ -79,10 +90,10 @@
              ShopifyBuyInit(); client.product.fetchAll()...
            Copiar esse script gerado e colar aqui dentro, substituindo este comentário.
         3. O botão gerado herda pouco estilo — depois ajustamos as opções de "moneyFormat" e "styles"
-           que a própria Shopify entrega no snippet pra combinar com as cores do site (--toxic, --hazard, --blood).
+           que a própria Shopify entrega no snippet pra combinar com as cores do site (--blood, --bone, --iron).
         4. Repetir para cada produto, ou usar uma "collection component" pra listar a coleção inteira de uma vez.
       -->
-      <p style="font-size:14px; color:var(--bone-dim);">[ botões de compra aparecerão aqui assim que a loja Shopify existir ]</p>
+      <p style="font-size:13px; color:var(--bone-dim);">[ botões de compra aparecerão aqui assim que a loja Shopify existir ]</p>
     </div>
   </section>
 

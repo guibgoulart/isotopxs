@@ -11,12 +11,20 @@
 <body>
 
 <div class="marquee-wrap">
-  <div class="marquee-track">☢ QUER CHAMAR A ISOTOPXS PRO SEU EVENTO? MANDA MENSAGEM. A GENTE RESPONDE (EM ALGUM MOMENTO DA VIDA) ☢</div>
+  <div class="marquee-track">QUER CHAMAR A ISOTOPXS PRO SEU EVENTO? <b>MANDA MENSAGEM</b> — A GENTE RESPONDE</div>
 </div>
 
 <header class="topbar">
-  <h1 class="logo glitch" data-text="ISOTOPXS" style="font-size:clamp(30px,6vw,54px);">ISOTOPXS</h1>
-  <div class="tagline">shows <span>/// contato</span></div>
+  <svg class="logo-svg small" viewBox="0 0 700 150" role="img" aria-label="ISOTOPXS">
+    <defs>
+      <filter id="roughen" x="-20%" y="-30%" width="140%" height="160%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.15" numOctaves="3" seed="9" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+    <text x="50%" y="74%" text-anchor="middle" filter="url(#roughen)">ISOTOPXS</text>
+  </svg>
+  <div class="tagline">shows <b>//</b> contato</div>
 </header>
 
 <nav class="mainnav">
@@ -27,11 +35,12 @@
   <a href="loja.html">Loja</a>
 </nav>
 
-<div class="hazard-tape"></div>
+<div class="warnstrip"></div>
 
 <main>
 
   <section class="panel">
+    <div class="tape"></div>
     <h1>contato para shows / booking</h1>
     <p><strong>booking:</strong> <a href="mailto:booking@isotopxs.com">booking@isotopxs.com</a> (trocar pelo e-mail real)</p>
     <p><strong>whatsapp / assessoria:</strong> [inserir número]</p>
@@ -45,6 +54,7 @@
   </section>
 
   <section class="panel">
+    <div class="tape"></div>
     <h2>já tocamos em</h2>
     <table>
       <thead>
@@ -62,6 +72,7 @@
   </section>
 
   <section class="panel">
+    <div class="tape"></div>
     <h2>próximas datas</h2>
     <p><em>agenda vazia por enquanto. assim que tiver show marcado, entra aqui.</em></p>
   </section>

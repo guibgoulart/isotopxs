@@ -355,8 +355,14 @@ tr:nth-child(even) td{ background: rgba(255,255,255,.03); }
   margin-bottom:10px;
   display:flex; align-items:center; justify-content:center;
   font-family: var(--f-street2);
-  color:#000;
-  font-size: 22px;
+  color:#fff;
+  font-size: 20px;
+  text-shadow: 0 0 6px #000, 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+}
+.store-card .thumb span{
+  background: rgba(0,0,0,.72);
+  padding: 4px 10px;
+  border: 1px solid #000;
 }
 .store-card h3{ font-size:15px; margin:6px 0 2px; }
 .store-card .price{ color: var(--toxic); font-family: var(--f-term); font-size:18px; }

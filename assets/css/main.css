@@ -5,7 +5,7 @@
    CSS puro, sem framework.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Beastly&family=Rubik+Distressed&family=Barlow+Condensed:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Beastly&family=Unbounded:wght@600;700;800;900&family=Barlow+Condensed:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root{
   --black:  #060606;
@@ -16,7 +16,7 @@
   --lime:   #d4ff3f;
 
   --f-hero: 'Rubik Beastly', var(--f-display);
-  --f-display: 'Rubik Distressed', sans-serif;
+  --f-display: 'Unbounded', sans-serif;
   --f-body: 'Barlow Condensed', sans-serif;
   --f-mono: 'JetBrains Mono', monospace;
 }

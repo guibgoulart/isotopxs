@@ -4,9 +4,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* marca o link ativo no menu */
   const here = location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav__links a').forEach(a => {
+  document.querySelectorAll('.nav__links a, .nav__links--mobile a').forEach(a => {
     if (a.getAttribute('href') === here) a.classList.add('active');
   });
+
+  /* menu mobile (hambúrguer) */
+  const navToggle = document.querySelector('.nav__toggle');
+  const mobileMenu = document.querySelector('.nav__links--mobile');
+  if (navToggle && mobileMenu) {
+    const closeMenu = () => {
+      navToggle.setAttribute('aria-expanded', 'false');
+      mobileMenu.classList.remove('is-open');
+      document.body.style.overflow = '';
+    };
+    navToggle.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 760) closeMenu();
+    });
+  }
 
   /* nav sólida ao rolar */
   const nav = document.querySelector('.nav');

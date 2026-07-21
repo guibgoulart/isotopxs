@@ -16,6 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
+  /* glitch ocasional no wordmark gigante — sinal quebrando, rápido e raro */
+  const bigWord = document.querySelector('.hero__word, .pagehero__word');
+  if (bigWord && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const scheduleGlitch = () => {
+      setTimeout(() => {
+        bigWord.classList.add('glitching');
+        setTimeout(() => bigWord.classList.remove('glitching'), 220);
+        scheduleGlitch();
+      }, 3500 + Math.random() * 4500);
+    };
+    scheduleGlitch();
+  }
+
   /* revela seções ao entrar na tela */
   const revealTargets = document.querySelectorAll('.reveal, .reveal-stagger');
   if (revealTargets.length && 'IntersectionObserver' in window) {

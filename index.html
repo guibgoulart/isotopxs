@@ -3,93 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISOTOPXS — metal mandrake // site oficial</title>
-<meta name="description" content="ISOTOPXS. Nu-metal mandrake. Música, letras, release, shows e loja.">
+<title>ISOTOPXS — site oficial</title>
+<meta name="description" content="ISOTOPXS. Nu-metal, rap e funk. Música, release, shows e loja.">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 
-<div class="marquee-wrap">
-  <div class="marquee-track">SITE OFICIAL DE ISOTOPXS — <b>NADA AQUI FOI FEITO PRA AGRADAR</b> — LINK QUEBRADO NÃO É PROBLEMA NOSSO — NOVO MATERIAL EM PRODUÇÃO — ENTRA E NÃO RECLAMA</div>
-</div>
-
-<header class="topbar">
-  <svg class="logo-svg" viewBox="0 0 700 150" role="img" aria-label="ISOTOPXS">
-    <defs>
-      <filter id="roughen" x="-20%" y="-30%" width="140%" height="160%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.15" numOctaves="3" seed="9" result="n"/>
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-    </defs>
-    <text x="50%" y="74%" text-anchor="middle" filter="url(#roughen)">ISOTOPXS</text>
-  </svg>
-  <div class="tagline">metal mandrake <b>//</b> nu-metal · rap · funk</div>
-  <div class="stamp-line">material contaminado — audição sob risco</div>
-</header>
-
-<nav class="mainnav">
-  <a href="index.html">Início</a>
-  <a href="musica.html">Música &amp; Letra</a>
-  <a href="release.html">Release &amp; Stage Plot</a>
-  <a href="shows.html">Shows &amp; Contato</a>
-  <a href="loja.html">Loja</a>
+<nav class="nav">
+  <a href="index.html" class="nav__mark"><i></i>ISOTOPXS</a>
+  <ul class="nav__links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="musica.html">Música</a></li>
+    <li><a href="release.html">Release</a></li>
+    <li><a href="shows.html">Shows</a></li>
+    <li><a href="loja.html">Loja</a></li>
+  </ul>
 </nav>
 
-<div class="warnstrip"></div>
+<section class="hero">
+  <div class="hero__blob b1"></div>
+  <div class="hero__blob b2"></div>
+  <p class="eyebrow hero__eyebrow">Nu-metal · Rap · Funk</p>
+  <h1 class="hero__word">ISOTOPXS</h1>
+  <p class="hero__lede">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+  incididunt ut labore et dolore magna aliqua. [Frase de efeito da banda entra aqui.]</p>
+  <div class="hero__cta">
+    <a class="btn btn--solid" href="musica.html"><span>Ouvir agora</span></a>
+    <a class="btn btn--outline" href="shows.html"><span>Ver shows</span></a>
+  </div>
+  <div class="hero__scroll"><span></span>scroll</div>
+</section>
 
-<main>
+<div class="ticker ticker--red ticker--tilt">
+  <div class="ticker__track">
+    <span>ISOTOPXS</span><span>—</span><span>NU-METAL</span><span>—</span><span>RAP</span><span>—</span><span>FUNK</span><span>—</span>
+    <span>ISOTOPXS</span><span>—</span><span>NU-METAL</span><span>—</span><span>RAP</span><span>—</span><span>FUNK</span><span>—</span>
+  </div>
+</div>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h1>ISOTOPXS</h1>
-    <p><strong>ISOTOPXS</strong> é metal mandrake: nu-metal pesado, sujo, com groove de baile e sangue de periferia.
-    Riff pesado, grave que estoura caixa de som de rua, letra que não pede desculpa. Nascida na zona de exclusão entre o
-    moshpit e o baile funk, a banda mistura distorção industrial com cadência de rap e batida de funk carioca —
-    sem pedir licença pra ninguém.</p>
-    <blockquote>"a gente não faz música pra agradar. faz pra vazar."<br>— ISOTOPXS</blockquote>
-    <p><a class="btn" href="musica.html">OUVIR / LER LETRA</a>
-       &nbsp; <a class="btn btn-ghost" href="shows.html">CHAMAR PRA TOCAR</a></p>
-  </section>
+<section class="section section--black">
+  <div class="section__inner split">
+    <div class="reveal">
+      <p class="eyebrow">Sobre a banda</p>
+      <p class="pull">Lorem ipsum dolor sit amet, <em>consectetur adipiscing</em> elit sed do eiusmod tempor.</p>
+    </div>
+    <div class="reveal">
+      <p class="lead">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+      nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+      anim id est laborum.</p>
+      <div class="stats reveal-stagger">
+        <div class="stat"><div class="stat__num" data-count="24">0</div><div class="stat__label">[Nº de shows]</div></div>
+        <div class="stat"><div class="stat__num" data-count="9">0</div><div class="stat__label">[Nº de cidades]</div></div>
+        <div class="stat"><div class="stat__num" data-count="3">0</div><div class="stat__label">[Nº de lançamentos]</div></div>
+      </div>
+      <p style="font-size:12px; opacity:.5; margin-top:10px;">números de exemplo só pra mostrar o efeito de contagem — trocar pelos reais.</p>
+    </div>
+  </div>
+</section>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h2>últimas</h2>
-    <p><span class="track-meta">[20-07-2026]</span> — site oficial saiu do forno. ainda tem coisa vazando, é assim mesmo.</p>
-    <p><span class="track-meta">[EM BREVE]</span> — anúncio de novo single.</p>
-    <p><span class="track-meta">[EM BREVE]</span> — datas novas de show entrando na agenda.</p>
-  </section>
+<div class="ticker ticker--white ticker--tilt ticker--reverse">
+  <div class="ticker__track">
+    <span>EM BREVE</span><span>·</span><span>NOVO EP</span><span>·</span><span>EM BREVE</span><span>·</span><span>NOVO EP</span><span>·</span>
+    <span>EM BREVE</span><span>·</span><span>NOVO EP</span><span>·</span><span>EM BREVE</span><span>·</span><span>NOVO EP</span><span>·</span>
+  </div>
+</div>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h2>mural</h2>
-    <p>deixa teu recado. isso fica salvo só no teu navegador por enquanto — é clima, não é rede social.</p>
-    <form id="gb-form" class="gb-form">
-      <input type="text" name="name" maxlength="40" placeholder="seu nome / apelido">
-      <textarea name="msg" rows="3" maxlength="240" placeholder="seu recado pra ISOTOPXS"></textarea>
-      <button type="submit" class="btn">ASSINAR</button>
-    </form>
-    <div id="gb-list" style="margin-top:18px;"></div>
-  </section>
+<section class="section section--white">
+  <div class="section__inner split">
+    <div class="reveal">
+      <div class="card" style="border:none; padding:0;">
+        <div class="thumb" style="aspect-ratio:1/1;">EP — CAPA</div>
+      </div>
+    </div>
+    <div class="reveal" style="align-self:center;">
+      <p class="eyebrow">Lançamento em destaque</p>
+      <h2 class="bigtext">[Nome do lançamento]</h2>
+      <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+      ut labore et dolore magna aliqua. Este bloco é um placeholder — trocar pelo título, arte da capa e texto
+      reais assim que o lançamento estiver definido.</p>
+      <a class="btn btn--dark" href="musica.html"><span>Ver faixas e letras</span></a>
+    </div>
+  </div>
+</section>
 
-  <section class="panel" style="text-align:center;">
-    <div class="tape"></div>
-    <p style="font-family:var(--f-display); font-size:15px; letter-spacing:1px; color:var(--bone);">
-      AVISO: este site não pede desculpa por bug. se achar um, guarda pra você.
-    </p>
-  </section>
+<section class="section section--black">
+  <div class="section__inner">
+    <p class="eyebrow reveal">Próximos & últimos shows</p>
+    <div class="reveal-stagger">
+      <div class="list-row"><span class="idx">01</span><span class="name">[Nome do show]</span><span class="meta">[Cidade, UF] — [data]</span></div>
+      <div class="list-row"><span class="idx">02</span><span class="name">[Nome do show]</span><span class="meta">[Cidade, UF] — [data]</span></div>
+      <div class="list-row"><span class="idx">03</span><span class="name">[Nome do show]</span><span class="meta">[Cidade, UF] — [data]</span></div>
+    </div>
+    <p style="margin-top:34px;" class="reveal"><a class="btn btn--outline" href="shows.html"><span>Ver agenda completa</span></a></p>
+  </div>
+</section>
 
-</main>
+<section class="section section--red">
+  <div class="section__inner">
+    <p class="eyebrow reveal">Loja</p>
+    <h2 class="bigtext reveal" style="margin-bottom:30px;">Merch oficial</h2>
+    <div class="grid3 reveal-stagger">
+      <div class="card">
+        <span class="tag">Em breve</span>
+        <div class="thumb">CAMISETA</div>
+        <h3>[Nome do produto]</h3>
+        <div class="price">R$ --,--</div>
+      </div>
+      <div class="card">
+        <span class="tag">Em breve</span>
+        <div class="thumb">MOLETOM</div>
+        <h3>[Nome do produto]</h3>
+        <div class="price">R$ --,--</div>
+      </div>
+      <div class="card">
+        <span class="tag">Em breve</span>
+        <div class="thumb">VINIL</div>
+        <h3>[Nome do produto]</h3>
+        <div class="price">R$ --,--</div>
+      </div>
+    </div>
+    <p style="margin-top:34px;" class="reveal"><a class="btn btn--dark" href="loja.html"><span>Ver loja completa</span></a></p>
+  </div>
+</section>
 
-<button class="audio-toggle">▶ TOCAR TEMA</button>
+<button class="audio-toggle" aria-label="Tocar tema">▶</button>
 <audio id="bg-audio" loop></audio>
 
 <footer>
-  <div class="visitor-counter"></div><br>
-  <span>visitantes contaminados desde sempre</span>
-  <p>última atualização: <span class="lastmod"></span></p>
-  <p>© 1997-2026 ISOTOPXS. todos os direitos reservados.</p>
-  <p class="dontcare">política de privacidade · termos · nenhum desses links funciona ainda</p>
+  <div class="footer__top">
+    <div class="footer__word">ISOTOPXS</div>
+    <ul class="footer__links">
+      <li><a href="#">[e-mail de booking]</a></li>
+      <li><a href="#">[Instagram]</a></li>
+      <li><a href="#">[YouTube]</a></li>
+      <li><a href="#">[TikTok]</a></li>
+    </ul>
+  </div>
+  <div class="footer__bottom">
+    <span>© 1997-2026 ISOTOPXS. Todos os direitos reservados.</span>
+    <span>Design placeholder — conteúdo real substitui o lorem ipsum.</span>
+  </div>
 </footer>
 
 <script src="assets/js/main.js"></script>

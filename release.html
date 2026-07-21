@@ -3,63 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Release &amp; Stage Plot — ISOTOPXS</title>
+<title>Release — ISOTOPXS</title>
 <meta name="description" content="Release para imprensa e stage plot / rider técnico de ISOTOPXS.">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 
-<div class="marquee-wrap">
-  <div class="marquee-track">MATERIAL DE IMPRENSA E FICHA TÉCNICA PRA PRODUTOR DE SHOW — <b>BAIXA, IMPRIME, MANDA PRO SONORIZADOR</b></div>
-</div>
-
-<header class="topbar">
-  <svg class="logo-svg small" viewBox="0 0 700 150" role="img" aria-label="ISOTOPXS">
-    <defs>
-      <filter id="roughen" x="-20%" y="-30%" width="140%" height="160%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.15" numOctaves="3" seed="9" result="n"/>
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-    </defs>
-    <text x="50%" y="74%" text-anchor="middle" filter="url(#roughen)">ISOTOPXS</text>
-  </svg>
-  <div class="tagline">release <b>//</b> stage plot</div>
-</header>
-
-<nav class="mainnav">
-  <a href="index.html">Início</a>
-  <a href="musica.html">Música &amp; Letra</a>
-  <a href="release.html">Release &amp; Stage Plot</a>
-  <a href="shows.html">Shows &amp; Contato</a>
-  <a href="loja.html">Loja</a>
+<nav class="nav">
+  <a href="index.html" class="nav__mark"><i></i>ISOTOPXS</a>
+  <ul class="nav__links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="musica.html">Música</a></li>
+    <li><a href="release.html">Release</a></li>
+    <li><a href="shows.html">Shows</a></li>
+    <li><a href="loja.html">Loja</a></li>
+  </ul>
 </nav>
 
-<div class="warnstrip"></div>
+<header class="pagehero pagehero--black">
+  <div class="hero__blob b1 blob-a"></div>
+  <div class="hero__blob b2 blob-b"></div>
+  <h1 class="pagehero__word">Release</h1>
+  <p class="pagehero__sub">Texto de imprensa e ficha técnica de palco — material pronto pra mandar pra produtor de show ou pauta de imprensa.</p>
+</header>
 
-<main>
+<div class="ticker ticker--white ticker--tilt">
+  <div class="ticker__track">
+    <span>PRESS KIT</span><span>·</span><span>STAGE PLOT</span><span>·</span><span>RIDER TÉCNICO</span><span>·</span>
+    <span>PRESS KIT</span><span>·</span><span>STAGE PLOT</span><span>·</span><span>RIDER TÉCNICO</span><span>·</span>
+  </div>
+</div>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h1>release (texto de imprensa)</h1>
-    <p><strong>ISOTOPXS</strong> é uma banda de metal mandrake formada em [CIDADE/UF], que funde nu-metal pesado
-    com a cadência do rap e a batida do funk brasileiro. Com riffs sujos, groove de rua e letras que não pedem
-    licença, a banda constrói um som que é ao mesmo tempo moshpit e baile — feito pra quem não cabe em uma cena só.</p>
-    <p>Formada em [ANO], ISOTOPXS lançou o EP <em>"Contaminação Zero"</em> e já circula por [X] shows entre
-    casas de rock e coletivos de rua. A proposta é simples: peso de guitarra, grave de subwoofer de baile, e
-    atitude de quem cresceu ouvindo os dois.</p>
-    <p><strong>Formação:</strong> [Vocal] · [Guitarra] · [Baixo] · [Bateria] · [Eletrônica/DJ]</p>
-    <p><strong>Influências:</strong> nu-metal 2000s, funk carioca, rap nacional, metal industrial.</p>
-    <p><a class="btn" href="#">BAIXAR RELEASE EM PDF (adicionar arquivo)</a>
-       <a class="btn btn-ghost" href="#">BAIXAR PRESS KIT / FOTOS (adicionar arquivo)</a></p>
-    <p style="font-size:13px;">troque os textos entre [colchetes] pelas informações reais da banda.</p>
-  </section>
+<section class="section section--black">
+  <div class="section__inner">
+    <p class="eyebrow reveal">Texto de imprensa</p>
+    <div class="reveal" style="max-width:70ch;">
+      <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+      ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+      ut aliquip ex ea commodo consequat.</p>
+      <p class="lead">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+      nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+      anim id est laborum.</p>
+      <p><strong>Cidade/UF:</strong> [inserir] &nbsp;·&nbsp; <strong>Ano de formação:</strong> [inserir]</p>
+      <p><strong>Formação:</strong> [Vocal] · [Guitarra] · [Baixo] · [Bateria] · [Eletrônica/DJ]</p>
+      <p><strong>Influências:</strong> [gêneros/artistas de referência]</p>
+      <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:22px;">
+        <a class="btn btn--solid" href="#"><span>Baixar release em PDF</span></a>
+        <a class="btn btn--outline" href="#"><span>Baixar press kit / fotos</span></a>
+      </div>
+      <p style="font-size:13px; opacity:.55; margin-top:14px;">substitua os textos entre [colchetes] pelas informações reais da banda.</p>
+    </div>
+  </div>
+</section>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h2>stage plot</h2>
-    <p>diagrama simplificado — ajustar conforme a formação real e o palco de cada show.</p>
-    <div class="stageplot">
+<section class="section section--white">
+  <div class="section__inner">
+    <p class="eyebrow reveal">Stage plot</p>
+    <p class="reveal lead">Diagrama simplificado — ajustar conforme a formação real e o palco de cada show.</p>
+    <div class="stageplot reveal">
       <div class="sp-item drums">BATERIA</div>
       <div class="sp-item guitar">GUITARRA<br>amp + pedalboard</div>
       <div class="sp-item bass">BAIXO<br>amp + DI</div>
@@ -67,29 +69,42 @@
       <div class="sp-item vox">VOCAL — microfone dinâmico + monitor</div>
       <div class="sp-item wedge">MONITOR<br>lateral</div>
     </div>
-    <p style="font-size:13px;">(topo do diagrama = fundo do palco / frente do público na base)</p>
-  </section>
+    <p style="font-size:13px; opacity:.55;">topo do diagrama = fundo do palco · frente do público na base.</p>
+  </div>
+</section>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h2>rider técnico (resumo)</h2>
-    <p><strong>PA / mesa:</strong> mínimo 16 canais, 3 monitores independentes.</p>
-    <p><strong>Bateria:</strong> kit completo com pratos (ou informar se a banda leva pratos próprios), 3 mics de tom, 1 de bumbo, overheads.</p>
-    <p><strong>Guitarra/Baixo:</strong> amplificação própria — necessário 2 pontos de energia estabilizada próximos ao palco.</p>
-    <p><strong>Vocal:</strong> 1 microfone dinâmico para vocal principal (SM58 ou equivalente), sem efeito de reverb excessivo.</p>
-    <p><strong>Palco mínimo:</strong> 4m x 3m.</p>
-    <p><strong>Camarim / hospitalidade:</strong> água, isotônico gelado, toalhas. (ajustar conforme a real necessidade da banda)</p>
-    <p style="font-size:13px;">este é um rider placeholder — revisar com o produtor/técnico de som antes de cada turnê.</p>
-  </section>
+<section class="section section--black">
+  <div class="section__inner" style="max-width:70ch;">
+    <p class="eyebrow reveal">Rider técnico (resumo)</p>
+    <div class="reveal">
+      <p><strong>PA / mesa:</strong> mínimo 16 canais, 3 monitores independentes.</p>
+      <p><strong>Bateria:</strong> kit completo com pratos (ou informar se a banda leva pratos próprios), 3 mics de tom, 1 de bumbo, overheads.</p>
+      <p><strong>Guitarra/Baixo:</strong> amplificação própria — necessário 2 pontos de energia estabilizada próximos ao palco.</p>
+      <p><strong>Vocal:</strong> 1 microfone dinâmico para vocal principal (SM58 ou equivalente), sem efeito de reverb excessivo.</p>
+      <p><strong>Palco mínimo:</strong> 4m x 3m.</p>
+      <p><strong>Camarim / hospitalidade:</strong> água, isotônico gelado, toalhas — ajustar conforme a necessidade real da banda.</p>
+      <p style="font-size:13px; opacity:.55;">rider placeholder — revisar com o produtor/técnico de som antes de cada turnê.</p>
+    </div>
+  </div>
+</section>
 
-</main>
-
-<button class="audio-toggle">▶ TOCAR TEMA</button>
+<button class="audio-toggle" aria-label="Tocar tema">▶</button>
 <audio id="bg-audio" loop></audio>
 
 <footer>
-  <p>última atualização: <span class="lastmod"></span></p>
-  <p>© 1997-2026 ISOTOPXS.</p>
+  <div class="footer__top">
+    <div class="footer__word">ISOTOPXS</div>
+    <ul class="footer__links">
+      <li><a href="#">[e-mail de booking]</a></li>
+      <li><a href="#">[Instagram]</a></li>
+      <li><a href="#">[YouTube]</a></li>
+      <li><a href="#">[TikTok]</a></li>
+    </ul>
+  </div>
+  <div class="footer__bottom">
+    <span>© 1997-2026 ISOTOPXS.</span>
+    <span>Design placeholder — conteúdo real substitui o lorem ipsum.</span>
+  </div>
 </footer>
 
 <script src="assets/js/main.js"></script>

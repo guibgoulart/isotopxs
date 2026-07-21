@@ -3,88 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shows &amp; Contato — ISOTOPXS</title>
+<title>Shows — ISOTOPXS</title>
 <meta name="description" content="Contrate ISOTOPXS para shows. Histórico de shows e contato de booking.">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 
-<div class="marquee-wrap">
-  <div class="marquee-track">QUER CHAMAR A ISOTOPXS PRO SEU EVENTO? <b>MANDA MENSAGEM</b> — A GENTE RESPONDE</div>
-</div>
-
-<header class="topbar">
-  <svg class="logo-svg small" viewBox="0 0 700 150" role="img" aria-label="ISOTOPXS">
-    <defs>
-      <filter id="roughen" x="-20%" y="-30%" width="140%" height="160%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.15" numOctaves="3" seed="9" result="n"/>
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-    </defs>
-    <text x="50%" y="74%" text-anchor="middle" filter="url(#roughen)">ISOTOPXS</text>
-  </svg>
-  <div class="tagline">shows <b>//</b> contato</div>
-</header>
-
-<nav class="mainnav">
-  <a href="index.html">Início</a>
-  <a href="musica.html">Música &amp; Letra</a>
-  <a href="release.html">Release &amp; Stage Plot</a>
-  <a href="shows.html">Shows &amp; Contato</a>
-  <a href="loja.html">Loja</a>
+<nav class="nav">
+  <a href="index.html" class="nav__mark"><i></i>ISOTOPXS</a>
+  <ul class="nav__links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="musica.html">Música</a></li>
+    <li><a href="release.html">Release</a></li>
+    <li><a href="shows.html">Shows</a></li>
+    <li><a href="loja.html">Loja</a></li>
+  </ul>
 </nav>
 
-<div class="warnstrip"></div>
+<header class="pagehero pagehero--white">
+  <div class="hero__blob b1 blob-a"></div>
+  <div class="hero__blob b2 blob-b"></div>
+  <h1 class="pagehero__word">Shows</h1>
+  <p class="pagehero__sub">Contato de booking e histórico de shows já tocados.</p>
+</header>
 
-<main>
+<div class="ticker ticker--red ticker--tilt">
+  <div class="ticker__track">
+    <span>BOOKING</span><span>·</span><span>AGENDA</span><span>·</span><span>SHOWS</span><span>·</span>
+    <span>BOOKING</span><span>·</span><span>AGENDA</span><span>·</span><span>SHOWS</span><span>·</span>
+  </div>
+</div>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h1>contato para shows / booking</h1>
-    <p><strong>booking:</strong> <a href="mailto:booking@isotopxs.com">booking@isotopxs.com</a> (trocar pelo e-mail real)</p>
-    <p><strong>whatsapp / assessoria:</strong> [inserir número]</p>
-    <p><strong>redes:</strong>
-      <a href="#">instagram</a> ·
-      <a href="#">youtube</a> ·
-      <a href="#">tiktok</a>
-    </p>
-    <p>banda + equipe: [X] pessoas em turnê. disponibilidade e cachê sob consulta — manda cidade, data e estrutura do local que a gente responde com ficha técnica completa.</p>
-    <p><a class="btn" href="mailto:booking@isotopxs.com">CHAMAR PRA TOCAR</a></p>
-  </section>
+<section class="section section--black">
+  <div class="section__inner" style="max-width:70ch;">
+    <p class="eyebrow reveal">Contato para shows / booking</p>
+    <div class="reveal">
+      <p><strong>Booking:</strong> <a href="#">[e-mail de booking]</a></p>
+      <p><strong>WhatsApp / assessoria:</strong> [inserir número]</p>
+      <p><strong>Redes:</strong> <a href="#">[Instagram]</a> · <a href="#">[YouTube]</a> · <a href="#">[TikTok]</a></p>
+      <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit — [quantidade] pessoas em turnê.
+      Disponibilidade e cachê sob consulta: manda cidade, data e estrutura do local que a gente responde com
+      ficha técnica completa.</p>
+      <a class="btn btn--solid" href="#"><span>Chamar pra tocar</span></a>
+    </div>
+  </div>
+</section>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h2>já tocamos em</h2>
-    <table>
-      <thead>
-        <tr><th>data</th><th>evento / casa</th><th>cidade</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>mar/2025</td><td>Festival Zona Morta</td><td>São Paulo, SP</td></tr>
-        <tr><td>jun/2025</td><td>Baile do Chumbo</td><td>Rio de Janeiro, RJ</td></tr>
-        <tr><td>ago/2025</td><td>Casa Reator</td><td>Belo Horizonte, MG</td></tr>
-        <tr><td>nov/2025</td><td>Coletivo Isótopo</td><td>Curitiba, PR</td></tr>
-        <tr><td>fev/2026</td><td>Fest Contaminação</td><td>Porto Alegre, RS</td></tr>
-      </tbody>
-    </table>
-    <p style="font-size:13px;">substitua pela lista real de shows já tocados — datas, casas e cidades verdadeiras.</p>
-  </section>
+<section class="section section--white">
+  <div class="section__inner">
+    <p class="eyebrow reveal">Já tocamos em</p>
+    <div class="reveal">
+      <table>
+        <thead>
+          <tr><th>Data</th><th>Evento / casa</th><th>Cidade</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>[data]</td><td>[nome do evento/casa]</td><td>[cidade, UF]</td></tr>
+          <tr><td>[data]</td><td>[nome do evento/casa]</td><td>[cidade, UF]</td></tr>
+          <tr><td>[data]</td><td>[nome do evento/casa]</td><td>[cidade, UF]</td></tr>
+          <tr><td>[data]</td><td>[nome do evento/casa]</td><td>[cidade, UF]</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px; opacity:.55; margin-top:14px;">substitua pela lista real de shows já tocados.</p>
+    </div>
+  </div>
+</section>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h2>próximas datas</h2>
-    <p><em>agenda vazia por enquanto. assim que tiver show marcado, entra aqui.</em></p>
-  </section>
+<section class="section section--black">
+  <div class="section__inner">
+    <p class="eyebrow reveal">Próximas datas</p>
+    <p class="reveal" style="opacity:.6;">agenda vazia por enquanto — assim que tiver show marcado, entra aqui.</p>
+  </div>
+</section>
 
-</main>
-
-<button class="audio-toggle">▶ TOCAR TEMA</button>
+<button class="audio-toggle" aria-label="Tocar tema">▶</button>
 <audio id="bg-audio" loop></audio>
 
 <footer>
-  <p>última atualização: <span class="lastmod"></span></p>
-  <p>© 1997-2026 ISOTOPXS.</p>
+  <div class="footer__top">
+    <div class="footer__word">ISOTOPXS</div>
+    <ul class="footer__links">
+      <li><a href="#">[e-mail de booking]</a></li>
+      <li><a href="#">[Instagram]</a></li>
+      <li><a href="#">[YouTube]</a></li>
+      <li><a href="#">[TikTok]</a></li>
+    </ul>
+  </div>
+  <div class="footer__bottom">
+    <span>© 1997-2026 ISOTOPXS.</span>
+    <span>Design placeholder — conteúdo real substitui o lorem ipsum.</span>
+  </div>
 </footer>
 
 <script src="assets/js/main.js"></script>

@@ -14,8 +14,8 @@ isotopxs-site/
 ├─ shows.html           → contato de booking + histórico de shows
 ├─ loja.html             → vitrine + ponto de integração Shopify
 ├─ assets/
-│  ├─ css/main.css       → todo o visual (cores, fontes, efeitos)
-│  ├─ js/main.js         → tabs, contador, livro de visitas, toggle de áudio
+│  ├─ css/main.css       → todo o visual (cores, fontes, efeitos, animações)
+│  ├─ js/main.js         → nav ao rolar, scroll-reveal, contadores, tabs, toggle de áudio
 │  └─ img/                → colocar aqui logo, fotos da banda etc quando tiver
 ```
 
@@ -23,18 +23,21 @@ Não tem build, não tem `node_modules`, não tem servidor. É só HTML/CSS/JS a
 
 ## o que já está pronto vs. o que falta (placeholders)
 
-Tudo funciona, mas está preenchido com conteúdo fictício plausível pra você validar o layout. Procure por:
+O layout inteiro já funciona, mas nenhum nome, número ou letra é real — para não confundir "exemplo" com
+"informação de verdade", a regra usada foi: **texto corrido = lorem ipsum**, **campo estruturado (nome de show,
+produto, data, e-mail etc.) = `[entre colchetes]`**. Nada de nome inventado tipo "banda fictícia" disfarçado de
+conteúdo real. Procure por:
 
-- **Textos entre `[colchetes]`** em `release.html` e `shows.html` — trocar pelos dados reais (cidade, ano,
-  formação, e-mail de booking, telefone).
-- **Faixas e letras** em `musica.html` — são fictícias, escritas pra soar como a banda mas não são as letras
-  de verdade. Trocar pelas letras reais e, quando tiver mixagem, colar o player (Spotify/YouTube/Bandcamp embed
-  ou um `<audio>` com o mp3) no lugar do comentário `<!-- EMBED REAL AQUI -->`.
-- **Histórico de shows** em `shows.html` — datas/casas/cidades são inventadas, trocar pela agenda real.
-- **Logo/fotos** — hoje o "logo" é texto estilizado (fonte Nosifer + efeito glitch em CSS), não uma imagem.
-  Funciona bem e é leve, mas se vocês tiverem uma arte/logo de verdade, salva em `assets/img/logo.png` e eu
-  troco o `<h1 class="logo">` por uma `<img>`.
-- **Trilha de fundo** — o botão "▶ TOCAR TEMA" já existe e funciona, só não tem áudio ainda. Quando tiver um
+- **Tudo entre `[colchetes]`** em todas as páginas — nomes de show, cidades, datas, nomes de produto, e-mail de
+  booking, redes sociais, formação, influências. É a lista do que precisa ser preenchido.
+- **Faixas e letras** em `musica.html` — títulos são "Faixa 01/02/03/04" e a letra é lorem ipsum mesmo,
+  claramente marcado com "[letra placeholder]". Trocar pelos títulos e letras reais, e colar o player
+  (Spotify/YouTube/Bandcamp embed ou `<audio>` com mp3) no lugar do comentário `<!-- EMBED REAL AQUI -->`.
+- **Parágrafos de bio/release** — lorem ipsum puro. Escrever o texto real da banda no lugar.
+- **Logo** — hoje é só o nome da banda em tipografia grande (fonte Anton) com efeito de blend de cor sobre os
+  blobs animados do hero, não uma imagem. Funciona bem e é leve; se vocês tiverem uma arte/logo de verdade,
+  salva em `assets/img/logo.png` e eu troco o `.hero__word`/`.pagehero__word` por uma `<img>`.
+- **Trilha de fundo** — o botão redondo ▶ no canto já existe e funciona, só não tem áudio ainda. Quando tiver um
   trecho curto (loop de 20-40s costuma bastar), salva em `assets/audio/loop.mp3` e adiciona
   `src="assets/audio/loop.mp3"` na tag `<audio id="bg-audio">` de cada página.
 
@@ -89,10 +92,12 @@ pagar taxa de app extra — só o plano Shopify em si (o mais barato já libera 
 
 ## sobre a estética
 
-O conceito visual gira em torno do próprio nome da banda: **contaminação radioativa**. Verde tóxico, fita de
-perigo (hazard tape) amarelo/preto, textura de ruído/scanline tipo TV velha, tipografia gotejante pro logo
-(fonte "Nosifer") combinada com uma fonte de rua/grafite ("Bungee") pros títulos, e uma fonte de terminal
-retrô ("VT323") pro corpo do texto — puxando pro visual de site dos anos 2000 (geocities/fã-site), mas com
-intenção de design, não bagunça de verdade. Efeitos como o "glitch" no logo, o contador de visitantes falso,
-o livro de visitas e o "rastro tóxico" do cursor são só CSS/JS puro, sem nenhuma imagem/gif externo — o que
-mantém o site leve mesmo parecendo "sujo".
+Linha visual: site de banda moderno e maximalista, não retrô/nostálgico. Paleta de alto contraste (preto,
+branco-osso e vermelho vibrante, com um verde-limão usado só como pontinho de acento), seções em blocos de cor
+cheios que se alternam (preto → vermelho → branco), tipografia gigante (fonte "Anton") com efeito de
+mix-blend-mode sobre manchas de gradiente animadas no hero — o texto muda de cor sozinho conforme as manchas se
+movem atrás dele, sem precisar de imagem nenhuma. Sensação de movimento vem de: uma faixa "ticker" contínua
+rolando (inclinada, tipo fita esticada), microinterações de hover (botões e linhas de lista "preenchem" de cor
+ao passar o mouse), elementos que entram na tela com fade/slide ao rolar a página, e contadores numéricos que
+sobem animados quando aparecem na tela. Tudo em CSS/JS puro — nenhuma imagem, gif ou biblioteca externa —
+então o site continua leve mesmo sendo visualmente pesado.

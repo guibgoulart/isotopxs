@@ -3,156 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Música &amp; Letra — ISOTOPXS</title>
+<title>Música — ISOTOPXS</title>
 <meta name="description" content="Faixas e letras de ISOTOPXS.">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 
-<div class="marquee-wrap">
-  <div class="marquee-track">TROCA AS FAIXAS PLACEHOLDER PELAS MÚSICAS DE VERDADE QUANDO TIVER O MASTER — <b>CADA FAIXA JÁ TEM ESPAÇO PRA PLAYER, LETRA E CIFRA</b></div>
-</div>
-
-<header class="topbar">
-  <svg class="logo-svg small" viewBox="0 0 700 150" role="img" aria-label="ISOTOPXS">
-    <defs>
-      <filter id="roughen" x="-20%" y="-30%" width="140%" height="160%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.15" numOctaves="3" seed="9" result="n"/>
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-    </defs>
-    <text x="50%" y="74%" text-anchor="middle" filter="url(#roughen)">ISOTOPXS</text>
-  </svg>
-  <div class="tagline">música <b>//</b> letra</div>
-</header>
-
-<nav class="mainnav">
-  <a href="index.html">Início</a>
-  <a href="musica.html">Música &amp; Letra</a>
-  <a href="release.html">Release &amp; Stage Plot</a>
-  <a href="shows.html">Shows &amp; Contato</a>
-  <a href="loja.html">Loja</a>
+<nav class="nav">
+  <a href="index.html" class="nav__mark"><i></i>ISOTOPXS</a>
+  <ul class="nav__links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="musica.html">Música</a></li>
+    <li><a href="release.html">Release</a></li>
+    <li><a href="shows.html">Shows</a></li>
+    <li><a href="loja.html">Loja</a></li>
+  </ul>
 </nav>
 
-<div class="warnstrip"></div>
+<header class="pagehero pagehero--red">
+  <div class="hero__blob b1 blob-a"></div>
+  <div class="hero__blob b2 blob-b"></div>
+  <h1 class="pagehero__word">Música</h1>
+  <p class="pagehero__sub">Faixas e letras — cada uma já tem espaço reservado pro player e pra letra real. Por
+  enquanto, tudo abaixo é placeholder.</p>
+</header>
 
-<main>
-  <section class="panel">
-    <div class="tape"></div>
-    <h1>discografia</h1>
-    <p>clica numa faixa pra abrir a letra. os players ficam prontos pra receber o áudio/embed real (Spotify, YouTube, Bandcamp) assim que tiver o link — é só trocar o comentário no HTML.</p>
+<div class="ticker ticker--red ticker--tilt">
+  <div class="ticker__track">
+    <span>FAIXA 01</span><span>—</span><span>FAIXA 02</span><span>—</span><span>FAIXA 03</span><span>—</span><span>FAIXA 04</span><span>—</span>
+    <span>FAIXA 01</span><span>—</span><span>FAIXA 02</span><span>—</span><span>FAIXA 03</span><span>—</span><span>FAIXA 04</span><span>—</span>
+  </div>
+</div>
 
-    <div data-tabs>
+<section class="section section--black">
+  <div class="section__inner">
+    <p class="eyebrow reveal">[Nome do EP/Single]</p>
+    <div class="reveal" data-tabs>
       <div class="tab-bar">
-        <button class="tab-btn active" data-target="t1">01 · meia-vida</button>
-        <button class="tab-btn" data-target="t2">02 · vira-lata atômico</button>
-        <button class="tab-btn" data-target="t3">03 · zona de exclusão</button>
-        <button class="tab-btn" data-target="t4">04 · baile sob radiação</button>
-        <button class="tab-btn" data-target="t5">05 · crachá de chumbo</button>
+        <button class="tab-btn active" data-target="t1">Faixa 01</button>
+        <button class="tab-btn" data-target="t2">Faixa 02</button>
+        <button class="tab-btn" data-target="t3">Faixa 03</button>
+        <button class="tab-btn" data-target="t4">Faixa 04</button>
       </div>
 
       <div id="t1" class="tab-panel active">
-        <p class="track-meta">MEIA-VIDA — 3:47 — do EP "Contaminação Zero"</p>
-        <!-- EMBED REAL AQUI: <iframe> do Spotify/YouTube ou <audio src="assets/audio/meia-vida.mp3" controls></audio> -->
-        <p><em>[player entra aqui quando a faixa estiver mixada]</em></p>
-        <div class="lyrics">todo mundo tem seu tempo de decair
-eu não peço desculpa por brilhar no escuro
-minha meia-vida é mais longa que sua paciência
-eu tô contado em anos-luz, não em segundo
+        <span class="track-meta">[Nome da faixa] — [duração] — [nome do EP/Single]</span>
+        <!-- EMBED REAL AQUI: <iframe> do Spotify/YouTube ou <audio src="assets/audio/faixa-01.mp3" controls></audio> -->
+        <p style="opacity:.5; font-size:13px;">[player entra aqui quando a faixa estiver mixada]</p>
+        <p style="opacity:.5; font-size:13px; margin-bottom:18px;">[letra placeholder — substituir pela letra real]</p>
+        <div class="lyrics">Lorem ipsum dolor sit amet
+consectetur adipiscing elit
+sed do eiusmod tempor incididunt
+ut labore et dolore magna aliqua
 
-isótopo instável, mas eu não caio
-vim da zona, sobrevivi ao vazamento
-peito blindado, chumbo no coração
-resto de quem disse que era acabamento
+Ut enim ad minim veniam
+quis nostrud exercitation ullamco
+laboris nisi ut aliquip ex ea
+commodo consequat
 
-[refrão]
-eu não quebro, eu decaio
-e no decaimento eu ainda ataco
-meia-vida, meia-vida
-eu sou o resto que não te dá desconto</div>
+Duis aute irure dolor in reprehenderit
+in voluptate velit esse cillum
+dolore eu fugiat nulla pariatur
+excepteur sint occaecat cupidatat</div>
       </div>
 
       <div id="t2" class="tab-panel">
-        <p class="track-meta">VIRA-LATA ATÔMICO — 4:02 — do EP "Contaminação Zero"</p>
-        <p><em>[player entra aqui quando a faixa estiver mixada]</em></p>
-        <div class="lyrics">rosnando grave, latindo distorção
-cria de rua com Geiger no peito
-eu sou vira-lata, mas de usina
-ninguém te avisou, e o mal já tá feito
+        <span class="track-meta">[Nome da faixa] — [duração] — [nome do EP/Single]</span>
+        <p style="opacity:.5; font-size:13px;">[player entra aqui quando a faixa estiver mixada]</p>
+        <p style="opacity:.5; font-size:13px; margin-bottom:18px;">[letra placeholder — substituir pela letra real]</p>
+        <div class="lyrics">Sed ut perspiciatis unde omnis iste
+natus error sit voluptatem
+accusantium doloremque laudantium
+totam rem aperiam eaque ipsa
 
-[refrão]
-au au atômico, minha matilha é fissão
-teu quintal virou zona, teu medo virou refrão
-vira-lata, vira-lata, eu multiplico na dor
-cresci catando o que sobrou do teu amor</div>
+Quae ab illo inventore veritatis
+et quasi architecto beatae vitae
+dicta sunt explicabo nemo enim
+ipsam voluptatem quia voluptas</div>
       </div>
 
       <div id="t3" class="tab-panel">
-        <p class="track-meta">ZONA DE EXCLUSÃO — 3:19 — single</p>
-        <p><em>[player entra aqui quando a faixa estiver mixada]</em></p>
-        <div class="lyrics">risca no mapa, ninguém atravessa
-menos eu, que já nasci do lado de dentro
-aqui o silêncio tem contador Geiger
-e o meu grito é o único instrumento
+        <span class="track-meta">[Nome da faixa] — [duração] — [nome do EP/Single]</span>
+        <p style="opacity:.5; font-size:13px;">[player entra aqui quando a faixa estiver mixada]</p>
+        <p style="opacity:.5; font-size:13px; margin-bottom:18px;">[letra placeholder — substituir pela letra real]</p>
+        <div class="lyrics">Nemo enim ipsam voluptatem
+quia voluptas sit aspernatur aut odit
+aut fugit sed quia consequuntur
+magni dolores eos qui ratione
 
-[refrão]
-zona de exclusão, minha casa, meu palco
-eu não preciso da tua aprovação
-aqui dentro eu sou lei, eu sou risco
-zona de exclusão é minha nação</div>
+Voluptatem sequi nesciunt
+neque porro quisquam est
+qui dolorem ipsum quia dolor
+sit amet consectetur adipisci</div>
       </div>
 
       <div id="t4" class="tab-panel">
-        <p class="track-meta">BAILE SOB RADIAÇÃO — 3:58 — feat. (a definir)</p>
-        <p><em>[player entra aqui quando a faixa estiver mixada]</em></p>
-        <div class="lyrics">senta o beat de chumbo, o grave é isótopo
-o riff distorce, o quadriciclo passa
-o baile virou reator, tá liberado o acesso
-quem não aguenta a mistura, sai de cena e passa
+        <span class="track-meta">[Nome da faixa] — [duração] — [nome do EP/Single]</span>
+        <p style="opacity:.5; font-size:13px;">[player entra aqui quando a faixa estiver mixada]</p>
+        <p style="opacity:.5; font-size:13px; margin-bottom:18px;">[letra placeholder — substituir pela letra real]</p>
+        <div class="lyrics">Ut enim ad minima veniam
+quis nostrum exercitationem ullam
+corporis suscipit laboriosam
+nisi ut aliquid ex ea commodi
 
-[refrão]
-baile sob radiação, ninguém tá salvo
-tudo que toca em mim, decai e é meu
-baile sob radiação, ISOTOPXS mandando
-o funk e o metal se fundiram — e Deus?</div>
-      </div>
-
-      <div id="t5" class="tab-panel">
-        <p class="track-meta">CRACHÁ DE CHUMBO — 4:31 — do EP "Contaminação Zero"</p>
-        <p><em>[player entra aqui quando a faixa estiver mixada]</em></p>
-        <div class="lyrics">visto meu crachá, ele é feito de chumbo
-proteção pra dentro, não pra te poupar de mim
-eu absorvo o golpe e devolvo em decibel
-teu escudo é papel, o meu é o meu fim
-
-[refrão]
-crachá de chumbo, coração blindado
-eu deixo vazar só o que eu quiser
-crachá de chumbo, eu tô autorizado
-a ser exatamente o que eu quiser ser</div>
+Consequatur quis autem vel eum
+iure reprehenderit qui in ea
+voluptate velit esse quam nihil
+molestiae consequatur</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h2>onde ouvir</h2>
-    <p>
-      <a class="btn btn-ghost" href="#" aria-disabled="true">SPOTIFY (em breve)</a>
-      <a class="btn btn-ghost" href="#" aria-disabled="true">YOUTUBE (em breve)</a>
-      <a class="btn btn-ghost" href="#" aria-disabled="true">BANDCAMP (em breve)</a>
-    </p>
-    <p style="font-size:13px;">troque os href="#" pelos links reais assim que os perfis estiverem no ar.</p>
-  </section>
-</main>
+<section class="section section--white">
+  <div class="section__inner">
+    <p class="eyebrow reveal">Onde ouvir</p>
+    <div class="reveal" style="display:flex; gap:14px; flex-wrap:wrap;">
+      <a class="btn btn--dark" href="#" aria-disabled="true"><span>Spotify (em breve)</span></a>
+      <a class="btn btn--dark" href="#" aria-disabled="true"><span>YouTube (em breve)</span></a>
+      <a class="btn btn--dark" href="#" aria-disabled="true"><span>Bandcamp (em breve)</span></a>
+    </div>
+    <p style="font-size:13px; margin-top:16px;">troque os href="#" pelos links reais assim que os perfis estiverem no ar.</p>
+  </div>
+</section>
 
-<button class="audio-toggle">▶ TOCAR TEMA</button>
+<button class="audio-toggle" aria-label="Tocar tema">▶</button>
 <audio id="bg-audio" loop></audio>
 
 <footer>
-  <p>última atualização: <span class="lastmod"></span></p>
-  <p>© 1997-2026 ISOTOPXS.</p>
+  <div class="footer__top">
+    <div class="footer__word">ISOTOPXS</div>
+    <ul class="footer__links">
+      <li><a href="#">[e-mail de booking]</a></li>
+      <li><a href="#">[Instagram]</a></li>
+      <li><a href="#">[YouTube]</a></li>
+      <li><a href="#">[TikTok]</a></li>
+    </ul>
+  </div>
+  <div class="footer__bottom">
+    <span>© 1997-2026 ISOTOPXS.</span>
+    <span>Design placeholder — conteúdo real substitui o lorem ipsum.</span>
+  </div>
 </footer>
 
 <script src="assets/js/main.js"></script>

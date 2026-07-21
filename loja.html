@@ -10,79 +10,82 @@
 </head>
 <body>
 
-<div class="marquee-wrap">
-  <div class="marquee-track">LOJA EM MONTAGEM — <b>QUANDO A CONTA SHOPIFY EXISTIR, É SÓ COLAR O BUY BUTTON AQUI</b></div>
-</div>
-
-<header class="topbar">
-  <svg class="logo-svg small" viewBox="0 0 700 150" role="img" aria-label="ISOTOPXS">
-    <defs>
-      <filter id="roughen" x="-20%" y="-30%" width="140%" height="160%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.15" numOctaves="3" seed="9" result="n"/>
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-    </defs>
-    <text x="50%" y="74%" text-anchor="middle" filter="url(#roughen)">ISOTOPXS</text>
-  </svg>
-  <div class="tagline">loja <b>//</b> merch oficial</div>
-</header>
-
-<nav class="mainnav">
-  <a href="index.html">Início</a>
-  <a href="musica.html">Música &amp; Letra</a>
-  <a href="release.html">Release &amp; Stage Plot</a>
-  <a href="shows.html">Shows &amp; Contato</a>
-  <a href="loja.html">Loja</a>
+<nav class="nav">
+  <a href="index.html" class="nav__mark"><i></i>ISOTOPXS</a>
+  <ul class="nav__links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="musica.html">Música</a></li>
+    <li><a href="release.html">Release</a></li>
+    <li><a href="shows.html">Shows</a></li>
+    <li><a href="loja.html">Loja</a></li>
+  </ul>
 </nav>
 
-<div class="warnstrip"></div>
+<header class="pagehero pagehero--red">
+  <div class="hero__blob b1 blob-a"></div>
+  <div class="hero__blob b2 blob-b"></div>
+  <h1 class="pagehero__word">Loja</h1>
+  <p class="pagehero__sub">Merch oficial — vitrine pronta para conectar com a Shopify assim que a conta e os produtos existirem.</p>
+</header>
 
-<main>
+<div class="ticker ticker--white ticker--tilt">
+  <div class="ticker__track">
+    <span>LOJA EM MONTAGEM</span><span>·</span><span>EM BREVE</span><span>·</span>
+    <span>LOJA EM MONTAGEM</span><span>·</span><span>EM BREVE</span><span>·</span>
+  </div>
+</div>
 
-  <section class="panel" style="text-align:center;">
-    <div class="tape"></div>
-    <h1>loja em construção</h1>
-    <p>a gente ainda tá montando os produtos. quando a conta Shopify estiver pronta com camiseta, moletom,
-    vinil e adesivo, o botão de compra aparece exatamente aqui embaixo — sem sair da estética do site.</p>
-  </section>
-
-  <section class="panel">
-    <div class="tape"></div>
-    <h2>o que vem por aí</h2>
-    <div class="store-grid">
-      <div class="store-card">
-        <span class="stamp">EM BREVE</span>
-        <div class="thumb"><span>CAMISETA</span></div>
-        <h3>Camiseta "Meia-Vida"</h3>
+<section class="section section--black">
+  <div class="section__inner">
+    <p class="eyebrow reveal">O que vem por aí</p>
+    <div class="grid3 reveal-stagger">
+      <div class="card">
+        <span class="tag">Em breve</span>
+        <div class="thumb">CAMISETA</div>
+        <h3>[Nome do produto]</h3>
         <div class="price">R$ --,--</div>
       </div>
-      <div class="store-card">
-        <span class="stamp">EM BREVE</span>
-        <div class="thumb"><span>MOLETOM</span></div>
-        <h3>Moletom Zona de Exclusão</h3>
+      <div class="card">
+        <span class="tag">Em breve</span>
+        <div class="thumb">MOLETOM</div>
+        <h3>[Nome do produto]</h3>
         <div class="price">R$ --,--</div>
       </div>
-      <div class="store-card">
-        <span class="stamp">EM BREVE</span>
-        <div class="thumb"><span>VINIL</span></div>
-        <h3>EP "Contaminação Zero" (vinil)</h3>
+      <div class="card">
+        <span class="tag">Em breve</span>
+        <div class="thumb">VINIL</div>
+        <h3>[Nome do produto]</h3>
         <div class="price">R$ --,--</div>
       </div>
-      <div class="store-card">
-        <span class="stamp">EM BREVE</span>
-        <div class="thumb"><span>ADESIVO</span></div>
-        <h3>Kit adesivos radioativos</h3>
+      <div class="card">
+        <span class="tag">Em breve</span>
+        <div class="thumb">ADESIVO</div>
+        <h3>[Nome do produto]</h3>
+        <div class="price">R$ --,--</div>
+      </div>
+      <div class="card">
+        <span class="tag">Em breve</span>
+        <div class="thumb">BONÉ</div>
+        <h3>[Nome do produto]</h3>
+        <div class="price">R$ --,--</div>
+      </div>
+      <div class="card">
+        <span class="tag">Em breve</span>
+        <div class="thumb">PÔSTER</div>
+        <h3>[Nome do produto]</h3>
         <div class="price">R$ --,--</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="panel">
-    <div class="tape"></div>
-    <h2>integração com a Shopify (pra quando a conta existir)</h2>
-    <p>este bloco já está pronto para o <strong>Shopify Buy Button</strong> — o jeito mais leve de vender sem sair
-    do visual do site (o checkout roda seguro dentro da Shopify, mas a vitrine continua com a cara da ISOTOPXS).</p>
-    <div id="shopify-buy-target">
+<section class="section section--white">
+  <div class="section__inner" style="max-width:70ch;">
+    <p class="eyebrow reveal">Integração com a Shopify</p>
+    <p class="reveal lead">Este bloco já está pronto para o <strong>Shopify Buy Button</strong> — o jeito mais
+    leve de vender sem sair do visual do site (o checkout roda seguro dentro da Shopify, mas a vitrine continua
+    com a cara da ISOTOPXS).</p>
+    <div id="shopify-buy-target" class="reveal">
       <!--
         PASSO A PASSO (fazer depois de criar a loja Shopify):
         1. No admin da Shopify: Vendas em canais > Buy Button > escolher o produto > "Create Buy Button".
@@ -90,21 +93,31 @@
              ShopifyBuyInit(); client.product.fetchAll()...
            Copiar esse script gerado e colar aqui dentro, substituindo este comentário.
         3. O botão gerado herda pouco estilo — depois ajustamos as opções de "moneyFormat" e "styles"
-           que a própria Shopify entrega no snippet pra combinar com as cores do site (--blood, --bone, --iron).
+           que a própria Shopify entrega no snippet pra combinar com as cores do site (--red, --black, --white).
         4. Repetir para cada produto, ou usar uma "collection component" pra listar a coleção inteira de uma vez.
       -->
-      <p style="font-size:13px; color:var(--bone-dim);">[ botões de compra aparecerão aqui assim que a loja Shopify existir ]</p>
+      <p style="font-size:13px; opacity:.55;">[ botões de compra aparecerão aqui assim que a loja Shopify existir ]</p>
     </div>
-  </section>
+  </div>
+</section>
 
-</main>
-
-<button class="audio-toggle">▶ TOCAR TEMA</button>
+<button class="audio-toggle" aria-label="Tocar tema">▶</button>
 <audio id="bg-audio" loop></audio>
 
 <footer>
-  <p>última atualização: <span class="lastmod"></span></p>
-  <p>© 1997-2026 ISOTOPXS.</p>
+  <div class="footer__top">
+    <div class="footer__word">ISOTOPXS</div>
+    <ul class="footer__links">
+      <li><a href="#">[e-mail de booking]</a></li>
+      <li><a href="#">[Instagram]</a></li>
+      <li><a href="#">[YouTube]</a></li>
+      <li><a href="#">[TikTok]</a></li>
+    </ul>
+  </div>
+  <div class="footer__bottom">
+    <span>© 1997-2026 ISOTOPXS.</span>
+    <span>Design placeholder — conteúdo real substitui o lorem ipsum.</span>
+  </div>
 </footer>
 
 <script src="assets/js/main.js"></script>

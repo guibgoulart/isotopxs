@@ -92,12 +92,20 @@ pagar taxa de app extra — só o plano Shopify em si (o mais barato já libera 
 
 ## sobre a estética
 
-Linha visual: site de banda moderno e maximalista, não retrô/nostálgico. Paleta de alto contraste (preto,
-branco-osso e vermelho vibrante, com um verde-limão usado só como pontinho de acento), seções em blocos de cor
-cheios que se alternam (preto → vermelho → branco), tipografia gigante (fonte "Anton") com efeito de
-mix-blend-mode sobre manchas de gradiente animadas no hero — o texto muda de cor sozinho conforme as manchas se
-movem atrás dele, sem precisar de imagem nenhuma. Sensação de movimento vem de: uma faixa "ticker" contínua
-rolando (inclinada, tipo fita esticada), microinterações de hover (botões e linhas de lista "preenchem" de cor
-ao passar o mouse), elementos que entram na tela com fade/slide ao rolar a página, e contadores numéricos que
-sobem animados quando aparecem na tela. Tudo em CSS/JS puro — nenhuma imagem, gif ou biblioteca externa —
-então o site continua leve mesmo sendo visualmente pesado.
+Linha visual: maximalista, violenta, alto contraste — site de banda, não nostalgia retrô. Paleta preto /
+branco-osso / vermelho vibrante (verde-limão só como pontinho raro de acento). Três fontes fazem o trabalho
+pesado: **Rubik Beastly** (só no wordmark gigante do hero — serrilhada, quase uma arma), **Big Shoulders
+Stencil Display** (títulos, nav, botões, ticker — corte de stencil militar/rua, não é "fonte de Impact/meme"),
+e **Barlow Condensed** pro corpo de texto. O wordmark do hero tem uma distorção estática (filtro SVG de
+turbulência + sombra dupla vermelho/ciano, tipo impressão de serigrafia desalinhada) — de propósito **sem
+nenhuma animação de tremor/glitch**, porque isso não pegou bem no teste. Sensação de movimento vem só de coisas
+que não cansam o olho: ticker duplo cruzando em direções opostas, hover que "preenche" de cor ou faz o elemento
+"afundar" com sombra sólida deslocada (tipo cartaz serigrafado, sem blur), scroll-reveal, contador animado.
+Grão de filme e scanline por cima de tudo — ambos propositalmente mais fortes que o normal.
+
+**Foto do hero:** a imagem em `assets/img/hero-show.png` é a foto de show que vocês mandaram, tratada em
+preto-e-branco + duotone vermelho (`filter: grayscale + contrast` + camada `mix-blend-mode: color`) — é
+só CSS, o arquivo original continua intacto. **Atenção:** eu não sei se essa foto é de vocês, de um
+fotógrafo contratado, ou uma referência de terceiros — antes de colocar o site no ar publicamente, confirmem
+que têm o direito de uso dela (ou troquem por uma foto própria/licenciada). Pra trocar, é só sobrescrever esse
+arquivo com a foto real da banda no mesmo nome, ou mudar o caminho em `.hero__photo` no `main.css`.

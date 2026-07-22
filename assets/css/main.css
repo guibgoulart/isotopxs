@@ -5,7 +5,7 @@
    CSS puro, sem framework.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Beastly&family=Unbounded:wght@600;700;800;900&family=Barlow+Condensed:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Beastly&family=Unbounded:wght@600;700;800;900&family=Barlow+Condensed:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root{
   --black:  #060606;
@@ -18,7 +18,7 @@
   --f-hero: 'Rubik Beastly', var(--f-display);
   --f-display: 'Unbounded', sans-serif;
   --f-body: 'Barlow Condensed', sans-serif;
-  --f-mono: 'JetBrains Mono', monospace;
+  --f-mono: 'Space Grotesk', sans-serif;
 }
 
 *{ box-sizing: border-box; }
@@ -95,7 +95,7 @@ p{ margin:0 0 1em; }
   mix-blend-mode: difference;
   display:flex; align-items:center; gap:8px;
 }
-.nav__mark i{ width:9px; height:9px; background: var(--lime); display:inline-block; border-radius:50%; mix-blend-mode: normal; }
+.nav__logo{ height:clamp(42px,6vw,60px); width:auto; display:block; }
 .nav__links{ display:flex; gap:clamp(14px,2.4vw,32px); list-style:none; margin:0; padding:0; }
 .nav__links a{
   font-family: var(--f-body);
@@ -224,8 +224,10 @@ p{ margin:0 0 1em; }
 .hero__lede{
   position:relative; z-index:2;
   max-width: 540px;
+  font-family: var(--f-mono);
   font-size: 18px;
-  color: rgba(244,241,234,.8);
+  font-weight: 500;
+  color: rgba(244,241,234,.85);
   margin: 22px auto 30px;
 }
 .hero__cta{ position:relative; z-index:2; display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
@@ -269,7 +271,7 @@ p{ margin:0 0 1em; }
 .pagehero--black .pagehero__word{ color: var(--white); }
 .pagehero--white .pagehero__word, .pagehero--red .pagehero__word{ color: var(--white); }
 
-/* ---------- buttons — corte de canto tipo etiqueta/lâmina, sem pseudo-elemento morto ---------- */
+/* ---------- buttons ---------- */
 .btn{
   display:inline-flex; align-items:center; gap:8px;
   font-family: var(--f-display);
@@ -279,7 +281,6 @@ p{ margin:0 0 1em; }
   text-decoration:none;
   background: var(--white); color: var(--black);
   border: 3px solid #000;
-  clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
   box-shadow: 8px 8px 0 var(--red);
   transition: box-shadow .12s ease, transform .12s ease, background .12s ease, color .12s ease, border-color .12s ease;
 }
@@ -482,6 +483,15 @@ footer{ background: var(--black); color: rgba(244,241,234,.55); padding: 50px cl
 .footer__links a{ text-decoration:none; }
 .footer__links a:hover{ color: var(--red); }
 .footer__bottom{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family: var(--f-mono); font-size:11px; letter-spacing:.5px; }
+
+/* ---------- press kit logos ---------- */
+.presskit-logos{ display:flex; gap:28px; flex-wrap:wrap; align-items:center; margin-top:18px; }
+.presskit-logos img{ max-height:120px; width:auto; }
+.presskit-logos .card{ padding:24px; display:flex; align-items:center; justify-content:center; }
+
+/* ---------- embed ---------- */
+.embed-wrap{ margin: 20px 0 28px; border: 3px solid rgba(244,241,234,.2); }
+.embed-wrap iframe{ display:block; width:100%; border:0; }
 
 /* ---------- misc ---------- */
 .audio-toggle{

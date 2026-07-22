@@ -5,7 +5,7 @@
    CSS puro, sem framework.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Beastly&family=Unbounded:wght@600;700;800;900&family=Special+Elite&family=Bebas+Neue&family=Metal+Mania&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Beastly&family=Unbounded:wght@600;700;800;900&family=Special+Elite&family=Bebas+Neue&display=swap');
 
 :root{
   --black:  #060606;
@@ -19,7 +19,7 @@
   --f-display: 'Unbounded', sans-serif;
   --f-body:  'Special Elite', monospace;
   --f-label: 'Bebas Neue', sans-serif;
-  --f-btn:   'Metal Mania', cursive;
+  --f-btn:   'Bebas Neue', sans-serif;
 }
 
 *{ box-sizing: border-box; }
@@ -274,24 +274,42 @@ p{ margin:0 0 1em; }
 .pagehero--white .pagehero__word, .pagehero--red .pagehero__word{ color: var(--white); }
 .pagehero--red .pagehero__sub{ color: var(--white); }
 
-/* ---------- buttons ---------- */
+/* ---------- buttons — carimbo de cartaz: caixa serigrafada com borda irregular, texto continua nitido ---------- */
 .btn{
+  position:relative;
+  isolation:isolate;
   display:inline-flex; align-items:center; gap:8px;
   font-family: var(--f-btn);
   font-weight: 400;
-  font-size: 22px; text-transform:uppercase; letter-spacing:1px;
-  padding: 14px 30px;
+  font-size: 18px; text-transform:uppercase; letter-spacing:1.5px;
+  padding: 16px 30px;
   text-decoration:none;
-  background: var(--white); color: var(--black);
-  border: 3px solid #000;
-  box-shadow: 8px 8px 0 var(--red);
-  transition: box-shadow .12s ease, transform .12s ease, background .12s ease, color .12s ease, border-color .12s ease;
+  color: var(--black);
+  cursor:pointer;
+  transition: color .12s ease;
 }
-.btn:hover{ transform: translate(4px,4px); box-shadow: 2px 2px 0 var(--red); background: var(--red); color:#fff; }
-.btn--outline{ background: transparent; color: var(--white); border-color: var(--white); }
-.btn--outline:hover{ background: var(--white); color: var(--black); border-color:#000; }
-.btn--dark{ background: transparent; color: var(--black); border-color:#000; box-shadow: 8px 8px 0 #000; }
-.btn--dark:hover{ background:#000; color: var(--white); box-shadow: 2px 2px 0 #000; }
+.btn::before{
+  content:"";
+  position:absolute; inset:0; z-index:0;
+  background: var(--white);
+  border: 3px solid #000;
+  filter: url(#roughen);
+  transition: background .15s ease, border-color .15s ease;
+}
+.btn span{ position:relative; z-index:1; }
+.btn:hover{ color: var(--white); }
+.btn:hover::before{ background: var(--black); }
+
+.btn--outline{ color: var(--white); }
+.btn--outline::before{ background: transparent; border-color: var(--white); }
+.btn--outline:hover{ color: var(--black); }
+.btn--outline:hover::before{ background: var(--white); border-color:#000; }
+
+.btn--dark{ color: var(--black); }
+.btn--dark::before{ background: transparent; border-color:#000; }
+.btn--dark:hover{ color: var(--white); }
+.btn--dark:hover::before{ background:#000; }
+
 .btn[aria-disabled="true"]{ opacity:.35; pointer-events:none; }
 
 /* ---------- full-bleed sections ---------- */

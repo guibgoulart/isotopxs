@@ -272,6 +272,7 @@ p{ margin:0 0 1em; }
 .pagehero--red .hero__blob.blob-b{ background: var(--white); }
 .pagehero--black .pagehero__word{ color: var(--white); }
 .pagehero--white .pagehero__word, .pagehero--red .pagehero__word{ color: var(--white); }
+.pagehero--red .pagehero__sub{ color: var(--white); }
 
 /* ---------- buttons ---------- */
 .btn{

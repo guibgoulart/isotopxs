@@ -1,0 +1,21 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Headers de segurança aplicados a todo o site — a defesa mais direta contra defacement via XSS
+# (mesmo que algum dia entre uma injeção por engano, o CSP barra o script de rodar) e contra
+# clickjacking (frame-ancestors/X-Frame-Options). style-src precisa de 'unsafe-inline' porque o
+# site usa vários atributos style="" inline nas páginas — script-src NÃO tem 'unsafe-inline':
+# nenhum <script> inline existe no site, então isso não quebra nada e é o que realmente importa.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src https://open.spotify.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"

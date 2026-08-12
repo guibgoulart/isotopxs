@@ -496,6 +496,44 @@ th{ text-transform:uppercase; font-family: var(--f-body); font-weight:700; font-
 .form input:focus, .form textarea:focus{ outline:none; border-color: var(--red); }
 .form input::placeholder, .form textarea::placeholder{ color: inherit; opacity:.45; }
 
+/* ---------- loja: carrinho e checkout ---------- */
+.cart-list{ display:flex; flex-direction:column; gap:2px; margin-bottom:20px; }
+.cart-row{
+  display:grid; grid-template-columns: 1fr auto auto auto;
+  align-items:center; gap:16px; padding:14px 0;
+  border-bottom:1px solid rgba(6,6,6,.14);
+  font-family: var(--f-label);
+}
+.cart-row__name{ font-size:15px; text-transform:uppercase; }
+.cart-row__qty{ display:flex; align-items:center; gap:8px; }
+.qty-btn{
+  width:26px; height:26px; border:2px solid rgba(6,6,6,.4); background:transparent;
+  cursor:pointer; font-family: var(--f-label); font-size:16px; line-height:1;
+}
+.qty-btn:hover{ border-color: var(--red); color: var(--red); }
+.qty-num{ min-width:18px; text-align:center; }
+.cart-row__price{ font-size:15px; }
+.cart-row__remove{ background:none; border:none; font-size:20px; cursor:pointer; opacity:.5; line-height:1; }
+.cart-row__remove:hover{ opacity:1; color: var(--red); }
+
+.cart-summary__row{
+  display:flex; justify-content:space-between; align-items:center; gap:16px;
+  padding:10px 0; border-bottom:1px solid rgba(6,6,6,.14);
+  font-family: var(--f-label); font-size:15px;
+}
+.cart-summary__row--total{ font-size:20px; border-bottom:none; padding-top:16px; }
+.cart-summary__row--total strong{ color: var(--red); }
+
+.ship-options{ display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.ship-option{
+  display:flex; align-items:center; gap:12px;
+  border:2px solid rgba(6,6,6,.2); padding:12px 14px; cursor:pointer;
+  transition: border-color .15s; font-family: var(--f-label); font-size:14px;
+}
+.ship-option:hover{ border-color: var(--red); }
+.ship-option input{ accent-color: var(--red); width:16px; height:16px; }
+.ship-option small{ display:block; opacity:.6; font-size:12px; margin-top:2px; }
+
 /* ---------- footer ---------- */
 footer{ background: var(--black); color: rgba(244,241,234,.55); padding: 50px clamp(20px,5vw,60px) 30px; }
 .footer__top{ display:flex; justify-content:space-between; align-items:flex-end; gap:30px; flex-wrap:wrap; border-bottom:1px solid rgba(244,241,234,.14); padding-bottom:34px; margin-bottom:22px; }

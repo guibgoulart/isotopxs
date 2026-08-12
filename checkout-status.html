@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status do pedido — ISOTOPXS</title>
+<meta name="description" content="Status do seu pedido na loja ISOTOPXS.">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="roughen" x="-20%" y="-30%" width="140%" height="160%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.16" numOctaves="3" seed="9" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<nav class="nav">
+  <a href="index.html" class="nav__mark"><img class="nav__logo" src="assets/img/logo-mark.png" alt="ISOTOPXS"></a>
+  <ul class="nav__links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="musica.html">Música</a></li>
+    <li><a href="release.html">Release</a></li>
+    <li><a href="shows.html">Shows</a></li>
+    <li><a href="loja.html">Loja</a></li>
+  </ul>
+  <button class="nav__toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-links-mobile">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<ul class="nav__links--mobile" id="nav-links-mobile">
+  <li><a href="index.html">Início</a></li>
+  <li><a href="musica.html">Música</a></li>
+  <li><a href="release.html">Release</a></li>
+  <li><a href="shows.html">Shows</a></li>
+  <li><a href="loja.html">Loja</a></li>
+</ul>
+
+<header class="pagehero pagehero--red">
+  <div class="hero__blob b1 blob-a"></div>
+  <div class="hero__blob b2 blob-b"></div>
+  <h1 class="pagehero__word">Pedido</h1>
+  <p class="pagehero__sub" id="status-sub">Confirmando pagamento…</p>
+</header>
+
+<section class="section section--white">
+  <div class="section__inner" style="max-width:70ch;">
+    <div id="status-box">
+      <p class="lead">Consultando o status do seu pedido…</p>
+    </div>
+  </div>
+</section>
+
+<button class="audio-toggle" aria-label="Tocar tema">▶</button>
+<audio id="bg-audio" loop></audio>
+
+<footer>
+  <div class="footer__top">
+    <div class="footer__word">ISOTOPXS</div>
+    <ul class="footer__links">
+      <li><a href="#">[e-mail de booking]</a></li>
+      <li><a href="https://www.instagram.com/isotopxs/" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="https://www.youtube.com/@ISOTOPXS" target="_blank" rel="noopener">YouTube</a></li>
+      <li><a href="https://www.tiktok.com/@_isotopxs" target="_blank" rel="noopener">TikTok</a></li>
+    </ul>
+  </div>
+  <div class="footer__bottom">
+    <span>© 1997-2026 ISOTOPXS.</span>
+    <span>Design placeholder — conteúdo real substitui o lorem ipsum.</span>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/checkout-status.js"></script>
+</body>
+</html>

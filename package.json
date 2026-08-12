@@ -1,0 +1,14 @@
+{
+  "name": "isotopxs-site",
+  "private": true,
+  "description": "Site estático da ISOTOPXS. Sem build step no front-end — este package.json existe só para as Netlify Functions (netlify/functions) terem suas dependências instaláveis e para rodar 'netlify dev' localmente.",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

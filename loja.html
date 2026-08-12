@@ -42,78 +42,58 @@
   <div class="hero__blob b1 blob-a"></div>
   <div class="hero__blob b2 blob-b"></div>
   <h1 class="pagehero__word">Loja</h1>
-  <p class="pagehero__sub">Merch oficial — vitrine pronta para conectar com a Shopify assim que a conta e os produtos existirem.</p>
+  <p class="pagehero__sub">Merch oficial — compra própria, sem intermediário, pagamento via Mercado Pago e frete Loggi.</p>
 </header>
 
 <div class="ticker ticker--white ticker--tilt">
   <div class="ticker__track">
-    <span>LOJA EM MONTAGEM</span><span>·</span><span>EM BREVE</span><span>·</span>
-    <span>LOJA EM MONTAGEM</span><span>·</span><span>EM BREVE</span><span>·</span>
+    <span>MERCH OFICIAL</span><span>·</span><span>ENVIO PARA TODO O BRASIL</span><span>·</span>
+    <span>MERCH OFICIAL</span><span>·</span><span>ENVIO PARA TODO O BRASIL</span><span>·</span>
   </div>
 </div>
 
 <section class="section section--black">
   <div class="section__inner">
-    <p class="eyebrow reveal">O que vem por aí</p>
-    <div class="grid3 reveal-stagger">
-      <div class="card">
-        <span class="tag">Em breve</span>
-        <div class="thumb">CAMISETA</div>
-        <h3>[Nome do produto]</h3>
-        <div class="price">R$ --,--</div>
-      </div>
-      <div class="card">
-        <span class="tag">Em breve</span>
-        <div class="thumb">MOLETOM</div>
-        <h3>[Nome do produto]</h3>
-        <div class="price">R$ --,--</div>
-      </div>
-      <div class="card">
-        <span class="tag">Em breve</span>
-        <div class="thumb">VINIL</div>
-        <h3>[Nome do produto]</h3>
-        <div class="price">R$ --,--</div>
-      </div>
-      <div class="card">
-        <span class="tag">Em breve</span>
-        <div class="thumb">ADESIVO</div>
-        <h3>[Nome do produto]</h3>
-        <div class="price">R$ --,--</div>
-      </div>
-      <div class="card">
-        <span class="tag">Em breve</span>
-        <div class="thumb">BONÉ</div>
-        <h3>[Nome do produto]</h3>
-        <div class="price">R$ --,--</div>
-      </div>
-      <div class="card">
-        <span class="tag">Em breve</span>
-        <div class="thumb">PÔSTER</div>
-        <h3>[Nome do produto]</h3>
-        <div class="price">R$ --,--</div>
-      </div>
+    <p class="eyebrow reveal">Produtos</p>
+    <div id="shop-grid" class="grid3 reveal-stagger">
+      <p>Carregando produtos…</p>
     </div>
   </div>
 </section>
 
-<section class="section section--white">
+<section id="cart" class="section section--white">
   <div class="section__inner" style="max-width:70ch;">
-    <p class="eyebrow reveal">Integração com a Shopify</p>
-    <p class="reveal lead">Este bloco já está pronto para o <strong>Shopify Buy Button</strong> — o jeito mais
-    leve de vender sem sair do visual do site (o checkout roda seguro dentro da Shopify, mas a vitrine continua
-    com a cara da ISOTOPXS).</p>
-    <div id="shopify-buy-target" class="reveal">
-      <!--
-        PASSO A PASSO (fazer depois de criar a loja Shopify):
-        1. No admin da Shopify: Vendas em canais > Buy Button > escolher o produto > "Create Buy Button".
-        2. A Shopify gera um <script> com uma chamada tipo:
-             ShopifyBuyInit(); client.product.fetchAll()...
-           Copiar esse script gerado e colar aqui dentro, substituindo este comentário.
-        3. O botão gerado herda pouco estilo — depois ajustamos as opções de "moneyFormat" e "styles"
-           que a própria Shopify entrega no snippet pra combinar com as cores do site (--red, --black, --white).
-        4. Repetir para cada produto, ou usar uma "collection component" pra listar a coleção inteira de uma vez.
-      -->
-      <p style="font-size:13px;">[ botões de compra aparecerão aqui assim que a loja Shopify existir ]</p>
+    <p class="eyebrow reveal">Seu carrinho</p>
+
+    <p id="cart-empty" class="reveal lead">Ainda vazio — adicione algo da vitrine acima.</p>
+    <div id="cart-items" class="cart-list reveal" hidden></div>
+
+    <div class="cart-summary reveal">
+      <div class="cart-summary__row">
+        <span>Subtotal</span>
+        <strong id="cart-subtotal">R$ 0,00</strong>
+      </div>
+
+      <div class="form" style="max-width:none; flex-direction:row; gap:10px; margin-top:18px; flex-wrap:wrap;">
+        <input type="text" id="cep-input" placeholder="CEP de entrega" inputmode="numeric" maxlength="9" style="flex:1; min-width:180px;">
+        <button type="button" id="quote-btn" class="btn btn--dark"><span>Calcular frete</span></button>
+      </div>
+      <p id="shipping-msg" style="font-size:13px; margin-top:8px;"></p>
+      <div id="shipping-options" class="ship-options"></div>
+
+      <div id="cart-total-row" class="cart-summary__row cart-summary__row--total" hidden>
+        <span>Total</span>
+        <strong id="cart-total">R$ 0,00</strong>
+      </div>
+
+      <div class="form" style="margin-top:22px;">
+        <input type="text" id="buyer-name" placeholder="Nome completo">
+        <input type="email" id="buyer-email" placeholder="E-mail para receber a confirmação">
+      </div>
+
+      <p style="margin-top:22px;"><button type="button" id="checkout-btn" class="btn btn--dark" aria-disabled="true"><span>Finalizar compra</span></button></p>
+      <p id="checkout-msg" style="font-size:13px; margin-top:8px;"></p>
+      <p style="font-size:12px; opacity:.6; margin-top:14px;">O pagamento acontece na página segura do Mercado Pago — nenhum dado de cartão passa pelo nosso site.</p>
     </div>
   </div>
 </section>
@@ -138,5 +118,6 @@
 </footer>
 
 <script src="assets/js/main.js"></script>
+<script src="assets/js/loja.js"></script>
 </body>
 </html>

@@ -1,0 +1,60 @@
+{
+  "_readme": "Catálogo servidor da loja. O front-end (loja.html) só lê nome/preço/imagem daqui para exibir; o preço usado no checkout é SEMPRE recalculado a partir deste arquivo dentro das Netlify Functions — o cliente nunca manda preço, só id + quantidade. Preços e pesos abaixo são fictícios/ilustrativos (valores redondos) só para o checkout funcionar de ponta a ponta em teste; troquem por nome de produto real e preço/peso real antes de ir para produção. price_cents está em centavos de BRL para evitar erro de ponto flutuante.",
+  "currency": "BRL",
+  "products": [
+    {
+      "id": "camiseta",
+      "name": "[Nome do produto] — Camiseta",
+      "thumb_label": "CAMISETA",
+      "price_cents": 7990,
+      "weight_g": 200,
+      "dims_cm": { "length": 30, "width": 25, "height": 3 },
+      "active": true
+    },
+    {
+      "id": "moletom",
+      "name": "[Nome do produto] — Moletom",
+      "thumb_label": "MOLETOM",
+      "price_cents": 17990,
+      "weight_g": 600,
+      "dims_cm": { "length": 35, "width": 30, "height": 6 },
+      "active": true
+    },
+    {
+      "id": "vinil",
+      "name": "[Nome do produto] — Vinil",
+      "thumb_label": "VINIL",
+      "price_cents": 14990,
+      "weight_g": 350,
+      "dims_cm": { "length": 32, "width": 32, "height": 1 },
+      "active": true
+    },
+    {
+      "id": "adesivo",
+      "name": "[Nome do produto] — Adesivo",
+      "thumb_label": "ADESIVO",
+      "price_cents": 990,
+      "weight_g": 10,
+      "dims_cm": { "length": 10, "width": 10, "height": 1 },
+      "active": true
+    },
+    {
+      "id": "bone",
+      "name": "[Nome do produto] — Boné",
+      "thumb_label": "BONÉ",
+      "price_cents": 8990,
+      "weight_g": 150,
+      "dims_cm": { "length": 25, "width": 20, "height": 15 },
+      "active": true
+    },
+    {
+      "id": "poster",
+      "name": "[Nome do produto] — Pôster",
+      "thumb_label": "PÔSTER",
+      "price_cents": 4990,
+      "weight_g": 80,
+      "dims_cm": { "length": 45, "width": 32, "height": 1 },
+      "active": true
+    }
+  ]
+}

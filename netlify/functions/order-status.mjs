@@ -1,7 +1,5 @@
 // Netlify Functions v2 (ESM) — ver nota em shipping-quote.mjs sobre por que v2 e não v1.
-import ordersStorePkg from './lib/orders-store.js';
-
-const { getOrder } = ordersStorePkg;
+import { getOrder } from './lib/orders-store.mjs';
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });

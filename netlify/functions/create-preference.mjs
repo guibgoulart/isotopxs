@@ -3,12 +3,11 @@ import { randomUUID } from 'node:crypto';
 import catalogPkg from './lib/catalog.js';
 import shippingPkg from './lib/shipping.js';
 import mercadopagoPkg from './lib/mercadopago.js';
-import ordersStorePkg from './lib/orders-store.js';
+import { createOrder } from './lib/orders-store.mjs';
 
 const { priceCartItems } = catalogPkg;
 const shipping = shippingPkg;
 const mercadopago = mercadopagoPkg;
-const { createOrder } = ordersStorePkg;
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });

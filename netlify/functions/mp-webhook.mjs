@@ -44,15 +44,21 @@ export default async (req) => {
   // Não loga o valor da secret, só um "fingerprint" (tamanho + últimos 4 chars) pra comparar
   // com o que está configurado no painel da Mercado Pago sem expor a secret inteira.
   const secretForDebug = process.env.MP_WEBHOOK_SECRET || '';
+  const urlForDebug = new URL(req.url);
   console.log(
-    `mp-webhook DEBUG: secret len=${secretForDebug.length} tail=${secretForDebug.slice(-4)} xSignature="${req.headers.get('x-signature')}"`
+    `mp-webhook DEBUG: secret len=${secretForDebug.length} tail=${secretForDebug.slice(-4)} ` +
+      `xSignature="${req.headers.get('x-signature')}" xRequestId="${req.headers.get('x-request-id')}" ` +
+      `paymentId="${paymentId}" url="${req.url}" queryDataId="${urlForDebug.searchParams.get('data.id')}"`
   );
 
-  const { verified, skipped } = mercadopago.verifyWebhookSignature({
+  const { verified, skipped, debugManifest, debugExpected, debugV1 } = mercadopago.verifyWebhookSignature({
     xSignature: req.headers.get('x-signature'),
     xRequestId: req.headers.get('x-request-id'),
     dataId: paymentId,
   });
+  console.log(
+    `mp-webhook DEBUG2: manifest="${debugManifest}" expected="${debugExpected}" v1="${debugV1}"`
+  );
   if (skipped && process.env.NETLIFY_DEV !== 'true') {
     // Fail-closed: em produção (fora do `netlify dev` local) o webhook não roda sem o secret
     // configurado. Preferível a "processar sem verificar" — se alguém esquecer de configurar

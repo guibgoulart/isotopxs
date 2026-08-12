@@ -40,6 +40,14 @@ export default async (req) => {
     return json({ ignored: true });
   }
 
+  // DIAGNÓSTICO TEMPORÁRIO — remover depois de confirmar a causa do 401 recorrente.
+  // Não loga o valor da secret, só um "fingerprint" (tamanho + últimos 4 chars) pra comparar
+  // com o que está configurado no painel da Mercado Pago sem expor a secret inteira.
+  const secretForDebug = process.env.MP_WEBHOOK_SECRET || '';
+  console.log(
+    `mp-webhook DEBUG: secret len=${secretForDebug.length} tail=${secretForDebug.slice(-4)} xSignature="${req.headers.get('x-signature')}"`
+  );
+
   const { verified, skipped } = mercadopago.verifyWebhookSignature({
     xSignature: req.headers.get('x-signature'),
     xRequestId: req.headers.get('x-request-id'),

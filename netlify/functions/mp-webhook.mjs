@@ -40,39 +40,21 @@ export default async (req) => {
     return json({ ignored: true });
   }
 
-  // DIAGNÓSTICO TEMPORÁRIO — remover depois de confirmar a causa do 401 recorrente.
-  // Não loga o valor da secret, só um "fingerprint" (tamanho + últimos 4 chars) pra comparar
-  // com o que está configurado no painel da Mercado Pago sem expor a secret inteira.
-  const secretForDebug = process.env.MP_WEBHOOK_SECRET || '';
-  const urlForDebug = new URL(req.url);
-  console.log(
-    `mp-webhook DEBUG: secret len=${secretForDebug.length} tail=${secretForDebug.slice(-4)} ` +
-      `xSignature="${req.headers.get('x-signature')}" xRequestId="${req.headers.get('x-request-id')}" ` +
-      `paymentId="${paymentId}" url="${req.url}" queryDataId="${urlForDebug.searchParams.get('data.id')}"`
-  );
-
-  const { verified, skipped, debugManifest, debugExpected, debugV1 } = mercadopago.verifyWebhookSignature({
+  // A Mercado Pago envia esse webhook via `notification_url` (IPN) — a documentação oficial deles
+  // confirma que o header x-signature do IPN não é validável pela chave secreta (mesmo com a
+  // secret certa, o HMAC nunca bate). Por isso não usamos a assinatura como portão de entrada:
+  // a validação de verdade é buscar o pagamento na API da Mercado Pago com nosso próprio
+  // access token logo abaixo — só nós temos esse token, então não dá pra forjar um pagamento
+  // aprovado, no máximo alguém força a gente a reconsultar um pagamento que já existe de verdade.
+  const { verified, skipped } = mercadopago.verifyWebhookSignature({
     xSignature: req.headers.get('x-signature'),
     xRequestId: req.headers.get('x-request-id'),
     dataId: paymentId,
   });
-  console.log(
-    `mp-webhook DEBUG2: manifest="${debugManifest}" expected="${debugExpected}" v1="${debugV1}"`
-  );
-  if (skipped && process.env.NETLIFY_DEV !== 'true') {
-    // Fail-closed: em produção (fora do `netlify dev` local) o webhook não roda sem o secret
-    // configurado. Preferível a "processar sem verificar" — se alguém esquecer de configurar
-    // MP_WEBHOOK_SECRET no Netlify, o sintoma é "pedidos não confirmam" (visível, óbvio de
-    // depurar), não "webhook aceita notificação de qualquer um sem checar nada" (silencioso).
-    console.error('mp-webhook: MP_WEBHOOK_SECRET não configurado — recusando notificação (fail-closed)');
-    return json({ error: 'Webhook não configurado' }, 500);
-  }
   if (!skipped && !verified) {
-    console.warn('mp-webhook: assinatura inválida, rejeitando notificação');
-    return json({ error: 'Assinatura inválida' }, 401);
-  }
-  if (skipped) {
-    console.warn('mp-webhook: MP_WEBHOOK_SECRET não configurado — assinatura não verificada (permitido só em netlify dev)');
+    console.warn('mp-webhook: assinatura não bateu (esperado para notificações IPN) — seguindo com a consulta na API');
+  } else if (skipped) {
+    console.warn('mp-webhook: MP_WEBHOOK_SECRET não configurado — seguindo com a consulta na API mesmo assim');
   }
 
   let payment;

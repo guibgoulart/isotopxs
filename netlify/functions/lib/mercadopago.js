@@ -69,8 +69,7 @@ function verifyWebhookSignature({ xSignature, xRequestId, dataId }) {
   } catch {
     verified = false;
   }
-  // DIAGNÓSTICO TEMPORÁRIO — remover depois de confirmar a causa do 401 recorrente.
-  return { verified, skipped: false, debugManifest: manifest, debugExpected: expected, debugV1: v1 };
+  return { verified, skipped: false };
 }
 
 module.exports = { createPreference, getPayment, verifyWebhookSignature };

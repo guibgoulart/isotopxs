@@ -126,6 +126,7 @@ export default async (req) => {
       pending: `${base}/checkout-status.html?status=pending&order=${orderId}`,
     },
     auto_return: 'approved',
+    notification_url: `${base}/.netlify/functions/mp-webhook`,
     statement_descriptor: 'ISOTOPXS',
   };
 

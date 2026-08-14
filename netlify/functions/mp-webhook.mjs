@@ -1,7 +1,7 @@
 // Netlify Functions v2 (ESM) — ver nota em shipping-quote.mjs sobre por que v2 e não v1.
 import mercadopagoPkg from './lib/mercadopago.js';
 import shippingPkg from './lib/shipping.js';
-import { getOrder, updateOrder } from './lib/orders-store.mjs';
+import { getOrder, updateOrder, claimShipmentCreation } from './lib/orders-store.mjs';
 
 const mercadopago = mercadopagoPkg;
 const shipping = shippingPkg;
@@ -25,11 +25,24 @@ async function extractPaymentId(req) {
   return String(id);
 }
 
-function mapPaymentStatus(mpStatus) {
+export function mapPaymentStatus(mpStatus) {
   if (mpStatus === 'approved') return 'paid';
   if (mpStatus === 'rejected' || mpStatus === 'cancelled') return 'failed';
   return 'pending'; // in_process, pending, in_mediation, etc.
 }
+
+// Limite bem folgado: todas as notificações da Mercado Pago saem de um pool pequeno e
+// compartilhado de IPs deles, não do cliente final — um limite apertado aqui bloquearia
+// pedidos de outras pessoas, recriando o mesmo tipo de falha silenciosa já corrigida antes.
+// Isso serve só para conter abuso flagrante, não para throttle normal.
+export const config = {
+  rateLimit: {
+    action: 'block',
+    windowLimit: 300,
+    windowSize: 60,
+    aggregateBy: ['ip'],
+  },
+};
 
 export default async (req) => {
   if (req.method !== 'POST') return json({ error: 'Método não permitido' }, 405);
@@ -73,7 +86,6 @@ export default async (req) => {
   }
 
   const nextStatus = mapPaymentStatus(payment.status);
-  const wasAlreadyPaid = order.status === 'paid';
 
   let updated = await updateOrder(orderId, {
     status: nextStatus,
@@ -81,17 +93,28 @@ export default async (req) => {
     payment_id: String(payment.id),
   });
 
-  if (nextStatus === 'paid' && !wasAlreadyPaid && !updated.tracking_code) {
-    try {
-      const shipment = await shipping.createShipment(updated);
-      updated = await updateOrder(orderId, {
-        tracking_code: shipment.trackingCode,
-        shipping_status: shipment.status,
-        shipping_carrier: shipment.carrier,
-      });
-    } catch (err) {
-      console.error(`mp-webhook: falha ao criar envio para o pedido ${orderId}:`, err);
-      await updateOrder(orderId, { shipping_status: 'error', shipping_error: String(err.message || err) });
+  if (nextStatus === 'paid') {
+    // claimShipmentCreation relê o pedido na hora e só "ganha" quem realmente for o único a
+    // reivindicar — protege contra a Mercado Pago reenviar a mesma notificação em paralelo
+    // (ver comentário em orders-store.mjs).
+    const claimed = await claimShipmentCreation(orderId);
+    if (claimed) {
+      try {
+        const shipment = await shipping.createShipment(claimed);
+        updated = await updateOrder(orderId, {
+          tracking_code: shipment.trackingCode,
+          shipping_status: shipment.status,
+          shipping_carrier: shipment.carrier,
+          shipping_claim: null,
+        });
+      } catch (err) {
+        console.error(`mp-webhook: falha ao criar envio para o pedido ${orderId}:`, err);
+        await updateOrder(orderId, {
+          shipping_status: 'error',
+          shipping_error: String(err.message || err),
+          shipping_claim: null,
+        });
+      }
     }
   }
 

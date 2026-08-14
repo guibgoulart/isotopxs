@@ -104,6 +104,12 @@ async function quoteViaLoggiApi(/* { originCep, destinationCep, weightG, dimsCm 
   throw notImplementedError('quote');
 }
 
+// TODO ao implementar de verdade: mande order.id como idempotency key / external reference pra
+// Loggi (se a API dela suportar, o que é comum nesse tipo de integração). mp-webhook.mjs tenta
+// evitar chamar isso duas vezes pro mesmo pedido (orders-store.claimShipmentCreation), mas essa
+// trava não é uma exclusão mútua garantida (ver comentário em orders-store.mjs) — a rede de
+// segurança de verdade contra frete duplicado é a própria Loggi deduplicar pelo external
+// reference, não a nossa trava otimista.
 async function createShipmentViaLoggiApi(/* order */) {
   throw notImplementedError('createShipment');
 }

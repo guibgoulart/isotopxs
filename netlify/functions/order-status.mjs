@@ -5,6 +5,17 @@ function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 }
 
+// checkout-status.js faz no máximo 6 chamadas por pedido (poll a cada 2.5s) — 30/min por IP
+// cobre isso várias vezes seguidas (ex.: abas abertas, retries manuais) sem sobrar margem pra abuso.
+export const config = {
+  rateLimit: {
+    action: 'block',
+    windowLimit: 30,
+    windowSize: 60,
+    aggregateBy: ['ip'],
+  },
+};
+
 export default async (req) => {
   if (req.method !== 'GET') return json({ error: 'Método não permitido' }, 405);
 

@@ -6,6 +6,14 @@
 [functions]
   node_bundler = "esbuild"
 
+# isotopxs.com.br é o domínio canônico; isotopxs.com (raiz, sem www) redireciona para lá.
+# O Netlify já redireciona www.isotopxs.com automaticamente — só falta a raiz.
+[[redirects]]
+  from = "https://isotopxs.com/*"
+  to = "https://isotopxs.com.br/:splat"
+  status = 301
+  force = true
+
 # Headers de segurança aplicados a todo o site — a defesa mais direta contra defacement via XSS
 # (mesmo que algum dia entre uma injeção por engano, o CSP barra o script de rodar) e contra
 # clickjacking (frame-ancestors/X-Frame-Options). style-src precisa de 'unsafe-inline' porque o

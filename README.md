@@ -179,9 +179,7 @@ que não cansam o olho: ticker duplo cruzando em direções opostas, hover que "
 "afundar" com sombra sólida deslocada (tipo cartaz serigrafado, sem blur), scroll-reveal, contador animado.
 Grão de filme e scanline por cima de tudo — ambos propositalmente mais fortes que o normal.
 
-**Foto do hero:** a imagem em `assets/img/hero-show.png` é a foto de show que vocês mandaram, tratada em
-preto-e-branco + duotone vermelho (`filter: grayscale + contrast` + camada `mix-blend-mode: color`) — é
-só CSS, o arquivo original continua intacto. **Atenção:** eu não sei se essa foto é de vocês, de um
-fotógrafo contratado, ou uma referência de terceiros — antes de colocar o site no ar publicamente, confirmem
-que têm o direito de uso dela (ou troquem por uma foto própria/licenciada). Pra trocar, é só sobrescrever esse
-arquivo com a foto real da banda no mesmo nome, ou mudar o caminho em `.hero__photo` no `main.css`.
+**Fundo do hero:** hoje é o emblema circular (`assets/img/hero-emblem.png`, arte de vocês) com o mesmo
+tratamento duotone vermelho (camada `mix-blend-mode: color` em cima, `.hero__photo` no `main.css`). Pra trocar
+por uma foto de show real, basta apontar `.hero__photo` pra outra imagem e voltar `background-size` pra `cover`
+(hoje está em `contain`-like, pensado pra logo, não pra foto de corpo inteiro).

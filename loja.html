@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loja — ISOTOPXS</title>
+<title>Loja · ISOTOPXS</title>
 <meta name="description" content="Loja oficial de ISOTOPXS.">
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="stylesheet" href="assets/css/main.css">
@@ -38,11 +38,13 @@
   <li><a href="loja.html">Loja</a></li>
 </ul>
 
-<header class="pagehero pagehero--red">
+<header class="pagehero pagehero--red pagehero--loja">
+  <div class="pagehero__photo"></div>
+  <div class="pagehero__scrim"></div>
   <div class="hero__blob b1 blob-a"></div>
   <div class="hero__blob b2 blob-b"></div>
   <h1 class="pagehero__word">Loja</h1>
-  <p class="pagehero__sub">Merch oficial — compra própria, sem intermediário, pagamento via Mercado Pago e frete Loggi.</p>
+  <p class="pagehero__sub">Merch oficial: compra própria, sem intermediário, pagamento via Mercado Pago e frete Loggi.</p>
 </header>
 
 <div class="ticker ticker--white ticker--tilt">
@@ -65,7 +67,7 @@
   <div class="section__inner" style="max-width:70ch;">
     <p class="eyebrow reveal">Seu carrinho</p>
 
-    <p id="cart-empty" class="reveal lead">Ainda vazio — adicione algo da vitrine acima.</p>
+    <p id="cart-empty" class="reveal lead">Ainda vazio. Adicione algo da vitrine acima.</p>
     <div id="cart-items" class="cart-list reveal" hidden></div>
 
     <div class="cart-summary reveal">
@@ -93,7 +95,7 @@
 
       <p style="margin-top:22px;"><button type="button" id="checkout-btn" class="btn btn--dark" aria-disabled="true"><span>Finalizar compra</span></button></p>
       <p id="checkout-msg" style="font-size:13px; margin-top:8px;"></p>
-      <p style="font-size:12px; opacity:.6; margin-top:14px;">O pagamento acontece na página segura do Mercado Pago — nenhum dado de cartão passa pelo nosso site.</p>
+      <p style="font-size:12px; opacity:.6; margin-top:14px;">O pagamento acontece na página segura do Mercado Pago. Nenhum dado de cartão passa pelo nosso site.</p>
     </div>
   </div>
 </section>
@@ -102,19 +104,23 @@
 <audio id="bg-audio" loop></audio>
 
 <footer>
-  <div class="footer__top">
-    <div class="footer__word">ISOTOPXS</div>
-    <ul class="footer__links">
-      <li><a href="#">[e-mail de booking]</a></li>
-      <li><a href="https://www.instagram.com/isotopxs/" target="_blank" rel="noopener">Instagram</a></li>
-      <li><a href="https://www.youtube.com/@ISOTOPXS" target="_blank" rel="noopener">YouTube</a></li>
-      <li><a href="https://www.tiktok.com/@_isotopxs" target="_blank" rel="noopener">TikTok</a></li>
-    </ul>
+  <img class="footer__bgphoto" src="assets/img/bg-footer-publico.jpg" alt="">
+  <div class="footer__content">
+    <div class="footer__top">
+      <div class="footer__word">ISOTOPXS</div>
+      <ul class="footer__links">
+        <li><a href="#">[e-mail de booking]</a></li>
+        <li><a href="https://www.instagram.com/isotopxs/" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@ISOTOPXS" target="_blank" rel="noopener">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/@_isotopxs" target="_blank" rel="noopener">TikTok</a></li>
+      </ul>
+    </div>
+    <div class="footer__bottom">
+      <span>© 1997-2026 ISOTOPXS.</span>
+      <span>Design placeholder. Conteúdo real substitui o lorem ipsum.</span>
+    </div>
   </div>
-  <div class="footer__bottom">
-    <span>© 1997-2026 ISOTOPXS.</span>
-    <span>Design placeholder — conteúdo real substitui o lorem ipsum.</span>
-  </div>
+  <img class="mascot-badge" src="assets/img/mascot-white.png" alt="" aria-hidden="true">
 </footer>
 
 <script src="assets/js/main.js"></script>

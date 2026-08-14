@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shows — ISOTOPXS</title>
+<title>Shows · ISOTOPXS</title>
 <meta name="description" content="Contrate ISOTOPXS para shows. Histórico de shows e contato de booking.">
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="stylesheet" href="assets/css/main.css">
@@ -38,7 +38,9 @@
   <li><a href="loja.html">Loja</a></li>
 </ul>
 
-<header class="pagehero pagehero--white">
+<header class="pagehero pagehero--white pagehero--shows">
+  <div class="pagehero__photo"></div>
+  <div class="pagehero__scrim"></div>
   <div class="hero__blob b1 blob-a"></div>
   <div class="hero__blob b2 blob-b"></div>
   <h1 class="pagehero__word">Shows</h1>
@@ -59,7 +61,7 @@
       <p><strong>Booking:</strong> <a href="#">[e-mail de booking]</a></p>
       <p><strong>WhatsApp / assessoria:</strong> [inserir número]</p>
       <p><strong>Redes:</strong> <a href="https://www.instagram.com/isotopxs/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.youtube.com/@ISOTOPXS" target="_blank" rel="noopener">YouTube</a> · <a href="https://www.tiktok.com/@_isotopxs" target="_blank" rel="noopener">TikTok</a></p>
-      <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit — [quantidade] pessoas em turnê.
+      <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. [Quantidade] pessoas em turnê.
       Disponibilidade e cachê sob consulta: manda cidade, data e estrutura do local que a gente responde com
       ficha técnica completa.</p>
       <a class="btn btn--solid" href="#"><span>Chamar pra tocar</span></a>
@@ -83,17 +85,25 @@
         </tbody>
       </table>
       <p style="font-size:13px; margin-top:14px;">substitua pela lista real de shows já tocados.</p>
+
+      <p class="eyebrow reveal" style="margin-top:44px;">Registros de shows</p>
+      <div class="flyer-grid reveal-stagger">
+        <img src="assets/img/flyer-pnc-6x1.jpg" alt="Flyer do show PNC da 6X1, com ISOTOPXS, Galick e FPB no Workroom" loading="lazy">
+        <img src="assets/img/flyer-opiniao-panama.jpg" alt="Flyer do show de lançamento de qualquer frase fica melhor com foda-se no final, no Opinião, no Panamá Fest" loading="lazy">
+        <img src="assets/img/flyer-taya-eskrota.jpg" alt="Flyer do show ISOTOPXS + MC Taya, com Eskrota" loading="lazy">
+        <img src="assets/img/flyer-jaqueta-patches.jpg" alt="Patches de shows anteriores costurados na jaqueta da banda" loading="lazy">
+      </div>
     </div>
   </div>
 </section>
 
-<section class="section section--black">
+<section class="section section--black section--textured section--shows-list">
   <div class="section__inner">
     <p class="eyebrow reveal">Próximas datas</p>
     <div class="reveal list-row" style="border-bottom:1px solid rgba(244,241,234,.14);">
       <span class="idx">01</span>
       <span class="name">Selo Naif apresenta: ISOTOPXS X Rugby Brasileiro</span>
-      <span class="meta">Casa Azul, Porto Alegre — abertura 18h · 1º show 19h30 · 2º show 21h</span>
+      <span class="meta">Casa Azul, Porto Alegre · abertura 18h · 1º show 19h30 · 2º show 21h</span>
     </div>
     <p class="reveal" style="margin-top:20px;"><a class="btn btn--outline" href="https://www.sympla.com.br/evento/selo-naif-apresenta-isotopxs-x-rugby-brasileiro/3465922" target="_blank" rel="noopener"><span>Ingressos no Sympla</span></a></p>
   </div>
@@ -103,19 +113,23 @@
 <audio id="bg-audio" loop></audio>
 
 <footer>
-  <div class="footer__top">
-    <div class="footer__word">ISOTOPXS</div>
-    <ul class="footer__links">
-      <li><a href="#">[e-mail de booking]</a></li>
-      <li><a href="https://www.instagram.com/isotopxs/" target="_blank" rel="noopener">Instagram</a></li>
-      <li><a href="https://www.youtube.com/@ISOTOPXS" target="_blank" rel="noopener">YouTube</a></li>
-      <li><a href="https://www.tiktok.com/@_isotopxs" target="_blank" rel="noopener">TikTok</a></li>
-    </ul>
+  <img class="footer__bgphoto" src="assets/img/bg-footer-publico.jpg" alt="">
+  <div class="footer__content">
+    <div class="footer__top">
+      <div class="footer__word">ISOTOPXS</div>
+      <ul class="footer__links">
+        <li><a href="#">[e-mail de booking]</a></li>
+        <li><a href="https://www.instagram.com/isotopxs/" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@ISOTOPXS" target="_blank" rel="noopener">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/@_isotopxs" target="_blank" rel="noopener">TikTok</a></li>
+      </ul>
+    </div>
+    <div class="footer__bottom">
+      <span>© 1997-2026 ISOTOPXS.</span>
+      <span>Design placeholder. Conteúdo real substitui o lorem ipsum.</span>
+    </div>
   </div>
-  <div class="footer__bottom">
-    <span>© 1997-2026 ISOTOPXS.</span>
-    <span>Design placeholder — conteúdo real substitui o lorem ipsum.</span>
-  </div>
+  <img class="mascot-badge" src="assets/img/mascot-white.png" alt="" aria-hidden="true">
 </footer>
 
 <script src="assets/js/main.js"></script>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISOTOPXS — site oficial</title>
+<title>ISOTOPXS · site oficial</title>
 <meta name="description" content="ISOTOPXS. Nu-metal, rap e funk. Música, release, shows e loja.">
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="stylesheet" href="assets/css/main.css">
@@ -39,12 +39,12 @@
 </ul>
 
 <section class="hero">
-  <div class="hero__photo"></div>
-  <div class="hero__duotone"></div>
+  <div class="hero__photo">
+    <img class="hero__bgphoto" src="assets/img/hero-publico.jpg" alt="">
+    <img class="hero__emblem" src="assets/img/hero-emblem.png" alt="">
+  </div>
   <div class="hero__scrim"></div>
-  <h1 class="hero__word">ISOTOPXS</h1>
-  <p class="hero__lede">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-  incididunt ut labore et dolore magna aliqua. [Frase de efeito da banda entra aqui.]</p>
+  <h1 class="sr-only">ISOTOPXS</h1>
   <div class="hero__cta">
     <a class="btn btn--solid" href="musica.html"><span>Ouvir agora</span></a>
     <a class="btn btn--outline" href="shows.html"><span>Ver shows</span></a>
@@ -62,7 +62,9 @@
   <div class="section__inner split">
     <div class="reveal">
       <p class="eyebrow">Sobre a banda</p>
-      <p class="pull"><em>METAL MANDRAKE</em></p>
+      <div class="mandrake-card">
+        <img class="mandrake-card__logo" src="assets/img/metal-mandrake-logo.png" alt="METAL MANDRAKE">
+      </div>
     </div>
     <div class="reveal">
       <p class="lead">O ódio de classe e a realidade periférica são as forças que unem a baterista Henry Krow e
@@ -70,12 +72,6 @@
       Pedro Spieker a banda encontra sua sonoridade e funda o subgênero METAL MANDRAKE, que mistura as bases do
       nu-metal a sabores genuinamente brasileiros, indo das batidas frenéticas do mandelão paulista às rimas
       gritadas do proibidão carioca, com toques de trap, techno e emo.</p>
-      <div class="stats reveal-stagger">
-        <div class="stat"><div class="stat__num" data-count="24">0</div><div class="stat__label">[Nº de shows]</div></div>
-        <div class="stat"><div class="stat__num" data-count="9">0</div><div class="stat__label">[Nº de cidades]</div></div>
-        <div class="stat"><div class="stat__num" data-count="3">0</div><div class="stat__label">[Nº de lançamentos]</div></div>
-      </div>
-      <p style="font-size:12px; margin-top:10px;">números de exemplo só pra mostrar o efeito de contagem — trocar pelos reais.</p>
     </div>
   </div>
 </section>
@@ -96,34 +92,34 @@
     </div>
     <div class="reveal" style="align-self:center;">
       <p class="eyebrow">Lançamento em destaque</p>
-      <h2 class="bigtext">qualquer frase fica melhor com foda-se no final</h2>
-      <p class="lead">Álbum de estreia da ISOTOPXS — 8 faixas, lançado em 20 de abril de 2024. Disponível no
+      <h2 class="bigtext" style="margin-bottom:28px;">qualquer frase fica melhor com foda-se no final</h2>
+      <p class="lead">Álbum de estreia da ISOTOPXS: 8 faixas, lançado em 20 de abril de 2024. Disponível no
       Spotify, Bandcamp e YouTube.</p>
       <a class="btn btn--dark" href="musica.html"><span>Ver faixas e letras</span></a>
     </div>
   </div>
 </section>
 
-<section class="section section--black">
+<section class="section section--black section--textured section--shows">
   <div class="section__inner">
     <p class="eyebrow reveal">Próximos & últimos shows</p>
     <div class="reveal-stagger">
       <div class="list-row"><span class="idx">01</span><span class="name">Selo Naif apresenta: ISOTOPXS X Rugby Brasileiro</span><span class="meta">Casa Azul, Porto Alegre</span></div>
-      <div class="list-row"><span class="idx">02</span><span class="name">[Nome do show]</span><span class="meta">[Cidade, UF] — [data]</span></div>
-      <div class="list-row"><span class="idx">03</span><span class="name">[Nome do show]</span><span class="meta">[Cidade, UF] — [data]</span></div>
+      <div class="list-row"><span class="idx">02</span><span class="name">[Nome do show]</span><span class="meta">[Cidade, UF] · [data]</span></div>
+      <div class="list-row"><span class="idx">03</span><span class="name">[Nome do show]</span><span class="meta">[Cidade, UF] · [data]</span></div>
     </div>
     <p style="margin-top:34px;" class="reveal"><a class="btn btn--outline" href="shows.html"><span>Ver agenda completa</span></a></p>
   </div>
 </section>
 
-<section class="section section--red">
+<section class="section section--red section--merch">
   <div class="section__inner">
     <p class="eyebrow reveal">Loja</p>
     <h2 class="bigtext reveal" style="margin-bottom:30px;">Merch oficial</h2>
     <div class="grid3 reveal-stagger">
       <div class="card">
         <span class="tag">Em breve</span>
-        <div class="thumb">CAMISETA</div>
+        <div class="thumb"><img src="assets/img/merch-camiseta.jpg" alt="Camiseta ISOTOPXS com estampa do mascote"></div>
         <h3>[Nome do produto]</h3>
         <div class="price">R$ --,--</div>
       </div>
@@ -142,25 +138,30 @@
     </div>
     <p style="margin-top:34px;" class="reveal"><a class="btn btn--dark" href="loja.html"><span>Ver loja completa</span></a></p>
   </div>
+  <img class="mascot-badge" src="assets/img/mascot-black.png" alt="" aria-hidden="true">
 </section>
 
 <button class="audio-toggle" aria-label="Tocar tema">▶</button>
 <audio id="bg-audio" loop></audio>
 
 <footer>
-  <div class="footer__top">
-    <div class="footer__word">ISOTOPXS</div>
-    <ul class="footer__links">
-      <li><a href="#">[e-mail de booking]</a></li>
-      <li><a href="https://www.instagram.com/isotopxs/" target="_blank" rel="noopener">Instagram</a></li>
-      <li><a href="https://www.youtube.com/@ISOTOPXS" target="_blank" rel="noopener">YouTube</a></li>
-      <li><a href="https://www.tiktok.com/@_isotopxs" target="_blank" rel="noopener">TikTok</a></li>
-    </ul>
+  <img class="footer__bgphoto" src="assets/img/bg-footer-publico.jpg" alt="">
+  <div class="footer__content">
+    <div class="footer__top">
+      <div class="footer__word">ISOTOPXS</div>
+      <ul class="footer__links">
+        <li><a href="#">[e-mail de booking]</a></li>
+        <li><a href="https://www.instagram.com/isotopxs/" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@ISOTOPXS" target="_blank" rel="noopener">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/@_isotopxs" target="_blank" rel="noopener">TikTok</a></li>
+      </ul>
+    </div>
+    <div class="footer__bottom">
+      <span>© 1997-2026 ISOTOPXS. Todos os direitos reservados.</span>
+      <span>Design placeholder. Conteúdo real substitui o lorem ipsum.</span>
+    </div>
   </div>
-  <div class="footer__bottom">
-    <span>© 1997-2026 ISOTOPXS. Todos os direitos reservados.</span>
-    <span>Design placeholder — conteúdo real substitui o lorem ipsum.</span>
-  </div>
+  <img class="mascot-badge" src="assets/img/mascot-white.png" alt="" aria-hidden="true">
 </footer>
 
 <script src="assets/js/main.js"></script>

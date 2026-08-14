@@ -93,14 +93,16 @@ p{ margin:0 0 1em; }
 .nav__mark{
   font-family: var(--f-display);
   font-weight:700;
-  font-size: 24px;
+  font-size: clamp(16px,2.4vw,22px);
   letter-spacing: .5px;
+  text-transform: uppercase;
   text-decoration:none;
   color: #fff;
   mix-blend-mode: difference;
-  display:flex; align-items:center; gap:8px;
+  display:flex; align-items:center; gap:10px;
 }
 .nav__logo{ height:clamp(42px,6vw,60px); width:auto; display:block; }
+.nav__word{ line-height:1; }
 .nav__links{ display:flex; gap:clamp(14px,2.4vw,32px); list-style:none; margin:0; padding:0; }
 .nav__links a{
   font-family: var(--f-body);

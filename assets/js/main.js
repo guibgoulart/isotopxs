@@ -88,6 +88,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  /* links "ver letra" dos singles pulam para a aba correspondente */
+  document.querySelectorAll('[data-jump-tab]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const btn = document.querySelector(`.tab-btn[data-target="${link.dataset.jumpTab}"]`);
+      if (!btn) return;
+      btn.click();
+      btn.closest('[data-tabs]').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  /* prévia de capa dos singles: passar o mouse/focar numa linha troca a imagem grande */
+  const singlesPreviewImg = document.querySelector('[data-singles-preview-img]');
+  const singlesPreviewCaption = document.querySelector('[data-singles-preview-caption]');
+  if (singlesPreviewImg) {
+    document.querySelectorAll('.single-row').forEach(row => {
+      const swap = () => {
+        if (row.dataset.cover) singlesPreviewImg.src = row.dataset.cover;
+        if (singlesPreviewCaption) singlesPreviewCaption.textContent = row.dataset.coverTitle || '';
+      };
+      row.addEventListener('mouseenter', swap);
+      row.addEventListener('focusin', swap);
+    });
+  }
+
   /* toggle de áudio de fundo (pronto para receber um mp3 real em
      assets/audio/loop.mp3 — sem src ainda) */
   const audioBtn = document.querySelector('.audio-toggle');

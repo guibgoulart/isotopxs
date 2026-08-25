@@ -3,6 +3,7 @@
 // recebe esse contexto injetado, nem em produção).
 import catalogPkg from './lib/catalog.js';
 import shippingPkg from './lib/shipping.js';
+import { captureError, withErrorReporting } from './lib/sentry.mjs';
 
 const { priceCartItems } = catalogPkg;
 const shipping = shippingPkg;
@@ -23,7 +24,7 @@ export const config = {
   },
 };
 
-export default async (req) => {
+export default withErrorReporting(async (req) => {
   if (req.method !== 'POST') return json({ error: 'Método não permitido' }, 405);
 
   let payload;
@@ -58,6 +59,7 @@ export default async (req) => {
     });
   } catch (err) {
     console.error('shipping-quote falhou:', err);
+    await captureError(err, { functionName: 'shipping-quote' });
     return json({ error: 'Falha ao cotar frete' }, 502);
   }
-};
+});

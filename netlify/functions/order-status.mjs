@@ -1,5 +1,6 @@
 // Netlify Functions v2 (ESM) — ver nota em shipping-quote.mjs sobre por que v2 e não v1.
 import { getOrder } from './lib/orders-store.mjs';
+import { withErrorReporting } from './lib/sentry.mjs';
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -16,7 +17,7 @@ export const config = {
   },
 };
 
-export default async (req) => {
+export default withErrorReporting(async (req) => {
   if (req.method !== 'GET') return json({ error: 'Método não permitido' }, 405);
 
   const orderId = new URL(req.url).searchParams.get('order');
@@ -38,4 +39,4 @@ export default async (req) => {
     created_at: order.created_at,
     updated_at: order.updated_at,
   });
-};
+});

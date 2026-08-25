@@ -4,6 +4,7 @@ import catalogPkg from './lib/catalog.js';
 import shippingPkg from './lib/shipping.js';
 import mercadopagoPkg from './lib/mercadopago.js';
 import { createOrder } from './lib/orders-store.mjs';
+import { captureError, withErrorReporting } from './lib/sentry.mjs';
 
 const { priceCartItems } = catalogPkg;
 const shipping = shippingPkg;
@@ -29,7 +30,7 @@ export const config = {
   },
 };
 
-export default async (req) => {
+export default withErrorReporting(async (req) => {
   if (req.method !== 'POST') return json({ error: 'Método não permitido' }, 405);
 
   let payload;
@@ -61,6 +62,7 @@ export default async (req) => {
     shippingOption = options.find((o) => o.id === optionId);
   } catch (err) {
     console.error('create-preference: falha ao recotar frete:', err);
+    await captureError(err, { functionName: 'create-preference', extra: { stage: 'shipping-requote' } });
     return json({ error: 'Falha ao validar frete' }, 502);
   }
 
@@ -139,6 +141,7 @@ export default async (req) => {
     });
   } catch (err) {
     console.error('create-preference: Mercado Pago falhou:', err);
+    await captureError(err, { functionName: 'create-preference', extra: { stage: 'mp-create-preference', orderId } });
     return json({ error: 'Falha ao criar preferência de pagamento' }, 502);
   }
-};
+});

@@ -1,5 +1,7 @@
 # ISOTOPXS — site oficial
 
+Visão geral rápida de toda a stack (hosting, backend, analytics, observabilidade etc.) em [STACK.md](STACK.md).
+
 Site estático (HTML + CSS + JS puros, sem build step, sem framework) — a única exceção é a loja, que usa
 um punhado de Netlify Functions pra pagamento/frete (ver seção "Loja própria" mais abaixo). Escolhido de
 propósito: é o que existe de mais leve, mais barato de hospedar e mais fácil de qualquer pessoa da banda
@@ -99,6 +101,32 @@ exato na aba "Domain settings" assim que vocês adicionarem o domínio).
 
 Com `POSTHOG_KEY` vazio (como está agora) o script não faz nada — dá pra deployar sem se preocupar.
 
+## observabilidade (erros e uptime)
+
+`netlify/functions/lib/sentry.mjs` já está plugado nas 4 functions (`shipping-quote`,
+`create-preference`, `mp-webhook`, `order-status`) — cobre tanto os erros que elas já tratavam
+(falha do Mercado Pago, falha de frete, falha ao criar envio) quanto qualquer exceção não prevista.
+Pra ativar:
+
+1. Criar conta grátis em https://sentry.io e um projeto Node (ou "Netlify Functions" se aparecer
+   como opção).
+2. Copiar o **DSN** do projeto (Settings → Projects → [projeto] → Client Keys (DSN)) — é uma
+   credencial pública por natureza (só permite enviar eventos), como o `POSTHOG_KEY`.
+3. Definir `SENTRY_DSN` nas env vars da Netlify (Site settings → Environment variables) com esse
+   valor.
+
+Sem `SENTRY_DSN`, as functions continuam funcionando normalmente, só sem reportar nada.
+
+**Notificação de deploy por e-mail**: só existe no plano **Pro** da Netlify (pago) — o plano free
+não oferece essa opção, mesmo via API. Alternativa gratuita: em Project configuration → Notifications
+→ Emails and webhooks → "Add notification" → **HTTP POST request**, apontando pra um webhook de
+Discord/Slack (se a banda já tiver um) — a Netlify manda um POST a cada deploy/falha.
+
+**Uptime monitoring** (saber se o site caiu): não configurado — precisa de um serviço externo tipo
+[UptimeRobot](https://uptimerobot.com) ou [Better Uptime](https://betteruptime.com) (planos free
+existem). Passo a passo é rápido: criar conta → "Add monitor" → tipo HTTP(s) → URL
+`https://isotopxs.com.br` → intervalo de 5 min → e-mail de alerta.
+
 ## Loja própria (Mercado Pago + Loggi)
 
 Nada de Shopify/Nuvemshop/Loja Integrada: a loja é própria, sem mensalidade de plataforma nenhuma. O site
@@ -113,7 +141,8 @@ netlify/functions/
 ├─ create-preference.mjs      → cria a "preference" no Mercado Pago e redireciona pro checkout deles
 ├─ mp-webhook.mjs             → recebe a confirmação de pagamento e dispara o envio
 ├─ order-status.mjs           → status do pedido (usado pela página de retorno do checkout)
-└─ lib/                        → catálogo, cliente Mercado Pago, pedidos (Netlify Blobs) e frete
+└─ lib/                        → catálogo, cliente Mercado Pago, pedidos (Netlify Blobs), frete e Sentry
+   ├─ sentry.mjs               → reporta erros das functions pro Sentry (ver seção "observabilidade")
    └─ shipping.js              → abstração de frete: hoje roda com uma cotação simulada (mock) realista;
                                   quando a banda tiver um integration_code de homologação da Loggi, é só
                                   preencher as funções `*ViaLoggiApi` com a doc oficial e definir

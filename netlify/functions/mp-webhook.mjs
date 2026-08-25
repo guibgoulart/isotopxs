@@ -2,6 +2,7 @@
 import mercadopagoPkg from './lib/mercadopago.js';
 import shippingPkg from './lib/shipping.js';
 import { getOrder, updateOrder, claimShipmentCreation } from './lib/orders-store.mjs';
+import { captureError, withErrorReporting } from './lib/sentry.mjs';
 
 const mercadopago = mercadopagoPkg;
 const shipping = shippingPkg;
@@ -44,7 +45,7 @@ export const config = {
   },
 };
 
-export default async (req) => {
+export default withErrorReporting(async (req) => {
   if (req.method !== 'POST') return json({ error: 'Método não permitido' }, 405);
 
   const paymentId = await extractPaymentId(req);
@@ -75,6 +76,7 @@ export default async (req) => {
     payment = await mercadopago.getPayment(paymentId);
   } catch (err) {
     console.error('mp-webhook: falha ao buscar pagamento na Mercado Pago:', err);
+    await captureError(err, { functionName: 'mp-webhook', extra: { stage: 'get-payment', paymentId } });
     return json({ error: 'Falha ao consultar pagamento' }, 502);
   }
 
@@ -109,6 +111,7 @@ export default async (req) => {
         });
       } catch (err) {
         console.error(`mp-webhook: falha ao criar envio para o pedido ${orderId}:`, err);
+        await captureError(err, { functionName: 'mp-webhook', extra: { stage: 'create-shipment', orderId } });
         await updateOrder(orderId, {
           shipping_status: 'error',
           shipping_error: String(err.message || err),
@@ -119,4 +122,4 @@ export default async (req) => {
   }
 
   return json({ ok: true });
-};
+});

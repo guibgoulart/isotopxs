@@ -4,6 +4,7 @@
 import catalogPkg from './lib/catalog.js';
 import shippingPkg from './lib/shipping.js';
 import { captureError, withErrorReporting } from './lib/sentry.mjs';
+import { posthog, flushPostHog } from './lib/posthog.mjs';
 
 const { priceCartItems } = catalogPkg;
 const shipping = shippingPkg;
@@ -50,6 +51,22 @@ export default withErrorReporting(async (req) => {
       destinationCep,
       weightG: totalWeightG,
     });
+
+    const distinctId = req.headers.get('x-posthog-distinct-id') || 'anonymous';
+    if (posthog) {
+      posthog.capture({
+        distinctId,
+        event: 'shipping_quoted',
+        properties: {
+          destination_cep: destinationCep,
+          subtotal_cents: subtotalCents,
+          weight_g: totalWeightG,
+          option_count: options.length,
+          item_count: lineItems.reduce((sum, { qty }) => sum + qty, 0),
+        },
+      });
+      await flushPostHog();
+    }
 
     return json({
       subtotal_cents: subtotalCents,

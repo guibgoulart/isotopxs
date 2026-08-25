@@ -3,6 +3,7 @@ import mercadopagoPkg from './lib/mercadopago.js';
 import shippingPkg from './lib/shipping.js';
 import { getOrder, updateOrder, claimShipmentCreation } from './lib/orders-store.mjs';
 import { captureError, withErrorReporting } from './lib/sentry.mjs';
+import { posthog, flushPostHog } from './lib/posthog.mjs';
 
 const mercadopago = mercadopagoPkg;
 const shipping = shippingPkg;
@@ -95,7 +96,28 @@ export default withErrorReporting(async (req) => {
     payment_id: String(payment.id),
   });
 
+  // Use buyer email as distinct ID when available so events link to the person
+  // identified during checkout; fall back to orderId for anonymous orders.
+  const buyerEmail = order.buyer && order.buyer.email;
+  const distinctId = buyerEmail || orderId;
+
   if (nextStatus === 'paid') {
+    if (posthog) {
+      posthog.capture({
+        distinctId,
+        event: 'payment_completed',
+        properties: {
+          order_id: orderId,
+          payment_id: String(payment.id),
+          payment_method: payment.payment_method_id || null,
+          total_cents: order.total_cents,
+          item_count: (order.items || []).reduce((sum, i) => sum + (i.qty || 0), 0),
+          shipping_option: order.shipping && order.shipping.label,
+          shipping_cents: order.shipping && order.shipping.price_cents,
+        },
+      });
+    }
+
     // claimShipmentCreation relê o pedido na hora e só "ganha" quem realmente for o único a
     // reivindicar — protege contra a Mercado Pago reenviar a mesma notificação em paralelo
     // (ver comentário em orders-store.mjs).
@@ -109,9 +131,32 @@ export default withErrorReporting(async (req) => {
           shipping_carrier: shipment.carrier,
           shipping_claim: null,
         });
+        if (posthog) {
+          posthog.capture({
+            distinctId,
+            event: 'shipment_created',
+            properties: {
+              order_id: orderId,
+              tracking_code: shipment.trackingCode,
+              carrier: shipment.carrier,
+              shipping_status: shipment.status,
+            },
+          });
+        }
       } catch (err) {
         console.error(`mp-webhook: falha ao criar envio para o pedido ${orderId}:`, err);
         await captureError(err, { functionName: 'mp-webhook', extra: { stage: 'create-shipment', orderId } });
+        if (posthog) {
+          posthog.captureException(err, distinctId, { order_id: orderId, stage: 'create-shipment' });
+          posthog.capture({
+            distinctId,
+            event: 'shipment_creation_failed',
+            properties: {
+              order_id: orderId,
+              error: String(err.message || err),
+            },
+          });
+        }
         await updateOrder(orderId, {
           shipping_status: 'error',
           shipping_error: String(err.message || err),
@@ -119,7 +164,22 @@ export default withErrorReporting(async (req) => {
         });
       }
     }
+  } else if (nextStatus === 'failed') {
+    if (posthog) {
+      posthog.capture({
+        distinctId,
+        event: 'payment_failed',
+        properties: {
+          order_id: orderId,
+          payment_id: String(payment.id),
+          payment_status: payment.status,
+          total_cents: order.total_cents,
+        },
+      });
+    }
   }
+
+  if (posthog) await flushPostHog();
 
   return json({ ok: true });
 });

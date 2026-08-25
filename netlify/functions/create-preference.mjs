@@ -5,6 +5,7 @@ import shippingPkg from './lib/shipping.js';
 import mercadopagoPkg from './lib/mercadopago.js';
 import { createOrder } from './lib/orders-store.mjs';
 import { captureError, withErrorReporting } from './lib/sentry.mjs';
+import { posthog, flushPostHog } from './lib/posthog.mjs';
 
 const { priceCartItems } = catalogPkg;
 const shipping = shippingPkg;
@@ -134,6 +135,35 @@ export default withErrorReporting(async (req) => {
 
   try {
     const pref = await mercadopago.createPreference(preference);
+
+    // Track checkout initiation. Use the client-side distinct ID when forwarded
+    // so server and browser events are correlated on the same person.
+    const distinctId = req.headers.get('x-posthog-distinct-id') || orderId;
+    if (posthog) {
+      if (buyer.email) {
+        posthog.identify({
+          distinctId,
+          properties: {
+            $set: { $email: buyer.email },
+          },
+        });
+      }
+      posthog.capture({
+        distinctId,
+        event: 'checkout_started',
+        properties: {
+          order_id: orderId,
+          item_count: lineItems.reduce((sum, { qty }) => sum + qty, 0),
+          subtotal_cents: subtotalCents,
+          shipping_option: shippingOption.label,
+          shipping_cents: shippingOption.price_cents,
+          total_cents: totalCents,
+          destination_cep: destinationCep,
+        },
+      });
+      await flushPostHog();
+    }
+
     return json({
       order_id: orderId,
       init_point: pref.init_point || pref.sandbox_init_point,

@@ -50,15 +50,17 @@ por que foi escolhida) estão no [README](README.md); este arquivo é só o mapa
 
 ## Observabilidade / error tracking
 
-- **Sentry** (`netlify/functions/lib/sentry.mjs`) — reporta erros das 4 Netlify Functions via
-  chamada HTTP direta à API do Sentry (sem SDK, pra não pesar o bundle). Cobre tanto os pontos que já
-  tratavam erro (falha do Mercado Pago, falha de frete, falha ao criar envio) quanto exceções não
-  previstas (wrapper `withErrorReporting`). Dorme sem `SENTRY_DSN` configurado.
-- **Notificação de deploy da Netlify (e-mail)**: indisponível — é recurso do plano **Pro** (pago);
-  o plano free não oferece. Alternativa gratuita: webhook HTTP de deploy (`Emails and webhooks` →
-  `HTTP POST request`) apontado pra algum serviço que a banda já use (Discord/Slack), se quiserem.
-- **Uptime monitoring** (site cair): ainda não configurado — depende de um serviço externo (ex.
-  UptimeRobot, Better Uptime) que só a própria banda pode criar conta.
+- **Sentry — backend** (`netlify/functions/lib/sentry.mjs`) — reporta erros das 4 Netlify Functions
+  via chamada HTTP direta à API do Sentry (sem SDK, pra não pesar o bundle). Cobre tanto os pontos
+  que já tratavam erro (falha do Mercado Pago, falha de frete, falha ao criar envio) quanto exceções
+  não previstas (wrapper `withErrorReporting`). Dorme sem `SENTRY_DSN` configurado.
+- **Sentry — frontend** — loader oficial (`js.sentry-cdn.com`) no `<head>` das 6 páginas, captura
+  exceções de JS no navegador. Ativo em produção desde 2026-08-25, testado ponta a ponta (evento de
+  teste entregue, HTTP 200). CSP libera só os 3 hosts necessários (loader, bundle real, ingest —
+  ver `netlify.toml`), sem wildcard.
+- **Notificação de deploy da Netlify (e-mail)**: descartada — é recurso do plano **Pro** (pago); o
+  plano free não oferece, nem via API.
+- **Uptime monitoring**: configurado (serviço externo escolhido pela banda, fora do repositório).
 - Fora isso, os logs de function ficam disponíveis no painel da Netlify (Functions → logs), sem
   retenção longa nem alerta automático.
 
@@ -76,7 +78,7 @@ por que foi escolhida) estão no [README](README.md); este arquivo é só o mapa
 
 ## O que falta pra "produção de verdade" (loja)
 
-- Dados reais em `data/products.json` (nomes, preços, pesos, fotos).
-- Confirmar se `MP_ACCESS_TOKEN` de produção é token real (`APP_USR-...`) ou ainda de teste.
+- `MP_ACCESS_TOKEN` de produção já configurado (`APP_USR-...`, real) desde 2026-08-25.
+- Dados reais em `data/products.json` (nomes, preços, pesos, fotos) — ainda pendente.
 - Loggi real (ou aceitar frete simulado por enquanto, avisando o cliente).
 - Reativar `loja.html` e os links de navegação (hoje fora do ar a pedido da banda).

@@ -103,29 +103,27 @@ Com `POSTHOG_KEY` vazio (como está agora) o script não faz nada — dá pra de
 
 ## observabilidade (erros e uptime)
 
-`netlify/functions/lib/sentry.mjs` já está plugado nas 4 functions (`shipping-quote`,
-`create-preference`, `mp-webhook`, `order-status`) — cobre tanto os erros que elas já tratavam
-(falha do Mercado Pago, falha de frete, falha ao criar envio) quanto qualquer exceção não prevista.
-Pra ativar:
+**Sentry — backend**: `netlify/functions/lib/sentry.mjs` já está plugado nas 4 functions
+(`shipping-quote`, `create-preference`, `mp-webhook`, `order-status`) — cobre tanto os erros que
+elas já tratavam (falha do Mercado Pago, falha de frete, falha ao criar envio) quanto qualquer
+exceção não prevista. Ativa com `SENTRY_DSN` nas env vars da Netlify (Site settings → Environment
+variables) — o DSN do projeto Sentry (Settings → Projects → [projeto] → Client Keys (DSN)) é uma
+credencial pública por natureza (só permite enviar eventos), como o `POSTHOG_KEY`. Sem
+`SENTRY_DSN`, as functions continuam funcionando normalmente, só sem reportar nada.
 
-1. Criar conta grátis em https://sentry.io e um projeto Node (ou "Netlify Functions" se aparecer
-   como opção).
-2. Copiar o **DSN** do projeto (Settings → Projects → [projeto] → Client Keys (DSN)) — é uma
-   credencial pública por natureza (só permite enviar eventos), como o `POSTHOG_KEY`.
-3. Definir `SENTRY_DSN` nas env vars da Netlify (Site settings → Environment variables) com esse
-   valor.
+**Sentry — frontend**: ativo em produção desde 2026-08-25. O loader (`<script
+src="https://js.sentry-cdn.com/3363646d4b12698032e0c9156d1e7d25.min.js">`) está no topo do
+`<head>` de todas as páginas, carrega o SDK completo sob demanda (lazy) e captura exceções não
+tratadas de JS no navegador. Testado ponta a ponta em produção (evento de teste chegou, HTTP 200).
+CSP libera exatamente `js.sentry-cdn.com` (loader), `browser.sentry-cdn.com` (bundle real) e o host
+de ingest `o4511972973477888.ingest.us.sentry.io` — sem wildcard.
 
-Sem `SENTRY_DSN`, as functions continuam funcionando normalmente, só sem reportar nada.
+**Notificação de deploy por e-mail**: descartada (é recurso do plano **Pro** da Netlify, pago — o
+plano free não oferece, nem via API). Se um dia quiserem, dá pra fazer via webhook HTTP gratuito
+(Project configuration → Notifications → Emails and webhooks → "Add notification" → **HTTP POST
+request**) apontando pra Discord/Slack.
 
-**Notificação de deploy por e-mail**: só existe no plano **Pro** da Netlify (pago) — o plano free
-não oferece essa opção, mesmo via API. Alternativa gratuita: em Project configuration → Notifications
-→ Emails and webhooks → "Add notification" → **HTTP POST request**, apontando pra um webhook de
-Discord/Slack (se a banda já tiver um) — a Netlify manda um POST a cada deploy/falha.
-
-**Uptime monitoring** (saber se o site caiu): não configurado — precisa de um serviço externo tipo
-[UptimeRobot](https://uptimerobot.com) ou [Better Uptime](https://betteruptime.com) (planos free
-existem). Passo a passo é rápido: criar conta → "Add monitor" → tipo HTTP(s) → URL
-`https://isotopxs.com.br` → intervalo de 5 min → e-mail de alerta.
+**Uptime monitoring**: configurado (fora do código, direto no serviço escolhido pela banda).
 
 ## Loja própria (Mercado Pago + Loggi)
 

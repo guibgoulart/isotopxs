@@ -21,6 +21,7 @@ isotopxs-site/
 │  ├─ css/main.css       → todo o visual (cores, fontes, efeitos, animações)
 │  ├─ js/main.js         → nav ao rolar, scroll-reveal, contadores, tabs, toggle de áudio
 │  ├─ js/loja.js          → carrinho, cotação de frete, checkout
+│  ├─ js/analytics.js     → PostHog (ver seção "analytics" abaixo)
 │  └─ img/                → colocar aqui logo, fotos da banda etc quando tiver
 ```
 
@@ -82,6 +83,21 @@ pra `.com.br` ou Namecheap/Cloudflare pra internacional):
 Preço médio: `.com.br` gira em torno de R$40/ano (Registro.br); `.com`/`.band`/`.rip` internacional costuma
 ficar entre US$10-25/ano. Depois de registrar, é só apontar o DNS pra Netlify (ela mostra o passo a passo
 exato na aba "Domain settings" assim que vocês adicionarem o domínio).
+
+## analytics
+
+`assets/js/analytics.js` já carrega o PostHog em todas as páginas — só falta a chave. Pra ativar:
+
+1. Criar conta grátis em https://posthog.com e um projeto pro site.
+2. Copiar a **Project API Key** em Project Settings → Project API Key (começa com `phc_`; é uma chave
+   pública, feita pra ficar no navegador — não confundir com "Personal API Key", que começa com `phx_` e
+   é secreta, nunca deve ir pro código do site).
+3. Colar a chave em `POSTHOG_KEY` no topo de `assets/js/analytics.js` (e conferir `POSTHOG_HOST` — o
+   default é a região US; trocar pra `https://eu.i.posthog.com` se o projeto for na região EU).
+4. Se o projeto for EU, também trocar `us-assets.i.posthog.com`/`us.i.posthog.com` pelos equivalentes
+   `eu-*` no `Content-Security-Policy` do `netlify.toml` (senão o navegador bloqueia o PostHog).
+
+Com `POSTHOG_KEY` vazio (como está agora) o script não faz nada — dá pra deployar sem se preocupar.
 
 ## Loja própria (Mercado Pago + Loggi)
 

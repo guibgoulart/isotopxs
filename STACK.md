@@ -1,7 +1,9 @@
 # Stack — ISOTOPXS
 
-Visão rápida de tudo que roda o site hoje, pra referência. Os detalhes de cada peça (como configurar,
-por que foi escolhida) estão no [README](README.md); este arquivo é só o mapa.
+Visão rápida de tudo que roda o site hoje, pra referência. Apresentação geral do repo em
+[README.md](README.md); os detalhes de configuração de cada peça (env vars, como cada uma foi
+escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/analytics.js`,
+`netlify/functions/lib/sentry.mjs` etc.) — este arquivo é só o mapa.
 
 ## Hosting & deploy
 

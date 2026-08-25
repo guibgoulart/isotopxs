@@ -1,7 +1,7 @@
 // PostHog. Cole a Project API Key (começa com "phc_", em Project Settings → Project API Key)
 // e o host da sua região abaixo. Deixe POSTHOG_KEY vazio para desativar o tracking.
 (function () {
-  var POSTHOG_KEY = "";
+  var POSTHOG_KEY = "phc_kAuJjaDXgwYu27cche5VraHrRQmnsEJK2w3TqPvKKRrU";
   var POSTHOG_HOST = "https://us.i.posthog.com";
 
   if (!POSTHOG_KEY) return;

@@ -103,7 +103,65 @@ p{ margin:0 0 1em; }
 }
 .nav__logo{ height:clamp(42px,6vw,60px); width:auto; display:block; }
 .nav__word{ line-height:1; }
+.nav__mark{ margin-right:auto; } /* empurra links + carrinho pra direita */
 .nav__links{ display:flex; gap:clamp(14px,2.4vw,32px); list-style:none; margin:0; padding:0; }
+
+/* ---------- carrinho no topo (assets/js/cart-widget.js) ---------- */
+.nav-cart{ position:relative; margin-left: clamp(16px,2.4vw,32px); }
+.nav-cart__btn{
+  position:relative; display:flex; align-items:center; justify-content:center;
+  width:44px; height:44px; padding:0; border:none; background:transparent;
+  color: var(--white); cursor:pointer;
+}
+.nav-cart__btn:hover, .nav-cart__btn[aria-expanded="true"]{ color: var(--red); }
+.nav-cart__btn:focus-visible{ outline:2px solid var(--red); outline-offset:2px; }
+.nav-cart__count{
+  position:absolute; top:1px; right:-2px;
+  min-width:20px; height:20px; padding:0 5px; border-radius:999px;
+  background: var(--red); color: var(--black); border:2px solid var(--black);
+  font-family: var(--f-label); font-size:13px; line-height:16px; text-align:center;
+}
+.nav-cart__count.is-bump{ animation: cart-bump .4s ease; }
+@keyframes cart-bump{ 0%{ transform:scale(1); } 40%{ transform:scale(1.45); } 100%{ transform:scale(1); } }
+@media (prefers-reduced-motion: reduce){ .nav-cart__count.is-bump{ animation:none; } }
+
+.nav-cart__panel{
+  position:absolute; right:0; top: calc(100% + 12px); z-index:710;
+  width: 340px; max-height: min(70vh, 520px); overflow:auto;
+  padding:18px; background: var(--white); color: var(--black);
+  border:3px solid #000; box-shadow: 0 16px 40px rgba(0,0,0,.5);
+}
+.nav-cart__panel p{ margin:0; }
+.nav-cart__title{
+  display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+  font-family: var(--f-label); font-size:20px; letter-spacing:1px; text-transform:uppercase;
+}
+.nav-cart__title span{ font-size:14px; opacity:.6; }
+.nav-cart__list{ list-style:none; margin:12px 0 0; padding:0; }
+.nav-cart__row{
+  display:flex; justify-content:space-between; align-items:flex-start; gap:14px;
+  padding:10px 0; border-bottom:1px solid rgba(6,6,6,.14);
+  font-family: var(--f-label); font-size:15px; text-transform:uppercase;
+}
+.nav-cart__name{ display:flex; flex-direction:column; min-width:0; }
+.nav-cart__name small{ font-size:13px; opacity:.6; margin-top:2px; }
+.nav-cart__row strong{ white-space:nowrap; }
+.nav-cart__subtotal{
+  display:flex; justify-content:space-between; padding-top:12px;
+  font-family: var(--f-label); font-size:19px; text-transform:uppercase;
+}
+.nav-cart__subtotal strong{ color: var(--red-dk); }
+.nav-cart__note{ font-size:12px; opacity:.6; margin-top:4px !important; }
+.nav-cart__panel .nav-cart__checkout{ display:flex; justify-content:center; margin-top:16px; color: var(--white); }
+.nav-cart__panel .nav-cart__checkout::before{ background:#000; }
+.nav-cart__panel .nav-cart__checkout:hover{ color: var(--black); }
+.nav-cart__panel .nav-cart__checkout:hover::before{ background: var(--red); }
+.nav-cart__link{ display:inline-block; margin-top:10px; font-family: var(--f-label); font-size:16px; text-transform:uppercase; letter-spacing:1px; }
+@media (max-width:760px){
+  .nav-cart{ margin-left:0; margin-right:10px; }
+  /* no celular o painel ocupa a largura toda logo abaixo da barra */
+  .nav-cart__panel{ position:fixed; left:12px; right:12px; top:76px; width:auto; }
+}
 .nav__links a{
   font-family: var(--f-body);
   font-weight:400;
@@ -875,6 +933,8 @@ th{ text-transform:uppercase; font-family: var(--f-body); font-weight:700; font-
 .section--white .form input, .section--white .form textarea{ border-color: rgba(6,6,6,.3); }
 .form input:focus, .form textarea:focus{ outline:none; border-color: var(--red); }
 .form input::placeholder, .form textarea::placeholder{ color: inherit; opacity:.45; }
+.form-row{ display:flex; gap:12px; }
+.form-row input{ flex:1; min-width:0; }
 
 /* ---------- loja: carrinho e checkout ---------- */
 .cart-list{ display:flex; flex-direction:column; gap:2px; margin-bottom:20px; }

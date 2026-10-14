@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Pedidos · ISOTOPXS</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<!-- Sem analytics.js nem Sentry aqui de propósito: esta página mostra nome, endereço e telefone de
+     cliente, e nenhum script de terceiro precisa ver isso. -->
+</head>
+<body class="admin">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="roughen" x="-20%" y="-30%" width="140%" height="160%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.16" numOctaves="3" seed="9" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<header class="admin-bar">
+  <span class="admin-bar__word">ISOTOPXS</span>
+  <span class="admin-bar__title">Pedidos</span>
+  <button type="button" id="logout-btn" class="admin-link" hidden>Sair</button>
+</header>
+
+<main>
+  <section id="login-view" class="section section--black admin-login" hidden>
+    <div class="section__inner">
+      <p class="eyebrow">Painel da banda</p>
+      <form id="login-form" class="form">
+        <input type="password" id="login-password" placeholder="Senha" autocomplete="current-password" required>
+        <button type="submit" class="btn btn--outline"><span>Entrar</span></button>
+      </form>
+      <p id="login-msg" class="admin-msg" role="alert"></p>
+    </div>
+  </section>
+
+  <section id="dash-view" class="section section--white admin-dash" hidden>
+    <div class="section__inner">
+      <div id="config-warn"></div>
+
+      <div id="list-view">
+        <div class="admin-toolbar">
+          <div id="filters" class="admin-chips"></div>
+          <div class="admin-toolbar__right">
+            <input type="search" id="search" class="admin-input" placeholder="Buscar nome, e-mail, cidade, nº…" aria-label="Buscar pedidos">
+            <button type="button" id="refresh-btn" class="admin-link">Atualizar</button>
+          </div>
+        </div>
+        <div id="order-list" class="order-list" aria-live="polite"><p class="admin-empty">Carregando pedidos…</p></div>
+      </div>
+
+      <div id="detail-view" hidden></div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

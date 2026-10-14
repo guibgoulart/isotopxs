@@ -4,6 +4,7 @@ import catalogPkg from './lib/catalog.js';
 import shippingPkg from './lib/shipping.js';
 import mercadopagoPkg from './lib/mercadopago.js';
 import { createOrder } from './lib/orders-store.mjs';
+import { parseBuyer } from './lib/checkout-input.mjs';
 import { captureError, withErrorReporting } from './lib/sentry.mjs';
 import { posthog, flushPostHog } from './lib/posthog.mjs';
 
@@ -53,6 +54,13 @@ export default withErrorReporting(async (req) => {
   }
   const destinationCep = shipping.normalizeCep(rawDestinationCep);
 
+  // Sem endereço completo a banda não tem como postar o pedido — e sem e-mail o cliente não recebe
+  // confirmação nem rastreio. Valida antes de tocar em frete/Mercado Pago.
+  const { buyer, address, errors: buyerErrors } = parseBuyer(payload.buyer);
+  if (buyerErrors.length) {
+    return json({ error: `Faltou preencher: ${buyerErrors.join(', ')}` }, 400);
+  }
+
   let shippingOption;
   try {
     const options = await shipping.quote({
@@ -71,7 +79,6 @@ export default withErrorReporting(async (req) => {
     return json({ error: 'Opção de frete inválida ou expirada' }, 400);
   }
 
-  const buyer = payload.buyer || {};
   const orderId = randomUUID();
   const totalCents = subtotalCents + shippingOption.price_cents;
 
@@ -93,9 +100,10 @@ export default withErrorReporting(async (req) => {
       label: shippingOption.label,
       price_cents: shippingOption.price_cents,
       eta_business_days: shippingOption.eta_business_days,
+      address,
     },
     total_cents: totalCents,
-    buyer: { email: buyer.email || null, name: buyer.name || null },
+    buyer,
     tracking_code: null,
     shipping_status: null,
     created_at: new Date().toISOString(),
@@ -121,7 +129,7 @@ export default withErrorReporting(async (req) => {
         currency_id: 'BRL',
       },
     ],
-    payer: buyer.email ? { email: buyer.email, name: buyer.name || undefined } : undefined,
+    payer: { email: buyer.email, name: buyer.name },
     external_reference: orderId,
     back_urls: {
       success: `${base}/checkout-status.html?status=success&order=${orderId}`,
@@ -140,14 +148,12 @@ export default withErrorReporting(async (req) => {
     // so server and browser events are correlated on the same person.
     const distinctId = req.headers.get('x-posthog-distinct-id') || orderId;
     if (posthog) {
-      if (buyer.email) {
-        posthog.identify({
-          distinctId,
-          properties: {
-            $set: { $email: buyer.email },
-          },
-        });
-      }
+      posthog.identify({
+        distinctId,
+        properties: {
+          $set: { $email: buyer.email },
+        },
+      });
       posthog.capture({
         distinctId,
         event: 'checkout_started',

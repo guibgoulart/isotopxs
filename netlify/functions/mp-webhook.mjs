@@ -1,7 +1,8 @@
 // Netlify Functions v2 (ESM) — ver nota em shipping-quote.mjs sobre por que v2 e não v1.
 import mercadopagoPkg from './lib/mercadopago.js';
 import shippingPkg from './lib/shipping.js';
-import { getOrder, updateOrder, claimShipmentCreation } from './lib/orders-store.mjs';
+import { getOrder, updateOrder, claimShipmentCreation, claimPaidNotification } from './lib/orders-store.mjs';
+import { notifyOrderPaid } from './lib/notify.mjs';
 import { captureError, withErrorReporting } from './lib/sentry.mjs';
 import { posthog, flushPostHog } from './lib/posthog.mjs';
 
@@ -31,6 +32,16 @@ export function mapPaymentStatus(mpStatus) {
   if (mpStatus === 'approved') return 'paid';
   if (mpStatus === 'rejected' || mpStatus === 'cancelled') return 'failed';
   return 'pending'; // in_process, pending, in_mediation, etc.
+}
+
+// Depois que o pedido entra em cumprimento (shipped, delivered, cancelled...), quem decide o status
+// é a banda no painel — uma notificação atrasada ou reenviada da Mercado Pago não pode desfazer isso.
+// O status cru da MP continua sempre atualizado em payment_status.
+const PRE_PAYMENT_STATUSES = new Set(['pending', 'failed']);
+
+export function nextOrderStatus(currentStatus, mpStatus) {
+  if (currentStatus && !PRE_PAYMENT_STATUSES.has(currentStatus)) return currentStatus;
+  return mapPaymentStatus(mpStatus);
 }
 
 // Limite bem folgado: todas as notificações da Mercado Pago saem de um pool pequeno e
@@ -88,7 +99,8 @@ export default withErrorReporting(async (req) => {
     return json({ ignored: true });
   }
 
-  const nextStatus = mapPaymentStatus(payment.status);
+  const nextStatus = nextOrderStatus(order.status, payment.status);
+  const becamePaid = nextStatus === 'paid' && order.status !== 'paid';
 
   let updated = await updateOrder(orderId, {
     status: nextStatus,
@@ -102,7 +114,7 @@ export default withErrorReporting(async (req) => {
   const distinctId = buyerEmail || orderId;
 
   if (nextStatus === 'paid') {
-    if (posthog) {
+    if (posthog && becamePaid) {
       posthog.capture({
         distinctId,
         event: 'payment_completed',
@@ -118,10 +130,22 @@ export default withErrorReporting(async (req) => {
       });
     }
 
+    // Confirmação pro cliente + alerta pra banda. A claim garante uma vez só por pedido mesmo com
+    // notificação repetida; notifyOrderPaid nunca lança (falha de aviso não derruba o webhook).
+    const toNotify = await claimPaidNotification(orderId);
+    if (toNotify) {
+      const results = await notifyOrderPaid(toNotify);
+      console.log(`mp-webhook: avisos do pedido ${orderId}:`, JSON.stringify(results));
+      // Fica no pedido pra banda conseguir responder "o cliente recebeu o e-mail?" pelo painel.
+      updated = await updateOrder(orderId, { paid_notifications: results });
+    }
+
+    // Sem integração real com a Loggi, o envio é manual (a banda posta e coloca o rastreio no
+    // painel) — gerar um código de rastreio simulado aqui só confundiria a banda e o cliente.
     // claimShipmentCreation relê o pedido na hora e só "ganha" quem realmente for o único a
     // reivindicar — protege contra a Mercado Pago reenviar a mesma notificação em paralelo
     // (ver comentário em orders-store.mjs).
-    const claimed = await claimShipmentCreation(orderId);
+    const claimed = shipping.usingRealLoggi() ? await claimShipmentCreation(orderId) : null;
     if (claimed) {
       try {
         const shipment = await shipping.createShipment(claimed);
@@ -129,7 +153,9 @@ export default withErrorReporting(async (req) => {
           tracking_code: shipment.trackingCode,
           shipping_status: shipment.status,
           shipping_carrier: shipment.carrier,
+          tracking_url: shipment.trackingUrl || null,
           shipping_claim: null,
+          shipping_claim_at: null,
         });
         if (posthog) {
           posthog.capture({
@@ -161,6 +187,7 @@ export default withErrorReporting(async (req) => {
           shipping_status: 'error',
           shipping_error: String(err.message || err),
           shipping_claim: null,
+          shipping_claim_at: null,
         });
       }
     }
@@ -182,4 +209,4 @@ export default withErrorReporting(async (req) => {
   if (posthog) await flushPostHog();
 
   return json({ ok: true });
-});
+}, 'mp-webhook');

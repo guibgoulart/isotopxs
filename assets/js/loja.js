@@ -26,6 +26,7 @@ function loadCart() {
 
 function saveCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  window.dispatchEvent(new Event('isotopxs:cart-changed')); // atualiza o carrinho do topo (cart-widget.js)
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -42,8 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const shippingMsgEl = document.getElementById('shipping-msg');
   const totalRow = document.getElementById('cart-total-row');
   const cartTotalEl = document.getElementById('cart-total');
-  const buyerEmailInput = document.getElementById('buyer-email');
-  const buyerNameInput = document.getElementById('buyer-name');
+  const field = (id) => document.getElementById(id);
   const checkoutBtn = document.getElementById('checkout-btn');
   const checkoutMsgEl = document.getElementById('checkout-msg');
 
@@ -70,11 +70,42 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCheckoutAvailability();
   }
 
+  // Dados do comprador são validados no clique (com mensagem dizendo o que falta), não travando o
+  // botão em silêncio. O servidor (create-preference) valida tudo de novo.
   function updateCheckoutAvailability() {
     const hasItems = cartEntries().length > 0;
     const hasShipping = Boolean(selectedShipping);
-    const hasEmail = buyerEmailInput.value.trim().length > 3;
-    checkoutBtn.setAttribute('aria-disabled', String(!(hasItems && hasShipping && hasEmail)));
+    checkoutBtn.setAttribute('aria-disabled', String(!(hasItems && hasShipping)));
+  }
+
+  function readBuyer() {
+    const val = (id) => field(id).value.trim();
+    return {
+      name: val('buyer-name'),
+      email: val('buyer-email'),
+      phone: val('buyer-phone'),
+      address: {
+        street: val('addr-street'),
+        number: val('addr-number'),
+        complement: val('addr-complement'),
+        district: val('addr-district'),
+        city: val('addr-city'),
+        state: val('addr-state').toUpperCase(),
+      },
+    };
+  }
+
+  function missingBuyerFields(buyer) {
+    const missing = [];
+    if (buyer.name.length < 2) missing.push('nome completo');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyer.email)) missing.push('e-mail válido');
+    if (buyer.phone.replace(/\D/g, '').length < 10) missing.push('telefone com DDD');
+    if (!buyer.address.street) missing.push('rua');
+    if (!buyer.address.number) missing.push('número');
+    if (!buyer.address.district) missing.push('bairro');
+    if (!buyer.address.city) missing.push('cidade');
+    if (!/^[A-Z]{2}$/.test(buyer.address.state)) missing.push('UF');
+    return missing;
   }
 
   function setQty(id, qty) {
@@ -100,8 +131,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="price">${formatBRL(product.price_cents)}</div>
         <button type="button" class="btn btn--dark cart-add" style="margin-top:14px;"><span>Adicionar ao carrinho</span></button>
       `;
-      card.querySelector('.cart-add').addEventListener('click', () => {
+      const addBtn = card.querySelector('.cart-add');
+      addBtn.addEventListener('click', () => {
         setQty(product.id, (cart[product.id] || 0) + 1);
+        const label = addBtn.querySelector('span');
+        label.textContent = 'Adicionado';
+        clearTimeout(addBtn.resetTimer);
+        addBtn.resetTimer = setTimeout(() => { label.textContent = 'Adicionar ao carrinho'; }, 1400);
       });
       shopGrid.appendChild(card);
     });
@@ -202,6 +238,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const buyer = readBuyer();
+    const missing = missingBuyerFields(buyer);
+    if (missing.length) {
+      checkoutMsgEl.textContent = `Faltou preencher: ${missing.join(', ')}.`;
+      return;
+    }
+
     checkoutMsgEl.textContent = 'Redirecionando para o pagamento…';
     checkoutBtn.setAttribute('aria-disabled', 'true');
     try {
@@ -211,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({
           items: cartEntries().map((e) => ({ id: e.product.id, qty: e.qty })),
           shipping: { destinationCep: lastQuotedCep, optionId: selectedShipping.id },
-          buyer: { email: buyerEmailInput.value.trim(), name: buyerNameInput.value.trim() },
+          buyer,
         }),
       });
       const data = await res.json();
@@ -227,7 +270,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   quoteBtn.addEventListener('click', quoteShipping);
   checkoutBtn.addEventListener('click', checkout);
-  buyerEmailInput.addEventListener('input', updateCheckoutAvailability);
+  field('buyer-name').closest('.form').addEventListener('input', () => {
+    if (checkoutMsgEl.textContent.startsWith('Faltou')) checkoutMsgEl.textContent = '';
+  });
 
   fetch('data/products.json')
     .then((res) => res.json())

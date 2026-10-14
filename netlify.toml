@@ -29,3 +29,11 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# Painel de pedidos da banda: fora de buscador e sem cache (mostra dado de cliente). Os dados em si só
+# saem das functions admin-* com sessão válida — isto é só higiene da página.
+[[headers]]
+  for = "/admin*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"

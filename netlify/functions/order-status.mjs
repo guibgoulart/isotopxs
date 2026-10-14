@@ -26,15 +26,21 @@ export default withErrorReporting(async (req) => {
   const order = await getOrder(orderId);
   if (!order) return json({ error: 'Pedido não encontrado' }, 404);
 
+  // Página pública (qualquer um com o id do pedido): nada de dado pessoal aqui — o endereço fica de
+  // fora do objeto de frete, e nome/e-mail/telefone nem entram.
+  const { address, ...shipping } = order.shipping || {};
+
   return json({
     id: order.id,
     status: order.status,
     payment_status: order.payment_status,
     items: order.items,
     subtotal_cents: order.subtotal_cents,
-    shipping: order.shipping,
+    shipping,
     total_cents: order.total_cents,
     tracking_code: order.tracking_code,
+    tracking_url: order.tracking_url || null,
+    shipping_carrier: order.shipping_carrier || null,
     shipping_status: order.shipping_status,
     created_at: order.created_at,
     updated_at: order.updated_at,

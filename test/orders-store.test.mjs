@@ -17,7 +17,14 @@ before(async () => {
   directory = mkdtempSync(join(tmpdir(), 'isotopxs-blobs-test-'));
   server = new BlobsServer({ directory, token: 'test-token' });
   const { port } = await server.start();
-  setEnvironmentContext({ edgeURL: `http://localhost:${port}`, token: 'test-token', siteID: 'test-site' });
+  // uncachedEdgeURL é o que habilita leitura strong (ver lib/blob-store.mjs) — em produção a Netlify
+  // injeta as duas URLs; aqui o mesmo servidor local responde pelas duas.
+  setEnvironmentContext({
+    edgeURL: `http://localhost:${port}`,
+    uncachedEdgeURL: `http://localhost:${port}`,
+    token: 'test-token',
+    siteID: 'test-site',
+  });
 });
 
 after(async () => {
@@ -27,7 +34,15 @@ after(async () => {
 
 // Importado depois do setEnvironmentContext acima não é necessário (getStore() lê o contexto na
 // hora de cada chamada, não no import), mas import fica no topo por convenção do módulo ESM.
-const { createOrder, getOrder, updateOrder, claimShipmentCreation } = await import(
+const {
+  createOrder,
+  getOrder,
+  updateOrder,
+  listOrders,
+  claimShipmentCreation,
+  claimPaidNotification,
+  SHIPPING_CLAIM_TTL_MS,
+} = await import(
   '../netlify/functions/lib/orders-store.mjs'
 );
 
@@ -131,4 +146,47 @@ test('claimShipmentCreation: sob concorrência bruta (mesmo instante), a exclus�
 
   assert.ok(winners.length >= 1, 'pelo menos uma chamada deveria ganhar');
   assert.ok(winners.length < 20, 'nem todas deveriam ganhar — a claim ainda reduz drasticamente as duplicatas');
+});
+
+test('listOrders: devolve todos os pedidos, mais recentes primeiro', async () => {
+  const old = makeOrder({ created_at: '2020-01-01T00:00:00.000Z' });
+  const mid = makeOrder({ created_at: '2030-01-01T00:00:00.000Z' });
+  const recent = makeOrder({ created_at: '2040-01-01T00:00:00.000Z' });
+  await createOrder(mid);
+  await createOrder(old);
+  await createOrder(recent);
+
+  const ids = (await listOrders()).map((o) => o.id);
+  assert.ok(ids.indexOf(recent.id) < ids.indexOf(mid.id));
+  assert.ok(ids.indexOf(mid.id) < ids.indexOf(old.id));
+  assert.equal(ids[0], recent.id);
+});
+
+// Regressão do bug de produção: todo pedido pago ficava com shipping_claim preso. Uma claim que
+// sobrou de uma execução que morreu não pode bloquear pra sempre.
+test('claimShipmentCreation: claim presa vence depois do TTL e pode ser reivindicada de novo', async () => {
+  const order = makeOrder({ status: 'paid' });
+  await createOrder(order);
+
+  const t0 = Date.parse('2026-10-14T01:08:47.000Z');
+  assert.ok(await claimShipmentCreation(order.id, t0));
+  assert.equal(await claimShipmentCreation(order.id, t0 + 60 * 1000), null, 'claim recente ainda bloqueia');
+  assert.ok(await claimShipmentCreation(order.id, t0 + SHIPPING_CLAIM_TTL_MS + 1), 'claim vencida libera');
+});
+
+test('claimShipmentCreation: claim antiga sem timestamp (de antes do TTL) não bloqueia', async () => {
+  const order = makeOrder({ status: 'paid', shipping_claim: '324b7cf1-f879-4ad9-b58e-1164807c719b' });
+  await createOrder(order);
+  assert.ok(await claimShipmentCreation(order.id));
+});
+
+test('claimPaidNotification: só a primeira chamada ganha, e marca paid_notified_at', async () => {
+  const order = makeOrder({ status: 'paid' });
+  await createOrder(order);
+
+  const first = await claimPaidNotification(order.id);
+  assert.ok(first);
+  assert.ok(first.paid_notified_at);
+  assert.equal(await claimPaidNotification(order.id), null);
+  assert.equal(await claimPaidNotification(order.id), null);
 });

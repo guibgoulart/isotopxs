@@ -18,12 +18,15 @@ isotopxs-site/
 ├─ shows.html            → contato de booking + histórico de shows
 ├─ loja.html             → vitrine + carrinho + checkout
 ├─ checkout-status.html  → página de retorno do pagamento
+├─ admin.html            → painel de pedidos da banda (senha)
 ├─ data/products.json    → catálogo da loja (nome, preço, peso)
 ├─ netlify/functions/    → backend da loja (pagamento, frete, pedidos)
 ├─ assets/
 │  ├─ css/main.css       → todo o visual
 │  ├─ js/main.js         → nav ao rolar, scroll-reveal, contadores, tabs, toggle de áudio
 │  ├─ js/loja.js         → carrinho, cotação de frete, checkout
+│  ├─ js/cart-widget.js  → carrinho no topo de todas as páginas
+│  ├─ js/admin.js        → painel de pedidos
 │  ├─ js/analytics.js    → PostHog
 │  └─ img/               → logo, fotos da banda e do público
 └─ test/                 → suíte de testes da loja (node --test)
@@ -36,10 +39,18 @@ pelas Netlify Functions:
 
 - `shipping-quote` — cotação de frete.
 - `create-preference` — revalida carrinho e frete no servidor, cria a cobrança no Mercado Pago.
-- `mp-webhook` — confirma pagamento, aciona o envio.
+- `mp-webhook` — confirma pagamento, manda confirmação pro cliente e alerta pra banda.
 - `order-status` — status do pedido pra página de retorno.
+- `admin-session` / `admin-orders` — login e API do painel de pedidos.
 
-Pagamento via Mercado Pago (Checkout Pro), frete via Loggi.
+Pagamento via Mercado Pago (Checkout Pro), frete via Loggi (cotação simulada por enquanto; envio
+manual). E-mails pelo Resend, alerta da banda no WhatsApp pela CallMeBot.
+
+## o painel
+
+`admin.html` (fora do menu) — a banda entra com a senha compartilhada e vê todos os pedidos, o que
+falta enviar, endereço pra etiqueta, e marca como enviado com o código de rastreio (o cliente
+recebe e-mail na hora). Configuração e detalhes em [STACK.md](STACK.md).
 
 ## analytics & observabilidade
 
@@ -52,7 +63,8 @@ Pagamento via Mercado Pago (Checkout Pro), frete via Loggi.
 - Preço e frete nunca vêm do navegador — `create-preference` recalcula tudo no servidor.
 - Webhook do Mercado Pago não confia no corpo da notificação — busca o pagamento na API deles.
 - CSP, `X-Frame-Options: DENY`, HSTS em todo o site (`netlify.toml`).
-- Rate limiting em `shipping-quote` e `create-preference`.
+- Rate limiting em `shipping-quote` e `create-preference`; login do painel com bloqueio após
+  tentativas erradas e cookie de sessão HttpOnly/SameSite=Strict.
 - Segredos só em variáveis de ambiente, nunca commitados.
 - Branch `master` protegida no GitHub.
 

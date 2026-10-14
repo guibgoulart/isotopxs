@@ -15,9 +15,12 @@ function escapeHtml(value) {
 }
 
 const STATUS_LABEL = {
-  paid: { title: 'Pagamento aprovado', tone: 'Show — seu pedido está confirmado.' },
+  paid: { title: 'Pagamento aprovado', tone: 'Show — seu pedido está confirmado. A confirmação também foi pro seu e-mail.' },
   pending: { title: 'Pagamento em análise', tone: 'Assim que for aprovado, você recebe a confirmação por e-mail.' },
   failed: { title: 'Pagamento não aprovado', tone: 'Tente novamente ou use outro cartão.' },
+  shipped: { title: 'Pedido enviado', tone: 'Seu pedido já foi postado e está a caminho.' },
+  delivered: { title: 'Pedido entregue', tone: 'Pedido entregue. Valeu pelo apoio!' },
+  cancelled: { title: 'Pedido cancelado', tone: 'Esse pedido foi cancelado. Qualquer dúvida, chama a gente no Instagram @isotopxs.' },
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -59,18 +62,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const info = STATUS_LABEL[order.status] || STATUS_LABEL.pending;
     sub.textContent = info.title;
 
-    if (order.status === 'paid') {
+    if (order.status !== 'pending' && order.status !== 'failed') {
       localStorage.removeItem('isotopxs:cart');
+      window.dispatchEvent(new Event('isotopxs:cart-changed'));
     }
 
     const itemsHtml = (order.items || [])
       .map((it) => `<div class="cart-summary__row"><span>${Number(it.qty) || 0}× ${escapeHtml(it.name)}</span><strong>${formatBRL(it.unit_price_cents * it.qty)}</strong></div>`)
       .join('');
 
+    // tracking_url só chega aqui se for https:// (validado no painel, admin-orders).
+    const trackingLink = order.tracking_url && /^https:\/\//.test(order.tracking_url)
+      ? ` — <a href="${escapeHtml(order.tracking_url)}" target="_blank" rel="noopener">rastrear</a>`
+      : '';
     const trackingHtml = order.tracking_code
-      ? `<p class="lead" style="margin-top:18px;">Código de rastreio: <strong>${escapeHtml(order.tracking_code)}</strong></p>`
+      ? `<p class="lead" style="margin-top:18px;">Código de rastreio${order.shipping_carrier ? ` (${escapeHtml(order.shipping_carrier)})` : ''}: <strong>${escapeHtml(order.tracking_code)}</strong>${trackingLink}</p>`
       : order.status === 'paid'
-        ? '<p class="lead" style="margin-top:18px;">Gerando etiqueta de envio — o código de rastreio aparece aqui em instantes.</p>'
+        ? '<p class="lead" style="margin-top:18px;">Agora a gente embala e posta. Quando sair, o código de rastreio chega no seu e-mail e aparece aqui.</p>'
         : '';
 
     box.innerHTML = `

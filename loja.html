@@ -90,9 +90,24 @@
         <strong id="cart-total">R$ 0,00</strong>
       </div>
 
-      <div class="form" style="margin-top:22px;">
-        <input type="text" id="buyer-name" placeholder="Nome completo">
-        <input type="email" id="buyer-email" placeholder="E-mail para receber a confirmação">
+      <div class="form" style="margin-top:28px; max-width:none;">
+        <p class="eyebrow" style="margin:0;">Seus dados</p>
+        <input type="text" id="buyer-name" placeholder="Nome completo" autocomplete="name" maxlength="100">
+        <input type="email" id="buyer-email" placeholder="E-mail para receber a confirmação" autocomplete="email" maxlength="254">
+        <input type="tel" id="buyer-phone" placeholder="Telefone com DDD" autocomplete="tel" inputmode="tel" maxlength="20">
+
+        <p class="eyebrow" style="margin:18px 0 0;">Endereço de entrega</p>
+        <input type="text" id="addr-street" placeholder="Rua / avenida" autocomplete="address-line1" maxlength="120">
+        <div class="form-row">
+          <input type="text" id="addr-number" placeholder="Número" maxlength="20" style="max-width:130px;">
+          <input type="text" id="addr-complement" placeholder="Complemento (opcional)" autocomplete="address-line2" maxlength="60">
+        </div>
+        <input type="text" id="addr-district" placeholder="Bairro" maxlength="60">
+        <div class="form-row">
+          <input type="text" id="addr-city" placeholder="Cidade" autocomplete="address-level2" maxlength="60">
+          <input type="text" id="addr-state" placeholder="UF" autocomplete="address-level1" maxlength="2" style="max-width:80px; text-transform:uppercase;">
+        </div>
+        <p style="font-size:12px; opacity:.6; margin:0;">O CEP é o mesmo do cálculo de frete acima.</p>
       </div>
 
       <p style="margin-top:22px;"><button type="button" id="checkout-btn" class="btn btn--dark" aria-disabled="true"><span>Finalizar compra</span></button></p>
@@ -126,6 +141,7 @@
 </footer>
 
 <script src="assets/js/main.js"></script>
+<script src="assets/js/cart-widget.js"></script>
 <script src="assets/js/loja.js"></script>
 </body>
 </html>

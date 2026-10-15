@@ -369,6 +369,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Endereço a partir do CEP (ViaCEP, chamado direto do navegador — liberado no CSP do netlify.toml).
+  // Só preenche campo vazio ou que a gente mesmo preencheu antes: nunca apaga o que a pessoa digitou.
+  // Se o ViaCEP falhar, nada acontece e a pessoa preenche na mão como antes.
+  const CEP_FIELDS = { 'addr-street': 'logradouro', 'addr-district': 'bairro', 'addr-city': 'localidade', 'addr-state': 'uf' };
+  const autoFilled = new Set();
+  let lastLookupCep = null;
+
+  async function fillAddressFromCep() {
+    const cep = (cepInput.value || '').replace(/\D/g, '');
+    if (cep.length !== 8 || cep === lastLookupCep) return;
+    lastLookupCep = cep;
+    const msg = document.getElementById('cep-address-msg');
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`, { signal: AbortSignal.timeout(6000) });
+      const data = await res.json();
+      if (cep !== (cepInput.value || '').replace(/\D/g, '')) return; // CEP mudou enquanto buscava
+      if (!res.ok || data.erro) {
+        msg.textContent = 'Não achamos esse CEP. Confere o número ou preenche o endereço na mão.';
+        return;
+      }
+      let filled = 0;
+      for (const [id, key] of Object.entries(CEP_FIELDS)) {
+        const input = field(id);
+        if (!data[key] || (input.value.trim() && !autoFilled.has(id))) continue;
+        input.value = data[key];
+        autoFilled.add(id);
+        filled += 1;
+      }
+      msg.textContent = filled ? 'Endereço preenchido pelo CEP. Confere e completa o número.' : '';
+    } catch {
+      lastLookupCep = null; // deixa tentar de novo
+    }
+  }
+
+  Object.keys(CEP_FIELDS).forEach((id) => field(id).addEventListener('input', () => autoFilled.delete(id)));
+  cepInput.addEventListener('input', fillAddressFromCep);
+
   quoteBtn.addEventListener('click', quoteShipping);
   checkoutBtn.addEventListener('click', checkout);
   field('buyer-name').closest('.form').addEventListener('input', () => {

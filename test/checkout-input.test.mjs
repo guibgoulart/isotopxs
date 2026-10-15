@@ -50,3 +50,9 @@ test('parseBuyer: entrada malformada não lança', () => {
     assert.ok(parseBuyer(input).errors.length > 0);
   }
 });
+
+test('parseBuyer: na retirada (requireAddress: false) endereço não é obrigatório', () => {
+  const { errors } = parseBuyer({ name: 'Fulana', email: 'f@example.com', phone: '51999990000' }, { requireAddress: false });
+  assert.deepEqual(errors, []);
+  assert.ok(parseBuyer({ name: 'Fulana', email: 'f@example.com', phone: '51999990000' }).errors.includes('rua'));
+});

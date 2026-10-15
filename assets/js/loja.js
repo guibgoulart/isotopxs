@@ -62,8 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return cartEntries().reduce((sum, e) => sum + e.product.price_cents * e.qty, 0);
   }
 
+  // Na retirada em Porto Alegre não tem endereço de entrega — o bloco some e não é exigido.
+  function syncAddressFields() {
+    document.getElementById('address-fields').hidden = Boolean(selectedShipping && selectedShipping.pickup);
+  }
+
   function invalidateShipping(message) {
     selectedShipping = null;
+    syncAddressFields();
     shippingOptionsEl.innerHTML = '';
     totalRow.hidden = true;
     if (message) shippingMsgEl.textContent = message;
@@ -100,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (buyer.name.length < 2) missing.push('nome completo');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyer.email)) missing.push('e-mail válido');
     if (buyer.phone.replace(/\D/g, '').length < 10) missing.push('telefone com DDD');
+    if (selectedShipping && selectedShipping.pickup) return missing;
     if (!buyer.address.street) missing.push('rua');
     if (!buyer.address.number) missing.push('número');
     if (!buyer.address.district) missing.push('bairro');
@@ -126,7 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
       card.className = 'card';
       card.innerHTML = `
         <span class="tag">Loja</span>
-        <div class="thumb">${escapeHtml(product.thumb_label)}</div>
+        ${product.image
+          ? `<div class="thumb thumb--photo"><img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.image_alt || product.name)}" loading="lazy" style="object-fit:${product.image_fit === 'contain' ? 'contain' : 'cover'}"></div>`
+          : `<div class="thumb">${escapeHtml(product.thumb_label)}</div>`}
         <h3>${escapeHtml(product.name)}</h3>
         <div class="price">${formatBRL(product.price_cents)}</div>
         <button type="button" class="btn btn--outline cart-add" style="margin-top:14px;"><span>Adicionar ao carrinho</span></button>
@@ -182,11 +191,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="radio" name="shipping" id="${id}" value="${escapeHtml(opt.id)}">
         <span>
           <strong>${escapeHtml(opt.label)}</strong>
-          <small>até ${Number(opt.eta_business_days) || 0} dia(s) útil(eis) — ${formatBRL(opt.price_cents)}</small>
+          <small>${opt.pickup
+            ? escapeHtml(opt.note || 'Grátis')
+            : `até ${Number(opt.eta_business_days) || 0} dia(s) útil(eis) — ${formatBRL(opt.price_cents)}`}</small>
         </span>
       `;
       label.querySelector('input').addEventListener('change', () => {
         selectedShipping = opt;
+        syncAddressFields();
         totalRow.hidden = false;
         cartTotalEl.textContent = formatBRL(cartSubtotalCents() + opt.price_cents);
         updateCheckoutAvailability();

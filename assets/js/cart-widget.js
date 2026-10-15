@@ -51,6 +51,7 @@
 
     const root = document.createElement('div');
     root.className = 'nav-cart';
+    root.hidden = true; // só aparece quando tiver algo no carrinho
     root.innerHTML = `
       <button type="button" class="nav-cart__btn" aria-expanded="false" aria-controls="nav-cart-panel" aria-label="Carrinho">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -97,6 +98,8 @@
       const count = list.reduce((sum, e) => sum + e.qty, 0);
       const subtotal = list.reduce((sum, e) => sum + e.product.price_cents * e.qty, 0);
 
+      root.hidden = count === 0;
+      if (!count) setOpen(false);
       badge.hidden = count === 0;
       badge.textContent = count > 99 ? '99+' : String(count);
       button.setAttribute('aria-label', count ? `Carrinho: ${count} ${count === 1 ? 'item' : 'itens'}, ${formatBRL(subtotal)}` : 'Carrinho vazio');

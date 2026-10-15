@@ -20,6 +20,24 @@ function usingMelhorEnvio() {
   return Boolean(process.env.MELHOR_ENVIO_TOKEN);
 }
 
+// Retirada combinada com a banda em Porto Alegre, sem custo. Sempre oferecida, em qualquer CEP (o
+// rótulo deixa claro que é em Porto Alegre). O pedido não exige endereço quando é retirada.
+const PICKUP_PHONE = '(51) 98145-4073';
+const PICKUP_OPTION = {
+  id: 'retirada_poa',
+  carrier: 'retirada',
+  service: 'Retirada',
+  label: 'Retirada em Porto Alegre (combinar com o Deo)',
+  price_cents: 0,
+  eta_business_days: null,
+  pickup: true,
+  note: `Grátis. Depois do pagamento, combina dia e lugar com o Deo pelo WhatsApp ou telefone ${PICKUP_PHONE}.`,
+};
+
+function isPickup(optionId) {
+  return optionId === PICKUP_OPTION.id;
+}
+
 function onlyDigits(value) {
   return String(value || '').replace(/\D/g, '');
 }
@@ -204,8 +222,10 @@ async function quote(params) {
   if (!isValidCep(params.destinationCep)) {
     throw new Error(`CEP de destino inválido: ${params.destinationCep}`);
   }
-  if (usingMelhorEnvio()) return quoteViaMelhorEnvio(params);
-  return usingRealLoggi() ? quoteViaLoggiApi(params) : mockQuote(params);
+  let options;
+  if (usingMelhorEnvio()) options = await quoteViaMelhorEnvio(params);
+  else options = usingRealLoggi() ? await quoteViaLoggiApi(params) : mockQuote(params);
+  return [...options, { ...PICKUP_OPTION }];
 }
 
 async function createShipment(order) {
@@ -216,4 +236,4 @@ async function track(trackingCode) {
   return usingRealLoggi() ? trackViaLoggiApi(trackingCode) : mockTrack(trackingCode);
 }
 
-module.exports = { quote, createShipment, track, isValidCep, normalizeCep, usingRealLoggi, usingMelhorEnvio };
+module.exports = { quote, createShipment, track, isValidCep, normalizeCep, usingRealLoggi, usingMelhorEnvio, isPickup };

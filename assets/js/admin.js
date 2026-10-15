@@ -262,7 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
           ${lines.length
             ? `<p>${lines.map(escapeHtml).join('<br>')}</p>
                <button type="button" class="admin-link" id="copy-address-btn">Copiar nome + endereço</button>`
-            : `<p>Endereço não coletado (pedido de antes do formulário de endereço). Só o CEP: ${escapeHtml(formatCep(s.destination_cep))}.</p>`}
+            : s.pickup
+              ? '<p><strong>Retirada em Porto Alegre</strong> — combinar com o cliente pelo telefone. Quando entregar, marca como "Entregue".</p>'
+              : `<p>Endereço não coletado (pedido de antes do formulário de endereço). Só o CEP: ${escapeHtml(formatCep(s.destination_cep))}.</p>`}
           <p class="admin-hint" style="margin-top:10px !important;">Frete escolhido: ${escapeHtml(s.label || '—')}${s.eta_business_days ? ` · prazo informado: até ${Number(s.eta_business_days)} dia(s) útil(eis)` : ''}</p>
           <p class="admin-msg" id="copy-msg"></p>
           <details class="detail-edit"${editOpen ? ' open' : ''}>

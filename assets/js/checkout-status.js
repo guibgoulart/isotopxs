@@ -78,7 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const trackingHtml = order.tracking_code
       ? `<p class="lead" style="margin-top:18px;">Código de rastreio${order.shipping_carrier ? ` (${escapeHtml(order.shipping_carrier)})` : ''}: <strong>${escapeHtml(order.tracking_code)}</strong>${trackingLink}</p>`
       : order.status === 'paid'
-        ? '<p class="lead" style="margin-top:18px;">Agora a gente embala e posta. Quando sair, o código de rastreio chega no seu e-mail e aparece aqui.</p>'
+        ? (order.shipping && order.shipping.pickup
+          ? `<p class="lead" style="margin-top:18px;">${escapeHtml(order.shipping.note || 'Retirada em Porto Alegre, combinada com a banda.')}</p>`
+          : '<p class="lead" style="margin-top:18px;">Agora a gente embala e posta. Quando sair, o código de rastreio chega no seu e-mail e aparece aqui.</p>')
         : '';
 
     box.innerHTML = `

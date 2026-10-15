@@ -76,6 +76,14 @@ function button(href, label) {
   return `<p style="margin:24px 0 8px;"><a href="${esc(href)}" style="display:inline-block;background:${C.black};color:${C.white};padding:13px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:14px;">${esc(label)}</a></p>`;
 }
 
+function isPickup(order) {
+  return Boolean(order.shipping && order.shipping.pickup);
+}
+
+function pickupText(order) {
+  return (order.shipping && order.shipping.note) || 'Retirada em Porto Alegre, combinada com a banda.';
+}
+
 function addressHtml(order) {
   const lines = addressLines(order);
   return lines.length ? `<p style="margin:0;">${lines.map(esc).join('<br>')}</p>` : '';
@@ -109,9 +117,12 @@ export function customerConfirmationEmail(order, base) {
     body: `
 <p style="margin:0 0 12px;">${esc(hello(order))} Seu pagamento foi aprovado e o pedido tá confirmado.</p>
 ${itemsTable(order)}
-<p style="margin:0 0 4px;font-weight:bold;">Entrega</p>
+${isPickup(order)
+    ? `<p style="margin:0 0 4px;font-weight:bold;">Retirada em Porto Alegre</p>
+<p style="margin:0;">${esc(pickupText(order))}</p>`
+    : `<p style="margin:0 0 4px;font-weight:bold;">Entrega</p>
 ${addressHtml(order)}
-<p style="margin:18px 0 0;">Agora a gente embala e posta. Quando sair, você recebe outro e-mail com o código de rastreio.</p>
+<p style="margin:18px 0 0;">Agora a gente embala e posta. Quando sair, você recebe outro e-mail com o código de rastreio.</p>`}
 ${button(orderUrl(order, base), 'Acompanhar pedido')}
 <p style="margin:18px 0 0;color:${C.muted};font-size:13px;">Dúvidas? Chama a gente no Instagram @isotopxs.</p>`,
   });
@@ -120,10 +131,9 @@ ${button(orderUrl(order, base), 'Acompanhar pedido')}
     '',
     itemsText(order),
     '',
-    'Entrega:',
-    ...addressLines(order),
-    '',
-    'Agora a gente embala e posta. Quando sair, você recebe outro e-mail com o código de rastreio.',
+    ...(isPickup(order)
+      ? ['Retirada em Porto Alegre:', pickupText(order)]
+      : ['Entrega:', ...addressLines(order), '', 'Agora a gente embala e posta. Quando sair, você recebe outro e-mail com o código de rastreio.']),
     `Acompanhar pedido: ${orderUrl(order, base)}`,
     '',
     'Dúvidas? Chama a gente no Instagram @isotopxs.',
@@ -180,8 +190,11 @@ export function bandNewOrderEmail(order, base) {
 ${itemsTable(order)}
 <p style="margin:0 0 4px;font-weight:bold;">Cliente</p>
 <p style="margin:0 0 14px;">${esc(buyer.name)}<br>${esc(buyer.email)}${buyer.phone ? `<br>${esc(buyer.phone)}` : ''}</p>
-<p style="margin:0 0 4px;font-weight:bold;">Endereço de entrega</p>
-${addressHtml(order)}
+${isPickup(order)
+    ? `<p style="margin:0 0 4px;font-weight:bold;">Retirada em Porto Alegre</p>
+<p style="margin:0;">Cliente vai retirar em mãos — combinar com ele(a) pelo telefone acima.</p>`
+    : `<p style="margin:0 0 4px;font-weight:bold;">Endereço de entrega</p>
+${addressHtml(order)}`}
 ${button(adminUrl(order, base), 'Abrir no painel')}`,
   });
   const text = [
@@ -194,8 +207,9 @@ ${button(adminUrl(order, base), 'Abrir no painel')}`,
     buyer.email || '',
     buyer.phone || '',
     '',
-    'Endereço de entrega:',
-    ...addressLines(order),
+    ...(isPickup(order)
+      ? ['Retirada em Porto Alegre: combinar com o cliente pelo telefone acima.']
+      : ['Endereço de entrega:', ...addressLines(order)]),
     '',
     `Painel: ${adminUrl(order, base)}`,
   ].join('\n');

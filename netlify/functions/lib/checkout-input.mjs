@@ -16,7 +16,8 @@ function clean(value, max) {
     .slice(0, max);
 }
 
-export function parseBuyer(raw) {
+// requireAddress: false na retirada em mãos — aí só nome, e-mail e telefone são obrigatórios.
+export function parseBuyer(raw, { requireAddress = true } = {}) {
   const input = raw && typeof raw === 'object' ? raw : {};
   const address = input.address && typeof input.address === 'object' ? input.address : {};
   const errors = [];
@@ -37,11 +38,13 @@ export function parseBuyer(raw) {
   if (name.length < 2) errors.push('nome completo');
   if (!EMAIL_RE.test(email)) errors.push('e-mail válido');
   if (phone.length < 10) errors.push('telefone com DDD');
-  if (!parsedAddress.street) errors.push('rua');
-  if (!parsedAddress.number) errors.push('número');
-  if (!parsedAddress.district) errors.push('bairro');
-  if (!parsedAddress.city) errors.push('cidade');
-  if (!UFS.has(parsedAddress.state)) errors.push('UF');
+  if (requireAddress) {
+    if (!parsedAddress.street) errors.push('rua');
+    if (!parsedAddress.number) errors.push('número');
+    if (!parsedAddress.district) errors.push('bairro');
+    if (!parsedAddress.city) errors.push('cidade');
+    if (!UFS.has(parsedAddress.state)) errors.push('UF');
+  }
 
   return {
     buyer: { name, email, phone },

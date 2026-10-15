@@ -56,7 +56,8 @@ export default withErrorReporting(async (req) => {
 
   // Sem endereço completo a banda não tem como postar o pedido — e sem e-mail o cliente não recebe
   // confirmação nem rastreio. Valida antes de tocar em frete/Mercado Pago.
-  const { buyer, address, errors: buyerErrors } = parseBuyer(payload.buyer);
+  const pickup = shipping.isPickup(optionId);
+  const { buyer, address, errors: buyerErrors } = parseBuyer(payload.buyer, { requireAddress: !pickup });
   if (buyerErrors.length) {
     return json({ error: `Faltou preencher: ${buyerErrors.join(', ')}` }, 400);
   }
@@ -101,7 +102,9 @@ export default withErrorReporting(async (req) => {
       label: shippingOption.label,
       price_cents: shippingOption.price_cents,
       eta_business_days: shippingOption.eta_business_days,
-      address,
+      pickup: pickup || undefined,
+      note: shippingOption.note || undefined,
+      address: pickup ? null : address,
     },
     total_cents: totalCents,
     buyer,
@@ -122,13 +125,16 @@ export default withErrorReporting(async (req) => {
         unit_price: product.price_cents / 100,
         currency_id: 'BRL',
       })),
-      {
-        id: `frete-${shippingOption.id}`,
-        title: `Frete — ${shippingOption.label}`,
-        quantity: 1,
-        unit_price: shippingOption.price_cents / 100,
-        currency_id: 'BRL',
-      },
+      // A Mercado Pago não aceita item de R$ 0 — retirada grátis não vira linha na cobrança.
+      ...(shippingOption.price_cents > 0
+        ? [{
+            id: `frete-${shippingOption.id}`,
+            title: `Frete — ${shippingOption.label}`,
+            quantity: 1,
+            unit_price: shippingOption.price_cents / 100,
+            currency_id: 'BRL',
+          }]
+        : []),
     ],
     payer: { email: buyer.email, name: buyer.name },
     external_reference: orderId,

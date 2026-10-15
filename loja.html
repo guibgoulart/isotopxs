@@ -59,7 +59,7 @@
 <section class="section section--black">
   <div class="section__inner">
     <p class="eyebrow reveal">Produtos</p>
-    <div id="shop-grid" class="grid3 reveal-stagger">
+    <div id="shop-grid" class="grid3 grid3--two reveal-stagger">
       <p>Carregando produtos…</p>
     </div>
   </div>
@@ -96,6 +96,7 @@
         <input type="email" id="buyer-email" placeholder="E-mail para receber a confirmação" autocomplete="email" maxlength="254">
         <input type="tel" id="buyer-phone" placeholder="Telefone com DDD" autocomplete="tel" inputmode="tel" maxlength="20">
 
+        <div id="address-fields" class="form" style="max-width:none; margin:0;">
         <p class="eyebrow" style="margin:18px 0 0;">Endereço de entrega</p>
         <input type="text" id="addr-street" placeholder="Rua / avenida" autocomplete="address-line1" maxlength="120">
         <div class="form-row">
@@ -108,6 +109,7 @@
           <input type="text" id="addr-state" placeholder="UF" autocomplete="address-level1" maxlength="2" style="max-width:80px; text-transform:uppercase;">
         </div>
         <p style="font-size:12px; opacity:.6; margin:0;">O CEP é o mesmo do cálculo de frete acima.</p>
+        </div>
       </div>
 
       <p style="margin-top:22px;"><button type="button" id="checkout-btn" class="btn btn--dark" aria-disabled="true"><span>Finalizar compra</span></button></p>

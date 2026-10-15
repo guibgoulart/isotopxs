@@ -2,7 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import shippingPkg from '../netlify/functions/lib/shipping.js';
 
-const { isValidCep, normalizeCep, quote, createShipment, usingRealLoggi } = shippingPkg;
+const { isValidCep, normalizeCep, quote, createShipment, usingRealLoggi, isPickup } = shippingPkg;
+const withoutPickup = (options) => options.filter((o) => !o.pickup);
 
 test('isValidCep aceita só 8 dígitos, com ou sem formatação', () => {
   assert.equal(isValidCep('01310-930'), true);
@@ -20,7 +21,7 @@ test('normalizeCep remove tudo que não é dígito (defesa contra CEP com HTML/s
 test('sem LOGGI_INTEGRATION_CODE, usingRealLoggi é false e quote roda no mock', async () => {
   assert.equal(usingRealLoggi(), false);
 
-  const options = await quote({ originCep: '01310930', destinationCep: '90000000', weightG: 500 });
+  const options = withoutPickup(await quote({ originCep: '01310930', destinationCep: '90000000', weightG: 500 }));
 
   assert.equal(options.length, 2);
   for (const opt of options) {
@@ -83,7 +84,7 @@ test('com MELHOR_ENVIO_TOKEN, cota no Melhor Envio, filtra serviços e soma o pr
   assert.equal(sent.init.headers.Authorization, 'Bearer token-de-teste');
   assert.deepEqual(sent.body.from, { postal_code: '91910001' });
   assert.deepEqual(sent.body.products[0], { id: 'cd', width: 12, height: 1, length: 14, weight: 0.1, insurance_value: 35, quantity: 2 });
-  assert.deepEqual(options, [
+  assert.deepEqual(withoutPickup(options), [
     { id: 'me_34', carrier: 'loggi', service: 'Loggi Ponto', label: 'Loggi Ponto', price_cents: 1970, eta_business_days: 8 },
     { id: 'me_1', carrier: 'correios', service: 'PAC', label: 'Correios PAC', price_cents: 2217, eta_business_days: 7 },
     { id: 'me_2', carrier: 'correios', service: 'SEDEX', label: 'Correios SEDEX', price_cents: 3471, eta_business_days: 4 },
@@ -99,4 +100,15 @@ test('Melhor Envio fora do ar vira erro (não cai no mock com preço inventado)'
     delete process.env.MELHOR_ENVIO_TOKEN;
   });
   await assert.rejects(() => quote({ originCep: '91910001', destinationCep: '01310100', weightG: 100, items: [] }), /Melhor Envio respondeu 401/);
+});
+
+test('retirada em Porto Alegre sempre aparece por último, grátis e com o contato do Deo', async () => {
+  const options = await quote({ originCep: '91910001', destinationCep: '01310100', weightG: 100 });
+  const last = options[options.length - 1];
+  assert.equal(last.id, 'retirada_poa');
+  assert.equal(last.price_cents, 0);
+  assert.equal(last.pickup, true);
+  assert.match(last.note, /Deo.*98145-4073/);
+  assert.equal(isPickup('retirada_poa'), true);
+  assert.equal(isPickup('me_1'), false);
 });

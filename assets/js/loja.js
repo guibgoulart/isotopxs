@@ -221,7 +221,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error(data.error || 'Falha ao calcular frete');
 
       lastQuotedCep = cep;
-      shippingMsgEl.textContent = '';
+      shippingMsgEl.textContent = data.options.length
+        ? ''
+        : 'Nenhuma opção de entrega pra esse CEP. Chama a gente no Instagram que a gente resolve.';
       renderShippingOptions(data.options);
     } catch (err) {
       shippingMsgEl.textContent = `Não foi possível calcular o frete: ${err.message}`;

@@ -203,9 +203,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---------- detalhe ----------
-  function renderDetail(order) {
+  function renderDetail(order, { editOpen = false } = {}) {
     const b = order.buyer || {};
     const s = order.shipping || {};
+    const addr = s.address || {};
     const lines = addressLines(order);
     const wa = whatsappLink(b.phone);
     const emailOn = notificationConfig ? notificationConfig.email : true;
@@ -264,6 +265,34 @@ document.addEventListener('DOMContentLoaded', () => {
             : `<p>Endereço não coletado (pedido de antes do formulário de endereço). Só o CEP: ${escapeHtml(formatCep(s.destination_cep))}.</p>`}
           <p class="admin-hint" style="margin-top:10px !important;">Frete escolhido: ${escapeHtml(s.label || '—')}${s.eta_business_days ? ` · prazo informado: até ${Number(s.eta_business_days)} dia(s) útil(eis)` : ''}</p>
           <p class="admin-msg" id="copy-msg"></p>
+          <details class="detail-edit"${editOpen ? ' open' : ''}>
+            <summary>Corrigir dados do cliente / endereço</summary>
+            <form id="customer-form" class="admin-form">
+              <div class="admin-form__row">
+                <label>Nome<input name="name" maxlength="100" required value="${escapeHtml(b.name || '')}"></label>
+                <label>E-mail<input name="email" type="email" maxlength="254" required value="${escapeHtml(b.email || '')}"></label>
+              </div>
+              <div class="admin-form__row">
+                <label>Telefone<input name="phone" type="tel" maxlength="20" required value="${escapeHtml(formatPhone(b.phone))}"></label>
+                <label>CEP<input name="cep" inputmode="numeric" maxlength="9" required value="${escapeHtml(formatCep(s.destination_cep))}"></label>
+              </div>
+              <div class="admin-form__row">
+                <label>Rua<input name="street" maxlength="120" required value="${escapeHtml(addr.street || '')}"></label>
+                <label>Número<input name="number" maxlength="20" required value="${escapeHtml(addr.number || '')}"></label>
+              </div>
+              <div class="admin-form__row">
+                <label>Complemento<input name="complement" maxlength="60" value="${escapeHtml(addr.complement || '')}"></label>
+                <label>Bairro<input name="district" maxlength="60" required value="${escapeHtml(addr.district || '')}"></label>
+              </div>
+              <div class="admin-form__row">
+                <label>Cidade<input name="city" maxlength="60" required value="${escapeHtml(addr.city || '')}"></label>
+                <label>UF<input name="state" maxlength="2" required value="${escapeHtml(addr.state || '')}"></label>
+              </div>
+              <p class="admin-hint">Mudar o CEP não recalcula o frete que o cliente já pagou.</p>
+              <button type="submit" class="btn btn--dark"><span>Salvar dados</span></button>
+              <p class="admin-msg" id="customer-msg" role="status"></p>
+            </form>
+          </details>
         </div>
 
         <div class="detail-card detail-card--wide">
@@ -303,6 +332,16 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       saveOrder(order, e.currentTarget);
     });
+    $('customer-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const f = Object.fromEntries(new FormData(e.currentTarget).entries());
+      patchOrder(order.id, {
+        customer: {
+          name: f.name, email: f.email, phone: f.phone, cep: f.cep,
+          address: { street: f.street, number: f.number, complement: f.complement, district: f.district, city: f.city, state: f.state },
+        },
+      }, $('customer-msg'));
+    });
     const copyBtn = $('copy-address-btn');
     if (copyBtn) copyBtn.addEventListener('click', () => copyAddress(order));
     const clearBtn = $('clear-claim-btn');
@@ -339,8 +378,8 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ id, ...body }),
       });
       orders = orders.map((o) => (o.id === data.order.id ? data.order : o));
-      renderDetail(data.order);
-      const newMsg = $('save-msg');
+      renderDetail(data.order, { editOpen: msgEl.id === 'customer-msg' });
+      const newMsg = $(msgEl.id) || $('save-msg');
       newMsg.textContent = `Salvo.${describeNotifications(data.notifications)}`;
       if (data.notifications && data.notifications.customer_email === 'failed') newMsg.className = 'admin-msg admin-msg--error';
     } catch (err) {

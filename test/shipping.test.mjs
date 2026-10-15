@@ -54,3 +54,45 @@ test('createShipment mock gera tracking code baseado no id do pedido', async () 
   assert.equal(shipment.carrier, 'loggi-mock');
   assert.equal(shipment.status, 'label_created');
 });
+
+test('com MELHOR_ENVIO_TOKEN, cota no Melhor Envio, filtra serviços e soma o prazo de postagem', async (t) => {
+  const realFetch = globalThis.fetch;
+  let sent;
+  globalThis.fetch = async (url, init) => {
+    sent = { url, init, body: JSON.parse(init.body) };
+    return new Response(JSON.stringify([
+      { id: 1, name: 'PAC', price: '22.17', custom_price: '22.17', delivery_time: 5, custom_delivery_time: 5, company: { name: 'Correios' } },
+      { id: 2, name: 'SEDEX', price: '34.71', custom_price: '34.71', delivery_time: 2, custom_delivery_time: 2, company: { name: 'Correios' } },
+      { id: 17, name: 'Mini Envios', error: 'Dimensões do objeto ultrapassam o limite.', company: { name: 'Correios' } },
+      { id: 3, name: '.Package', price: '20.01', custom_price: '20.01', delivery_time: 4, custom_delivery_time: 4, company: { name: 'Jadlog' } },
+    ]), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  };
+  process.env.MELHOR_ENVIO_TOKEN = 'token-de-teste';
+  t.after(() => {
+    globalThis.fetch = realFetch;
+    delete process.env.MELHOR_ENVIO_TOKEN;
+  });
+
+  const cd = { id: 'cd', price_cents: 3500, weight_g: 100, dims_cm: { length: 14, width: 12, height: 1 } };
+  const options = await quote({ originCep: '91910-001', destinationCep: '01310-100', weightG: 200, items: [{ product: cd, qty: 2 }] });
+
+  assert.equal(sent.url, 'https://melhorenvio.com.br/api/v2/me/shipment/calculate');
+  assert.equal(sent.init.headers.Authorization, 'Bearer token-de-teste');
+  assert.deepEqual(sent.body.from, { postal_code: '91910001' });
+  assert.deepEqual(sent.body.products[0], { id: 'cd', width: 12, height: 1, length: 14, weight: 0.1, insurance_value: 35, quantity: 2 });
+  assert.deepEqual(options, [
+    { id: 'me_1', carrier: 'correios', service: 'PAC', label: 'Correios PAC', price_cents: 2217, eta_business_days: 7 },
+    { id: 'me_2', carrier: 'correios', service: 'SEDEX', label: 'Correios SEDEX', price_cents: 3471, eta_business_days: 4 },
+  ]);
+});
+
+test('Melhor Envio fora do ar vira erro (não cai no mock com preço inventado)', async (t) => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response('Unauthenticated.', { status: 401 });
+  process.env.MELHOR_ENVIO_TOKEN = 'token-vencido';
+  t.after(() => {
+    globalThis.fetch = realFetch;
+    delete process.env.MELHOR_ENVIO_TOKEN;
+  });
+  await assert.rejects(() => quote({ originCep: '91910001', destinationCep: '01310100', weightG: 100, items: [] }), /Melhor Envio respondeu 401/);
+});

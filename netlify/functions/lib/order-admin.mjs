@@ -1,6 +1,7 @@
 // Valida e monta o patch que o painel manda pra um pedido. Função pura: recebe o pedido atual e o
 // corpo da requisição, devolve { patch, errors } — quem chama só aplica se errors estiver vazio.
 import { ORDER_STATUSES } from './orders-store.mjs';
+import { parseBuyer } from './checkout-input.mjs';
 
 function oneLine(value, max) {
   return String(value ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
@@ -46,6 +47,21 @@ export function buildAdminPatch(order, body) {
       .replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, ' ')
       .trim()
       .slice(0, 2000);
+  }
+
+  // Corrigir nome/contato/endereço (cliente escreveu errado, mudou de endereço…). Mesmas regras do
+  // formulário da loja; o frete já pago não é recalculado se o CEP mudar.
+  if ('customer' in input) {
+    const customer = input.customer && typeof input.customer === 'object' ? input.customer : {};
+    const { buyer, address, errors: missing } = parseBuyer(customer);
+    const cep = String(customer.cep ?? '').replace(/\D/g, '');
+    if (cep.length !== 8) missing.push('CEP');
+    if (missing.length) {
+      errors.push(`faltou preencher: ${missing.join(', ')}`);
+    } else {
+      patch.buyer = { ...(order.buyer || {}), ...buyer };
+      patch.shipping = { ...(order.shipping || {}), address, destination_cep: cep };
+    }
   }
 
   if (input.clear_shipping_claim === true) {

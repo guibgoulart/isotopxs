@@ -50,6 +50,7 @@ export default withErrorReporting(async (req) => {
       originCep: process.env.ORIGIN_CEP,
       destinationCep,
       weightG: totalWeightG,
+      items: lineItems,
     });
 
     const distinctId = req.headers.get('x-posthog-distinct-id') || 'anonymous';

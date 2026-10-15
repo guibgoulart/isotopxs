@@ -1,7 +1,7 @@
 // API do painel de pedidos (admin.html). Tudo aqui exige sessão de admin (ver admin-session.mjs).
 //   GET   → todos os pedidos (mais recentes primeiro) + quais avisos estão configurados.
 //   PATCH → { id, status?, tracking_code?, tracking_url?, shipping_carrier?, admin_notes?,
-//             clear_shipping_claim? } — atualiza um pedido; manda o e-mail de "enviado" quando cabe.
+//             customer?: { name, email, phone, cep, address }, clear_shipping_claim? } — atualiza um pedido; manda o e-mail de "enviado" quando cabe.
 import { getOrder, listOrders, updateOrder } from './lib/orders-store.mjs';
 import { isAdmin } from './lib/admin-auth.mjs';
 import { buildAdminPatch } from './lib/order-admin.mjs';

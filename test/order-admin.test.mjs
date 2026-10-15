@@ -45,3 +45,25 @@ test('buildAdminPatch: corpo vazio ou só com campos desconhecidos é erro', () 
   assert.deepEqual(buildAdminPatch(paid, {}).errors, ['nada pra atualizar']);
   assert.deepEqual(buildAdminPatch(paid, { buyer: { email: 'hack@example.com' }, total_cents: 1 }).errors, ['nada pra atualizar']);
 });
+
+const customer = {
+  name: 'Fulana de Tal', email: 'Fulana@Example.com', phone: '(51) 99999-0000', cep: '90010-000',
+  address: { street: 'Rua A', number: '10', complement: 'ap 2', district: 'Centro', city: 'Porto Alegre', state: 'rs' },
+};
+
+test('buildAdminPatch: corrige cliente e endereço sem perder o resto do frete', () => {
+  const order = { ...paid, buyer: { name: 'X', email: 'x@x.com', phone: '51' }, shipping: { label: 'Loggi Ponto', price_cents: 1290, destination_cep: '01001000' } };
+  const { patch, errors } = buildAdminPatch(order, { customer });
+  assert.deepEqual(errors, []);
+  assert.deepEqual(patch.buyer, { name: 'Fulana de Tal', email: 'fulana@example.com', phone: '51999990000' });
+  assert.equal(patch.shipping.label, 'Loggi Ponto');
+  assert.equal(patch.shipping.price_cents, 1290);
+  assert.equal(patch.shipping.destination_cep, '90010000');
+  assert.equal(patch.shipping.address.state, 'RS');
+});
+
+test('buildAdminPatch: dados do cliente incompletos não salvam nada', () => {
+  const { patch, errors } = buildAdminPatch(paid, { customer: { ...customer, cep: '123', address: { ...customer.address, city: '' } } });
+  assert.match(errors[0], /cidade.*CEP/);
+  assert.equal(patch.buyer, undefined);
+});

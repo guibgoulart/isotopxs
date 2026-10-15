@@ -67,6 +67,7 @@ export default withErrorReporting(async (req) => {
       originCep: process.env.ORIGIN_CEP,
       destinationCep,
       weightG: totalWeightG,
+      items: lineItems,
     });
     shippingOption = options.find((o) => o.id === optionId);
   } catch (err) {

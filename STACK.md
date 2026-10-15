@@ -46,10 +46,13 @@ escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/anal
 
 - **Mercado Pago (Checkout Pro)** — único meio de pagamento. Preço e frete sempre recalculados no
   servidor a partir de `data/products.json`, nunca confiando no navegador.
-- **Frete**: abstração pronta pra Loggi (`lib/shipping.js`), mas hoje a cotação roda em modo
-  mock/simulado — falta `LOGGI_INTEGRATION_CODE` (conta real com a Loggi ainda não fechada). Enquanto
-  isso o envio é **manual**: a banda posta o pacote e coloca transportadora + código de rastreio no
-  painel. O checkout coleta endereço completo e telefone justamente pra isso.
+- **Frete**: cotação real pelo **Melhor Envio** (`lib/shipping.js`, `MELHOR_ENVIO_TOKEN`) — preço e
+  prazo das etiquetas de verdade, a partir do peso/medidas de `data/products.json` e do
+  `ORIGIN_CEP`. Por padrão só Correios (PAC, SEDEX, Mini Envios; `MELHOR_ENVIO_SERVICES` muda), e o
+  prazo mostrado soma `SHIPPING_HANDLING_DAYS` (padrão 2) pra banda postar. Sem token, cai no mock.
+  O envio é **manual**: a banda compra a etiqueta no painel do Melhor Envio, posta na agência e
+  coloca transportadora + código de rastreio no painel. O checkout coleta endereço completo e
+  telefone justamente pra isso.
 
 ## Painel de pedidos (`admin.html`)
 
@@ -92,7 +95,7 @@ escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/anal
 ## Dados
 
 - `data/products.json` — catálogo (fonte de verdade também pro backend), com produtos e preços reais
-  desde 2026-10-13. Pesos/dimensões são estimativas — conferir quando a Loggi real entrar.
+  desde 2026-10-13. Pesos/dimensões são estimativas — conferir com o pacote real (o frete é cotado com eles).
 
 ## Analytics
 
@@ -120,12 +123,12 @@ escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/anal
 - CSP, `X-Frame-Options: DENY`, HSTS e afins em todo o site (`netlify.toml`).
 - Segredos só em variáveis de ambiente (Netlify: `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`,
   `ORIGIN_CEP`, `SITE_URL`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, `RESEND_API_KEY`,
-  `BAND_NOTIFY_WHATSAPP`; `SENTRY_DSN` quando configurado), nunca commitados.
+  `BAND_NOTIFY_WHATSAPP`, `MELHOR_ENVIO_TOKEN`; `SENTRY_DSN`), nunca commitados.
 - Webhook do Mercado Pago não confia no corpo da notificação — sempre reconsulta a API deles.
 
 ## Testes
 
-- `node --test` (`npm test`) — 67 testes cobrindo precificação, pedidos, claims, webhook, frete, CEP,
+- `node --test` (`npm test`) — 71 testes cobrindo precificação, pedidos, claims, webhook, frete, CEP,
   dados de entrega, sessão/login do painel, edição de pedido e avisos (e-mail/WhatsApp com `fetch`
   falso — nenhum teste bate em API de verdade) (`test/*.test.mjs`). Sem CI configurado ainda — roda
   só localmente/manual antes de deploy.
@@ -134,7 +137,6 @@ escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/anal
 
 - `MP_ACCESS_TOKEN` de produção já configurado (`APP_USR-...`, real) desde 2026-08-25.
 - Loja reaberta e catálogo real desde 2026-10-13; primeira compra real de teste aprovada.
-- Configurar na Netlify: `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, `RESEND_API_KEY`,
-  `RESEND_FROM_EMAIL` (+ verificar o domínio no Resend), `BAND_NOTIFY_EMAILS`, `BAND_NOTIFY_WHATSAPP`.
-- Loggi real (ou seguir com envio manual + frete simulado, avisando o cliente).
+- Configurado na Netlify em 2026-10-14: painel, Resend (domínio isotopxs.com.br), Sentry/PostHog do
+  backend e Melhor Envio. Falta `BAND_NOTIFY_EMAILS` (quem da banda recebe o aviso de pedido novo).
 - Fotos reais dos produtos na vitrine (hoje só o nome no lugar da foto).

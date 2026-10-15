@@ -43,8 +43,8 @@ pelas Netlify Functions:
 - `order-status` — status do pedido pra página de retorno.
 - `admin-session` / `admin-orders` — login e API do painel de pedidos.
 
-Pagamento via Mercado Pago (Checkout Pro), frete via Loggi (cotação simulada por enquanto; envio
-manual). E-mails pelo Resend, alerta da banda no WhatsApp pela CallMeBot.
+Pagamento via Mercado Pago (Checkout Pro), frete cotado no Melhor Envio (Correios; etiqueta comprada
+lá e envio manual). E-mails pelo Resend, alerta da banda no WhatsApp pela CallMeBot.
 
 ## o painel
 

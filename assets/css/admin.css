@@ -131,5 +131,10 @@ body.admin .section--white p{ color: var(--black); }
 .admin-form .btn{ justify-self:start; }
 @media (max-width:560px){ .admin-form__row{ grid-template-columns:1fr; } }
 
+.detail-edit{ margin-top:14px; border-top:1px solid rgba(6,6,6,.12); padding-top:12px; }
+.detail-edit summary{ cursor:pointer; font-family: var(--f-label); font-size:14px; letter-spacing:1px; text-transform:uppercase; }
+.detail-edit summary:focus-visible{ outline:2px solid var(--red); outline-offset:3px; }
+.detail-edit .admin-form{ margin-top:14px; }
+
 .detail-log{ font-size:13px; opacity:.7; margin-top:14px; }
 .detail-log p{ margin:0 0 2px; }

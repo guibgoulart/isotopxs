@@ -1,7 +1,11 @@
 // Camada de frete — interface estável (quote / createShipment / track) que o resto do código
-// usa sem saber se por trás tem um mock ou a Loggi de verdade.
+// usa sem saber o que tem por trás.
 //
-// Hoje: sem LOGGI_INTEGRATION_CODE configurado, tudo roda no mock abaixo (determinístico e
+// Cotação: com MELHOR_ENVIO_TOKEN configurado, o preço e o prazo vêm do Melhor Envio (valores
+// reais que a banda paga pela etiqueta comprada lá). A etiqueta em si a banda compra no painel do
+// Melhor Envio e posta na agência — createShipment/track não passam por lá (envio manual).
+//
+// Sem MELHOR_ENVIO_TOKEN nem LOGGI_INTEGRATION_CODE configurados, tudo roda no mock abaixo (determinístico e
 // realista o bastante pra testar o carrinho: varia por peso e por distância aproximada entre
 // os CEPs). Quando vocês tiverem um integration_code de homologação da Loggi, defina
 // LOGGI_INTEGRATION_CODE no ambiente e preencha as três funções `*ViaLoggiApi` conforme a
@@ -10,6 +14,10 @@
 
 function usingRealLoggi() {
   return Boolean(process.env.LOGGI_INTEGRATION_CODE);
+}
+
+function usingMelhorEnvio() {
+  return Boolean(process.env.MELHOR_ENVIO_TOKEN);
 }
 
 function onlyDigits(value) {
@@ -118,10 +126,84 @@ async function trackViaLoggiApi(/* trackingCode */) {
   throw notImplementedError('track');
 }
 
+// IDs de serviço do Melhor Envio (GET /api/v2/me/shipment/services). Padrão: só Correios — PAC,
+// SEDEX e Mini Envios —, que dá pra postar em qualquer agência. Pra oferecer outras (Jadlog, Loggi,
+// J&T…), liste os IDs em MELHOR_ENVIO_SERVICES, separados por vírgula.
+const DEFAULT_MELHOR_ENVIO_SERVICES = '1,2,17';
+// Dias úteis entre o pagamento e a banda postar, somados ao prazo da transportadora.
+const DEFAULT_HANDLING_DAYS = 2;
+
+function handlingDays() {
+  const days = Number(process.env.SHIPPING_HANDLING_DAYS);
+  return Number.isInteger(days) && days >= 0 ? days : DEFAULT_HANDLING_DAYS;
+}
+
+// items: lineItems de catalog.priceCartItems ({ product, qty }) — peso/medidas/preço vêm do catálogo.
+async function quoteViaMelhorEnvio({ originCep, destinationCep, items }) {
+  if (!isValidCep(originCep)) {
+    throw new Error('ORIGIN_CEP não configurado (CEP de onde a banda posta, 8 dígitos)');
+  }
+  const products = (items || []).map(({ product, qty }) => ({
+    id: product.id,
+    width: product.dims_cm.width,
+    height: product.dims_cm.height,
+    length: product.dims_cm.length,
+    weight: product.weight_g / 1000,
+    insurance_value: product.price_cents / 100,
+    quantity: qty,
+  }));
+
+  const base = process.env.MELHOR_ENVIO_API_BASE || 'https://melhorenvio.com.br';
+  const res = await fetch(`${base}/api/v2/me/shipment/calculate`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.MELHOR_ENVIO_TOKEN}`,
+      'User-Agent': 'ISOTOPXS loja (isotopxs.com.br)',
+    },
+    body: JSON.stringify({
+      from: { postal_code: normalizeCep(originCep) },
+      to: { postal_code: normalizeCep(destinationCep) },
+      products,
+      options: { receipt: false, own_hand: false },
+    }),
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!res.ok) {
+    const detail = (await res.text().catch(() => '')).slice(0, 300);
+    throw new Error(`Melhor Envio respondeu ${res.status}: ${detail}`);
+  }
+
+  const services = await res.json();
+  const allowed = new Set(
+    String(process.env.MELHOR_ENVIO_SERVICES || DEFAULT_MELHOR_ENVIO_SERVICES).split(',').map((id) => id.trim()).filter(Boolean)
+  );
+  const extraDays = handlingDays();
+
+  return (Array.isArray(services) ? services : [])
+    .filter((svc) => svc && !svc.error && allowed.has(String(svc.id)))
+    .map((svc) => {
+      const company = (svc.company && svc.company.name) || '';
+      const days = Number(svc.custom_delivery_time ?? svc.delivery_time) || 0;
+      return {
+        id: `me_${svc.id}`,
+        carrier: company.toLowerCase(),
+        service: svc.name,
+        label: `${company} ${svc.name}`.trim(),
+        price_cents: Math.round(Number(svc.custom_price ?? svc.price) * 100),
+        eta_business_days: days + extraDays,
+      };
+    })
+    .filter((opt) => opt.price_cents > 0)
+    .sort((a, b) => a.price_cents - b.price_cents);
+}
+
 async function quote(params) {
   if (!isValidCep(params.destinationCep)) {
     throw new Error(`CEP de destino inválido: ${params.destinationCep}`);
   }
+  if (usingMelhorEnvio()) return quoteViaMelhorEnvio(params);
   return usingRealLoggi() ? quoteViaLoggiApi(params) : mockQuote(params);
 }
 
@@ -133,4 +215,4 @@ async function track(trackingCode) {
   return usingRealLoggi() ? trackViaLoggiApi(trackingCode) : mockTrack(trackingCode);
 }
 
-module.exports = { quote, createShipment, track, isValidCep, normalizeCep, usingRealLoggi };
+module.exports = { quote, createShipment, track, isValidCep, normalizeCep, usingRealLoggi, usingMelhorEnvio };

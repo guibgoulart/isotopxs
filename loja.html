@@ -26,6 +26,7 @@
     <li><a href="musica.html">Música</a></li>
     <li><a href="release.html">Release</a></li>
     <li><a href="shows.html">Shows</a></li>
+    <li><a href="loja.html">Loja</a></li>
   </ul>
   <button class="nav__toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-links-mobile">
     <span></span><span></span><span></span>
@@ -36,6 +37,7 @@
   <li><a href="musica.html">Música</a></li>
   <li><a href="release.html">Release</a></li>
   <li><a href="shows.html">Shows</a></li>
+  <li><a href="loja.html">Loja</a></li>
 </ul>
 
 <header class="pagehero pagehero--red pagehero--loja">
@@ -44,13 +46,74 @@
   <div class="hero__blob b1 blob-a"></div>
   <div class="hero__blob b2 blob-b"></div>
   <h1 class="pagehero__word">Loja</h1>
-  <p class="pagehero__sub">Voltamos em breve com o merch oficial.</p>
+  <p class="pagehero__sub">Merch oficial: compra própria, sem intermediário, pagamento via Mercado Pago e frete Loggi.</p>
 </header>
 
+<div class="ticker ticker--white ticker--tilt">
+  <div class="ticker__track">
+    <span>MERCH OFICIAL</span><span>·</span><span>ENVIO PARA TODO O BRASIL</span><span>·</span>
+    <span>MERCH OFICIAL</span><span>·</span><span>ENVIO PARA TODO O BRASIL</span><span>·</span>
+  </div>
+</div>
+
 <section class="section section--black">
+  <div class="section__inner">
+    <p class="eyebrow reveal">Produtos</p>
+    <div id="shop-grid" class="grid3 reveal-stagger">
+      <p>Carregando produtos…</p>
+    </div>
+  </div>
+</section>
+
+<section id="cart" class="section section--white">
   <div class="section__inner" style="max-width:70ch;">
-    <p class="eyebrow reveal">Loja temporariamente fechada</p>
-    <p class="lead reveal">Estamos com a loja fora do ar por enquanto. Volte em breve para conferir o merch oficial.</p>
+    <p class="eyebrow reveal">Seu carrinho</p>
+
+    <p id="cart-empty" class="reveal lead">Ainda vazio. Adicione algo da vitrine acima.</p>
+    <div id="cart-items" class="cart-list reveal" hidden></div>
+
+    <div class="cart-summary reveal">
+      <div class="cart-summary__row">
+        <span>Subtotal</span>
+        <strong id="cart-subtotal">R$ 0,00</strong>
+      </div>
+
+      <div class="form" style="max-width:none; flex-direction:row; gap:10px; margin-top:18px; flex-wrap:wrap;">
+        <input type="text" id="cep-input" placeholder="CEP de entrega" inputmode="numeric" maxlength="9" style="flex:1; min-width:180px;">
+        <button type="button" id="quote-btn" class="btn btn--dark"><span>Calcular frete</span></button>
+      </div>
+      <p id="shipping-msg" style="font-size:13px; margin-top:8px;"></p>
+      <div id="shipping-options" class="ship-options"></div>
+
+      <div id="cart-total-row" class="cart-summary__row cart-summary__row--total" hidden>
+        <span>Total</span>
+        <strong id="cart-total">R$ 0,00</strong>
+      </div>
+
+      <div class="form" style="margin-top:28px; max-width:none;">
+        <p class="eyebrow" style="margin:0;">Seus dados</p>
+        <input type="text" id="buyer-name" placeholder="Nome completo" autocomplete="name" maxlength="100">
+        <input type="email" id="buyer-email" placeholder="E-mail para receber a confirmação" autocomplete="email" maxlength="254">
+        <input type="tel" id="buyer-phone" placeholder="Telefone com DDD" autocomplete="tel" inputmode="tel" maxlength="20">
+
+        <p class="eyebrow" style="margin:18px 0 0;">Endereço de entrega</p>
+        <input type="text" id="addr-street" placeholder="Rua / avenida" autocomplete="address-line1" maxlength="120">
+        <div class="form-row">
+          <input type="text" id="addr-number" placeholder="Número" maxlength="20" style="max-width:130px;">
+          <input type="text" id="addr-complement" placeholder="Complemento (opcional)" autocomplete="address-line2" maxlength="60">
+        </div>
+        <input type="text" id="addr-district" placeholder="Bairro" maxlength="60">
+        <div class="form-row">
+          <input type="text" id="addr-city" placeholder="Cidade" autocomplete="address-level2" maxlength="60">
+          <input type="text" id="addr-state" placeholder="UF" autocomplete="address-level1" maxlength="2" style="max-width:80px; text-transform:uppercase;">
+        </div>
+        <p style="font-size:12px; opacity:.6; margin:0;">O CEP é o mesmo do cálculo de frete acima.</p>
+      </div>
+
+      <p style="margin-top:22px;"><button type="button" id="checkout-btn" class="btn btn--dark" aria-disabled="true"><span>Finalizar compra</span></button></p>
+      <p id="checkout-msg" style="font-size:13px; margin-top:8px;"></p>
+      <p style="font-size:12px; opacity:.6; margin-top:14px;">O pagamento acontece na página segura do Mercado Pago. Nenhum dado de cartão passa pelo nosso site.</p>
+    </div>
   </div>
 </section>
 
@@ -78,5 +141,7 @@
 </footer>
 
 <script src="assets/js/main.js"></script>
+<script src="assets/js/cart-widget.js"></script>
+<script src="assets/js/loja.js"></script>
 </body>
 </html>

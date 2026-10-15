@@ -84,6 +84,16 @@ function pickupText(order) {
   return (order.shipping && order.shipping.note) || 'Retirada em Porto Alegre, combinada com a banda.';
 }
 
+// Link wa.me com a mensagem pronta pro Deo: número do pedido, itens (com tamanho) e o nome.
+export function pickupWhatsAppUrl(order) {
+  const number = order.shipping && order.shipping.pickup_whatsapp;
+  if (!number) return null;
+  const items = (order.items || []).map((it) => `${it.qty}× ${it.name}`).join(', ');
+  const first = String((order.buyer && order.buyer.name) || '').trim().split(/\s+/)[0];
+  const message = `Oi, Deo! ${first ? `Aqui é ${first}. ` : ''}Comprei no site da ISOTOPXS o pedido #${shortId(order.id)} (${items}) com retirada em Porto Alegre. Quando e onde dá pra retirar?`;
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+}
+
 function addressHtml(order) {
   const lines = addressLines(order);
   return lines.length ? `<p style="margin:0;">${lines.map(esc).join('<br>')}</p>` : '';
@@ -119,7 +129,8 @@ export function customerConfirmationEmail(order, base) {
 ${itemsTable(order)}
 ${isPickup(order)
     ? `<p style="margin:0 0 4px;font-weight:bold;">Retirada em Porto Alegre</p>
-<p style="margin:0;">${esc(pickupText(order))}</p>`
+<p style="margin:0;">Combina dia e lugar com o Deo pelo WhatsApp — a mensagem já vai com o seu pedido.</p>
+${pickupWhatsAppUrl(order) ? button(pickupWhatsAppUrl(order), 'Combinar retirada no WhatsApp') : `<p style="margin:0;">${esc(pickupText(order))}</p>`}`
     : `<p style="margin:0 0 4px;font-weight:bold;">Entrega</p>
 ${addressHtml(order)}
 <p style="margin:18px 0 0;">Agora a gente embala e posta. Quando sair, você recebe outro e-mail com o código de rastreio.</p>`}
@@ -132,7 +143,7 @@ ${button(orderUrl(order, base), 'Acompanhar pedido')}
     itemsText(order),
     '',
     ...(isPickup(order)
-      ? ['Retirada em Porto Alegre:', pickupText(order)]
+      ? ['Retirada em Porto Alegre: combina dia e lugar com o Deo pelo WhatsApp.', pickupWhatsAppUrl(order) || pickupText(order)]
       : ['Entrega:', ...addressLines(order), '', 'Agora a gente embala e posta. Quando sair, você recebe outro e-mail com o código de rastreio.']),
     `Acompanhar pedido: ${orderUrl(order, base)}`,
     '',

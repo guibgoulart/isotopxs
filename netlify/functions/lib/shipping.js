@@ -23,6 +23,7 @@ function usingMelhorEnvio() {
 // Retirada combinada com a banda em Porto Alegre, sem custo. Sempre oferecida, em qualquer CEP (o
 // rótulo deixa claro que é em Porto Alegre). O pedido não exige endereço quando é retirada.
 const PICKUP_PHONE = '(51) 98145-4073';
+const PICKUP_WHATSAPP = '5551981454073';
 const PICKUP_OPTION = {
   id: 'retirada_poa',
   carrier: 'retirada',
@@ -31,7 +32,8 @@ const PICKUP_OPTION = {
   price_cents: 0,
   eta_business_days: null,
   pickup: true,
-  note: `Grátis. Depois do pagamento, combina dia e lugar com o Deo pelo WhatsApp ou telefone ${PICKUP_PHONE}.`,
+  whatsapp: PICKUP_WHATSAPP,
+  note: `Grátis. Depois de pagar, um botão abre o WhatsApp do Deo (${PICKUP_PHONE}) com o pedido já escrito pra combinar dia e lugar.`,
 };
 
 function isPickup(optionId) {

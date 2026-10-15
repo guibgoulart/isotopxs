@@ -38,11 +38,16 @@
     return loadingProducts;
   }
 
-  // Ignora ids que não existem mais no catálogo (carrinho antigo salvo no navegador).
+  // Chave "id" ou "id:tamanho" (mesmo formato de loja.js). Ignora o que não existe mais no
+  // catálogo ou não tem tamanho válido (carrinho antigo salvo no navegador).
   function entries(cart) {
     return Object.entries(cart)
-      .map(([id, qty]) => ({ product: (products || []).find((p) => p.id === id), qty: Number(qty) || 0 }))
-      .filter((e) => e.product && e.qty > 0);
+      .map(([key, qty]) => {
+        const [id, size = null] = key.split(':');
+        return { product: (products || []).find((p) => p.id === id), size, qty: Number(qty) || 0 };
+      })
+      .filter((e) => e.product && e.qty > 0
+        && (Array.isArray(e.product.sizes) ? e.product.sizes.includes(e.size) : !e.size));
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -80,9 +85,9 @@
       panel.innerHTML = `
         <p class="nav-cart__title">Seu carrinho <span>${count} ${count === 1 ? 'item' : 'itens'}</span></p>
         <ul class="nav-cart__list">
-          ${list.map(({ product, qty }) => `
+          ${list.map(({ product, size, qty }) => `
             <li class="nav-cart__row">
-              <span class="nav-cart__name">${escapeHtml(product.name)}<small>${qty} × ${formatBRL(product.price_cents)}</small></span>
+              <span class="nav-cart__name">${escapeHtml(size ? `${product.name} — tamanho ${size}` : product.name)}<small>${qty} × ${formatBRL(product.price_cents)}</small></span>
               <strong>${formatBRL(product.price_cents * qty)}</strong>
             </li>`).join('')}
         </ul>

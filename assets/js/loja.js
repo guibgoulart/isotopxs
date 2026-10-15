@@ -52,10 +52,24 @@ document.addEventListener('DOMContentLoaded', () => {
   let selectedShipping = null; // { id, label, price_cents, eta_business_days }
   let lastQuotedCep = null;
 
+  // Chave do carrinho: "id" ou "id:tamanho" (ex.: "camiseta:M"). Entrada sem tamanho válido de um
+  // produto que exige tamanho (carrinho antigo salvo no navegador) é ignorada.
   function cartEntries() {
     return Object.entries(cart)
-      .map(([id, qty]) => ({ product: products.find((p) => p.id === id), qty }))
-      .filter((e) => e.product && e.qty > 0);
+      .map(([key, qty]) => {
+        const [id, size = null] = key.split(':');
+        return { key, product: products.find((p) => p.id === id), size, qty };
+      })
+      .filter((e) => e.product && e.qty > 0
+        && (Array.isArray(e.product.sizes) ? e.product.sizes.includes(e.size) : !e.size));
+  }
+
+  function entryName(e) {
+    return e.size ? `${e.product.name} — tamanho ${e.size}` : e.product.name;
+  }
+
+  function cartPayload() {
+    return cartEntries().map((e) => (e.size ? { id: e.product.id, qty: e.qty, size: e.size } : { id: e.product.id, qty: e.qty }));
   }
 
   function cartSubtotalCents() {
@@ -115,11 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return missing;
   }
 
-  function setQty(id, qty) {
+  function setQty(key, qty) {
     if (qty <= 0) {
-      delete cart[id];
+      delete cart[key];
     } else {
-      cart[id] = Math.min(qty, 20);
+      cart[key] = Math.min(qty, 20);
     }
     saveCart(cart);
     invalidateShipping('O carrinho mudou — calcule o frete de novo.');
@@ -138,11 +152,34 @@ document.addEventListener('DOMContentLoaded', () => {
           : `<div class="thumb">${escapeHtml(product.thumb_label)}</div>`}
         <h3>${escapeHtml(product.name)}</h3>
         <div class="price">${formatBRL(product.price_cents)}</div>
+        ${Array.isArray(product.sizes) ? `
+        <fieldset class="size-picker">
+          <legend>Tamanho</legend>
+          <div class="size-picker__options">
+            ${product.sizes.map((s) => `<label class="size-chip"><input type="radio" name="size-${escapeHtml(product.id)}" value="${escapeHtml(s)}"><span>${escapeHtml(s)}</span></label>`).join('')}
+          </div>
+          ${product.size_chart ? '<button type="button" class="size-chart-link">Tabela de medidas</button>' : ''}
+        </fieldset>
+        <p class="size-msg" role="status"></p>` : ''}
         <button type="button" class="btn btn--outline cart-add" style="margin-top:14px;"><span>Adicionar ao carrinho</span></button>
       `;
+      const chartBtn = card.querySelector('.size-chart-link');
+      if (chartBtn) chartBtn.addEventListener('click', () => openSizeChart(product));
+      const sizeMsg = card.querySelector('.size-msg');
+      card.querySelectorAll('.size-chip input').forEach((input) => input.addEventListener('change', () => { sizeMsg.textContent = ''; }));
       const addBtn = card.querySelector('.cart-add');
       addBtn.addEventListener('click', () => {
-        setQty(product.id, (cart[product.id] || 0) + 1);
+        let key = product.id;
+        if (Array.isArray(product.sizes)) {
+          const picked = card.querySelector('.size-chip input:checked');
+          if (!picked) {
+            sizeMsg.textContent = 'Escolhe o tamanho antes.';
+            card.querySelector('.size-chip input').focus();
+            return;
+          }
+          key = `${product.id}:${picked.value}`;
+        }
+        setQty(key, (cart[key] || 0) + 1);
         const label = addBtn.querySelector('span');
         label.textContent = 'Adicionado';
         clearTimeout(addBtn.resetTimer);
@@ -158,11 +195,12 @@ document.addEventListener('DOMContentLoaded', () => {
     cartEmptyEl.hidden = entries.length > 0;
     cartItemsEl.hidden = entries.length === 0;
 
-    entries.forEach(({ product, qty }) => {
+    entries.forEach((entry) => {
+      const { key, product, qty } = entry;
       const row = document.createElement('div');
       row.className = 'cart-row';
       row.innerHTML = `
-        <span class="cart-row__name">${escapeHtml(product.name)}</span>
+        <span class="cart-row__name">${escapeHtml(entryName(entry))}</span>
         <span class="cart-row__qty">
           <button type="button" class="qty-btn" data-delta="-1" aria-label="Diminuir quantidade">−</button>
           <span class="qty-num">${qty}</span>
@@ -171,14 +209,63 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="cart-row__price">${formatBRL(product.price_cents * qty)}</span>
         <button type="button" class="cart-row__remove" aria-label="Remover item">×</button>
       `;
-      row.querySelector('[data-delta="-1"]').addEventListener('click', () => setQty(product.id, qty - 1));
-      row.querySelector('[data-delta="1"]').addEventListener('click', () => setQty(product.id, qty + 1));
-      row.querySelector('.cart-row__remove').addEventListener('click', () => setQty(product.id, 0));
+      row.querySelector('[data-delta="-1"]').addEventListener('click', () => setQty(key, qty - 1));
+      row.querySelector('[data-delta="1"]').addEventListener('click', () => setQty(key, qty + 1));
+      row.querySelector('.cart-row__remove').addEventListener('click', () => setQty(key, 0));
       cartItemsEl.appendChild(row);
     });
 
     cartSubtotalEl.textContent = formatBRL(cartSubtotalCents());
     updateCheckoutAvailability();
+  }
+
+  // Tabela de medidas num <dialog> nativo (Esc fecha, foco preso dentro). Desenho com as letras
+  // A/B/C batendo com as linhas da tabela.
+  const SHIRT_SVG = `
+    <svg class="size-chart__shirt" viewBox="0 0 220 210" role="img" aria-label="Camiseta com as medidas: A tórax, B comprimento do corpo, C comprimento da manga">
+      <path d="M78 22 L94 14 Q110 30 126 14 L142 22 L190 50 L172 86 L150 74 L150 196 L70 196 L70 74 L48 86 L30 50 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      <g style="stroke:var(--red)" stroke-width="2.5" stroke-dasharray="6 5" fill="none">
+        <line x1="72" y1="92" x2="148" y2="92"/>
+        <line x1="110" y1="26" x2="110" y2="194"/>
+        <line x1="146" y1="12" x2="196" y2="40"/>
+      </g>
+      <g font-family="Bebas Neue, sans-serif" font-size="20" style="fill:var(--red)" text-anchor="middle">
+        <text x="88" y="86">A</text><text x="122" y="150">B</text><text x="180" y="20">C</text>
+      </g>
+    </svg>`;
+
+  function openSizeChart(product) {
+    const chart = product.size_chart;
+    let dialog = document.getElementById('size-chart');
+    if (!dialog) {
+      dialog = document.createElement('dialog');
+      dialog.id = 'size-chart';
+      dialog.className = 'size-chart';
+      dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); }); // clique no fundo
+      document.body.appendChild(dialog);
+    }
+    const fmt = (n) => String(n).replace('.', ',');
+    dialog.setAttribute('aria-labelledby', 'size-chart-title');
+    dialog.innerHTML = `
+      <div class="size-chart__inner">
+        <button type="button" class="size-chart__close" aria-label="Fechar tabela de medidas">×</button>
+        <p class="eyebrow" style="margin:0;">${escapeHtml(product.name)}</p>
+        <h2 id="size-chart-title" class="size-chart__title">Tabela de medidas</h2>
+        <div class="size-chart__body">
+          ${SHIRT_SVG}
+          <div class="size-chart__table-wrap">
+            <table>
+              <thead><tr><th scope="col">Medida (${escapeHtml(chart.unit)})</th>${product.sizes.map((s) => `<th scope="col">${escapeHtml(s)}</th>`).join('')}</tr></thead>
+              <tbody>
+                ${chart.rows.map((r) => `<tr><th scope="row"><span class="size-chart__key">${escapeHtml(r.key)}</span>${escapeHtml(r.label)}</th>${product.sizes.map((s) => `<td>${escapeHtml(fmt(r.values[s]))}</td>`).join('')}</tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="size-chart__note">${escapeHtml(chart.note)} Dica: mede uma camiseta sua que veste bem, estendida numa mesa, e compara.</p>
+      </div>`;
+    dialog.querySelector('.size-chart__close').addEventListener('click', () => dialog.close());
+    dialog.showModal();
   }
 
   function renderShippingOptions(options) {
@@ -226,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           destinationCep: cep,
-          items: cartEntries().map((e) => ({ id: e.product.id, qty: e.qty })),
+          items: cartPayload(),
         }),
       });
       const data = await res.json();
@@ -266,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: cartEntries().map((e) => ({ id: e.product.id, qty: e.qty })),
+          items: cartPayload(),
           shipping: { destinationCep: lastQuotedCep, optionId: selectedShipping.id },
           buyer,
         }),

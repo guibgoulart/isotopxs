@@ -58,6 +58,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Botão que abre o WhatsApp do Deo com o pedido já escrito (número, itens e tamanhos).
+  function pickupHtml(order) {
+    const number = String(order.shipping.pickup_whatsapp || '').replace(/\D/g, '');
+    if (!number) {
+      return `<p class="lead" style="margin-top:18px;">${escapeHtml(order.shipping.note || 'Retirada em Porto Alegre, combinada com a banda.')}</p>`;
+    }
+    const items = (order.items || []).map((it) => `${Number(it.qty) || 0}× ${it.name}`).join(', ');
+    const message = `Oi, Deo! Comprei no site da ISOTOPXS o pedido #${String(order.id || '').slice(0, 8).toUpperCase()} (${items}) com retirada em Porto Alegre. Quando e onde dá pra retirar?`;
+    const href = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+    return `<p class="lead" style="margin-top:18px;">Retirada em Porto Alegre: combina dia e lugar com o Deo. A mensagem já vai com o seu pedido.</p>
+      <p style="margin-top:14px;"><a class="btn btn--dark" href="${escapeHtml(href)}" target="_blank" rel="noopener"><span>Combinar retirada no WhatsApp</span></a></p>`;
+  }
+
   function render(order) {
     const info = STATUS_LABEL[order.status] || STATUS_LABEL.pending;
     sub.textContent = info.title;
@@ -79,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? `<p class="lead" style="margin-top:18px;">Código de rastreio${order.shipping_carrier ? ` (${escapeHtml(order.shipping_carrier)})` : ''}: <strong>${escapeHtml(order.tracking_code)}</strong>${trackingLink}</p>`
       : order.status === 'paid'
         ? (order.shipping && order.shipping.pickup
-          ? `<p class="lead" style="margin-top:18px;">${escapeHtml(order.shipping.note || 'Retirada em Porto Alegre, combinada com a banda.')}</p>`
+          ? pickupHtml(order)
           : '<p class="lead" style="margin-top:18px;">Agora a gente embala e posta. Quando sair, o código de rastreio chega no seu e-mail e aparece aqui.</p>')
         : '';
 
@@ -87,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="lead">${escapeHtml(info.tone)}</p>
       <div class="cart-summary" style="margin-top:22px;">
         ${itemsHtml}
-        <div class="cart-summary__row"><span>Frete — ${order.shipping ? escapeHtml(order.shipping.label) : ''}</span><strong>${order.shipping ? formatBRL(order.shipping.price_cents) : ''}</strong></div>
+        <div class="cart-summary__row"><span>Frete — ${order.shipping ? escapeHtml(order.shipping.label) : ''}</span><strong>${order.shipping ? (order.shipping.price_cents ? formatBRL(order.shipping.price_cents) : 'Grátis') : ''}</strong></div>
         <div class="cart-summary__row cart-summary__row--total"><span>Total</span><strong>${formatBRL(order.total_cents)}</strong></div>
       </div>
       ${trackingHtml}

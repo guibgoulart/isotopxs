@@ -2,12 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import catalogPkg from '../netlify/functions/lib/catalog.js';
 
-const { priceCartItems, getProduct } = catalogPkg;
+const { priceCartItems, getProduct, lineItemName } = catalogPkg;
 
 test('priceCartItems soma subtotal e peso de itens válidos', () => {
   const { lineItems, subtotalCents, totalWeightG, errors } = priceCartItems([
     { id: 'cd', qty: 3 },
-    { id: 'camiseta', qty: 1 },
+    { id: 'camiseta', qty: 1, size: 'M' },
   ]);
 
   const cd = getProduct('cd');
@@ -62,4 +62,18 @@ test('produto desativado no catálogo (active: false) não entra no carrinho', (
   const { lineItems, errors } = priceCartItems([{ id: 'adesivo', qty: 1 }]);
   assert.equal(lineItems.length, 0);
   assert.equal(errors.length, 1);
+});
+
+test('camiseta exige tamanho do catálogo (P, M, G, GG); CD ignora tamanho', () => {
+  for (const size of [undefined, '', 'XG', 'G1']) {
+    const { lineItems, errors } = priceCartItems([{ id: 'camiseta', qty: 1, size }]);
+    assert.equal(lineItems.length, 0, `size=${size} deveria ser recusado`);
+    assert.match(errors[0], /Tamanho inválido/);
+  }
+  const ok = priceCartItems([{ id: 'camiseta', qty: 2, size: 'gg' }, { id: 'cd', qty: 1, size: 'M' }]);
+  assert.deepEqual(ok.errors, []);
+  assert.equal(ok.lineItems[0].size, 'GG');
+  assert.equal(ok.lineItems[1].size, null);
+  assert.equal(lineItemName(ok.lineItems[0]), 'Camiseta ISOTOPXS — tamanho GG');
+  assert.equal(lineItemName(ok.lineItems[1]), getProduct('cd').name);
 });

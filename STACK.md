@@ -52,7 +52,8 @@ escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/anal
   prazo mostrado soma `SHIPPING_HANDLING_DAYS` (padrão 2) pra banda postar. Sem token, cai no mock.
   Sempre tem também a opção **Retirada em Porto Alegre** (grátis, combinar com o Deo pelo
   (51) 98145-4073 — `PICKUP_OPTION` em `lib/shipping.js`): nela o checkout não pede endereço e a
-  cobrança no Mercado Pago não leva linha de frete.
+  cobrança no Mercado Pago não leva linha de frete. Depois do pagamento, a página do pedido e o
+  e-mail têm um botão que abre o WhatsApp do Deo com a mensagem pronta (pedido, itens e tamanhos).
   O envio é **manual**: a banda compra a etiqueta no painel do Melhor Envio, posta na agência e
   coloca transportadora + código de rastreio no painel. O checkout coleta endereço completo e
   telefone justamente pra isso.
@@ -99,7 +100,9 @@ escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/anal
 
 - `data/products.json` — catálogo (fonte de verdade também pro backend), com produtos e preços reais
   desde 2026-10-13. Desde 2026-10-14 só camiseta e CD à venda (adesivo, pôster e kit com
-  `active: false`); `image`/`image_fit` dão a foto do card na loja. Pesos/dimensões são estimativas — conferir com o pacote real (o frete é cotado com eles).
+  `active: false`); `image`/`image_fit` dão a foto do card na loja. A camiseta tem `sizes`
+  (P, M, G, GG — obrigatório no carrinho e validado no servidor) e `size_chart` (tabela de medidas
+  que a loja mostra num modal). No carrinho a chave é `id:tamanho`. Pesos/dimensões são estimativas — conferir com o pacote real (o frete é cotado com eles).
 
 ## Analytics
 
@@ -132,7 +135,7 @@ escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/anal
 
 ## Testes
 
-- `node --test` (`npm test`) — 75 testes cobrindo precificação, pedidos, claims, webhook, frete, CEP,
+- `node --test` (`npm test`) — 77 testes cobrindo precificação, pedidos, claims, webhook, frete, CEP,
   dados de entrega, sessão/login do painel, edição de pedido e avisos (e-mail/WhatsApp com `fetch`
   falso — nenhum teste bate em API de verdade) (`test/*.test.mjs`). Sem CI configurado ainda — roda
   só localmente/manual antes de deploy.

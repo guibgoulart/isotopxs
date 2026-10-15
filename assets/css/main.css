@@ -987,6 +987,62 @@ th{ text-transform:uppercase; font-family: var(--f-body); font-weight:700; font-
 .cart-summary__row--total{ font-size:20px; border-bottom:none; padding-top:16px; }
 .cart-summary__row--total strong{ color: var(--red); }
 
+/* ---------- tamanho (loja) ---------- */
+.size-picker{ border:0; padding:0; margin:14px 0 0; min-width:0; }
+.size-picker legend{ font-family: var(--f-label); font-size:14px; letter-spacing:1.5px; text-transform:uppercase; opacity:.7; padding:0; margin-bottom:8px; }
+.size-picker__options{ display:flex; gap:8px; flex-wrap:wrap; }
+.size-chip{ position:relative; cursor:pointer; }
+.size-chip input{ position:absolute; opacity:0; width:1px; height:1px; }
+.size-chip span{
+  display:inline-flex; align-items:center; justify-content:center; min-width:46px; height:42px; padding:0 10px;
+  border:2px solid rgba(244,241,234,.35); font-family: var(--f-label); font-size:18px; letter-spacing:1px;
+  transition: border-color .12s ease, background .12s ease, color .12s ease;
+}
+.size-chip:hover span{ border-color: var(--white); }
+.size-chip input:checked + span{ background: var(--white); color: var(--black); border-color: var(--white); }
+.size-chip input:focus-visible + span{ outline:2px solid var(--red); outline-offset:3px; }
+.size-chart-link{
+  margin-top:10px; padding:0; background:none; border:0; color:inherit; cursor:pointer;
+  font-family: var(--f-body); font-size:13px; text-decoration:underline; text-underline-offset:3px; opacity:.85;
+}
+.size-chart-link:hover{ color: var(--red); opacity:1; }
+.size-msg{ margin:8px 0 0; font-size:13px; color: var(--red); min-height:0; }
+.size-msg:empty{ display:none; }
+
+/* ---------- tabela de medidas (dialog) ---------- */
+.size-chart{
+  width: min(720px, calc(100% - 32px)); max-height: calc(100% - 32px); padding:0;
+  background: var(--black); color: var(--white); border:3px solid var(--red);
+  box-shadow: 10px 10px 0 var(--red-dk), -6px -6px 0 rgba(0,217,255,.35);
+}
+.size-chart::backdrop{ background: rgba(6,6,6,.78); }
+.size-chart__inner{ position:relative; padding: clamp(20px,4vw,34px); }
+.size-chart__title{ font-family: var(--f-display); font-size: clamp(24px,5vw,36px); text-transform:uppercase; margin:6px 0 20px; }
+.size-chart__close{
+  position:absolute; top:10px; right:12px; width:44px; height:44px; background:none; border:0;
+  color: var(--white); font-size:30px; line-height:1; cursor:pointer;
+}
+.size-chart__close:hover{ color: var(--red); }
+.size-chart__close{ z-index:2; }
+.size-chart__close:focus-visible{ outline:2px solid var(--red); outline-offset:-4px; }
+.size-chart__inner > .eyebrow, .size-chart__title{ padding-right:48px; }
+.size-chart__body{ display:grid; grid-template-columns: 170px 1fr; gap:24px; align-items:center; }
+.size-chart__shirt{ width:100%; height:auto; color: var(--white); }
+.size-chart__table-wrap{ overflow-x:auto; }
+.size-chart table td, .size-chart table thead th{ text-align:center; font-size:18px; }
+.size-chart table thead th:first-child{ text-align:left; font-size:13px; }
+.size-chart table tbody th{ opacity:1; font-family: var(--f-label); font-weight:400; font-size:16px; letter-spacing:1px; white-space:nowrap; }
+.size-chart__key{
+  display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-right:8px;
+  background: var(--red); color: var(--white); font-size:14px;
+}
+.size-chart__note{ font-size:13px; opacity:.7; margin:18px 0 0; }
+@media (max-width:560px){
+  .size-chart__body{ grid-template-columns:1fr; }
+  .size-chart__shirt{ max-width:150px; margin:0 auto; }
+  .size-chart table tbody th{ white-space:normal; }
+}
+
 .ship-options{ display:flex; flex-direction:column; gap:8px; margin-top:10px; }
 .ship-option{
   display:flex; align-items:center; gap:12px;

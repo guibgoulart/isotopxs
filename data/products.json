@@ -15,7 +15,49 @@
         "width": 25,
         "height": 3
       },
-      "active": true
+      "active": true,
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "size_chart": {
+        "unit": "cm",
+        "rows": [
+          {
+            "key": "A",
+            "label": "Tórax (largura)",
+            "values": {
+              "P": 52,
+              "M": 54,
+              "G": 56,
+              "GG": 58.5
+            }
+          },
+          {
+            "key": "B",
+            "label": "Comprimento do corpo",
+            "values": {
+              "P": 70,
+              "M": 72,
+              "G": 74,
+              "GG": 76
+            }
+          },
+          {
+            "key": "C",
+            "label": "Comprimento da manga",
+            "values": {
+              "P": 23.5,
+              "M": 24,
+              "G": 24.5,
+              "GG": 25
+            }
+          }
+        ],
+        "note": "Medidas da peça estendida. Podem variar até 2 cm por causa da confecção."
+      }
     },
     {
       "id": "cd",

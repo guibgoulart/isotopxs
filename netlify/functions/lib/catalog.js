@@ -9,7 +9,13 @@ function getProduct(id) {
   return products.find((p) => p.id === id && p.active !== false) || null;
 }
 
-// items: [{id, qty}] — vindo do cliente, portanto não confiável.
+// Nome que aparece no pedido, no Mercado Pago, nos e-mails e no painel: inclui o tamanho.
+function lineItemName({ product, size }) {
+  return size ? `${product.name} — tamanho ${size}` : product.name;
+}
+
+// items: [{id, qty, size?}] — vindo do cliente, portanto não confiável. Produto com `sizes` no
+// catálogo exige um tamanho válido; nos outros o tamanho é ignorado.
 // Retorna { lineItems, subtotalCents, totalWeightG, errors }.
 function priceCartItems(items) {
   const lineItems = [];
@@ -28,12 +34,20 @@ function priceCartItems(items) {
       errors.push(`Quantidade inválida para ${product.id}`);
       continue;
     }
+    let size = null;
+    if (Array.isArray(product.sizes)) {
+      size = String((raw && raw.size) || '').trim().toUpperCase();
+      if (!product.sizes.includes(size)) {
+        errors.push(`Tamanho inválido para ${product.id}`);
+        continue;
+      }
+    }
     subtotalCents += product.price_cents * qty;
     totalWeightG += product.weight_g * qty;
-    lineItems.push({ product, qty });
+    lineItems.push({ product, qty, size });
   }
 
   return { lineItems, subtotalCents, totalWeightG, errors };
 }
 
-module.exports = { products, getProduct, priceCartItems };
+module.exports = { products, getProduct, priceCartItems, lineItemName };

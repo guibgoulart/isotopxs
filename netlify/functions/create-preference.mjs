@@ -8,7 +8,7 @@ import { parseBuyer } from './lib/checkout-input.mjs';
 import { captureError, withErrorReporting } from './lib/sentry.mjs';
 import { posthog, flushPostHog } from './lib/posthog.mjs';
 
-const { priceCartItems } = catalogPkg;
+const { priceCartItems, lineItemName } = catalogPkg;
 const shipping = shippingPkg;
 const mercadopago = mercadopagoPkg;
 
@@ -89,9 +89,10 @@ export default withErrorReporting(async (req) => {
     status: 'pending',
     payment_status: null,
     payment_id: null,
-    items: lineItems.map(({ product, qty }) => ({
+    items: lineItems.map(({ product, qty, size }) => ({
       id: product.id,
-      name: product.name,
+      name: lineItemName({ product, size }),
+      size: size || undefined,
       qty,
       unit_price_cents: product.price_cents,
     })),
@@ -104,6 +105,7 @@ export default withErrorReporting(async (req) => {
       eta_business_days: shippingOption.eta_business_days,
       pickup: pickup || undefined,
       note: shippingOption.note || undefined,
+      pickup_whatsapp: shippingOption.whatsapp || undefined,
       address: pickup ? null : address,
     },
     total_cents: totalCents,
@@ -118,9 +120,9 @@ export default withErrorReporting(async (req) => {
   const base = siteUrl();
   const preference = {
     items: [
-      ...lineItems.map(({ product, qty }) => ({
-        id: product.id,
-        title: product.name,
+      ...lineItems.map(({ product, qty, size }) => ({
+        id: size ? `${product.id}-${size}` : product.id,
+        title: lineItemName({ product, size }),
         quantity: qty,
         unit_price: product.price_cents / 100,
         currency_id: 'BRL',

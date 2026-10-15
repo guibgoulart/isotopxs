@@ -190,7 +190,8 @@ async function quoteViaMelhorEnvio({ originCep, destinationCep, items }) {
         id: `me_${svc.id}`,
         carrier: company.toLowerCase(),
         service: svc.name,
-        label: `${company} ${svc.name}`.trim(),
+        // "Loggi Ponto" já vem com o nome da empresa — não vira "Loggi Loggi Ponto".
+        label: String(svc.name).toLowerCase().startsWith(company.toLowerCase()) ? svc.name : `${company} ${svc.name}`.trim(),
         price_cents: Math.round(Number(svc.custom_price ?? svc.price) * 100),
         eta_business_days: days + extraDays,
       };

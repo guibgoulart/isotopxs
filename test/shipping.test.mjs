@@ -65,12 +65,15 @@ test('com MELHOR_ENVIO_TOKEN, cota no Melhor Envio, filtra serviços e soma o pr
       { id: 2, name: 'SEDEX', price: '34.71', custom_price: '34.71', delivery_time: 2, custom_delivery_time: 2, company: { name: 'Correios' } },
       { id: 17, name: 'Mini Envios', error: 'Dimensões do objeto ultrapassam o limite.', company: { name: 'Correios' } },
       { id: 3, name: '.Package', price: '20.01', custom_price: '20.01', delivery_time: 4, custom_delivery_time: 4, company: { name: 'Jadlog' } },
+      { id: 34, name: 'Loggi Ponto', price: '19.70', custom_price: '19.70', delivery_time: 6, custom_delivery_time: 6, company: { name: 'Loggi' } },
     ]), { status: 200, headers: { 'Content-Type': 'application/json' } });
   };
   process.env.MELHOR_ENVIO_TOKEN = 'token-de-teste';
+  process.env.MELHOR_ENVIO_SERVICES = '1,2,17,34';
   t.after(() => {
     globalThis.fetch = realFetch;
     delete process.env.MELHOR_ENVIO_TOKEN;
+    delete process.env.MELHOR_ENVIO_SERVICES;
   });
 
   const cd = { id: 'cd', price_cents: 3500, weight_g: 100, dims_cm: { length: 14, width: 12, height: 1 } };
@@ -81,6 +84,7 @@ test('com MELHOR_ENVIO_TOKEN, cota no Melhor Envio, filtra serviços e soma o pr
   assert.deepEqual(sent.body.from, { postal_code: '91910001' });
   assert.deepEqual(sent.body.products[0], { id: 'cd', width: 12, height: 1, length: 14, weight: 0.1, insurance_value: 35, quantity: 2 });
   assert.deepEqual(options, [
+    { id: 'me_34', carrier: 'loggi', service: 'Loggi Ponto', label: 'Loggi Ponto', price_cents: 1970, eta_business_days: 8 },
     { id: 'me_1', carrier: 'correios', service: 'PAC', label: 'Correios PAC', price_cents: 2217, eta_business_days: 7 },
     { id: 'me_2', carrier: 'correios', service: 'SEDEX', label: 'Correios SEDEX', price_cents: 3471, eta_business_days: 4 },
   ]);

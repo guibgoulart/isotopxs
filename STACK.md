@@ -48,7 +48,7 @@ escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/anal
   servidor a partir de `data/products.json`, nunca confiando no navegador.
 - **Frete**: cotação real pelo **Melhor Envio** (`lib/shipping.js`, `MELHOR_ENVIO_TOKEN`) — preço e
   prazo das etiquetas de verdade, a partir do peso/medidas de `data/products.json` e do
-  `ORIGIN_CEP`. Por padrão só Correios (PAC, SEDEX, Mini Envios; `MELHOR_ENVIO_SERVICES` muda), e o
+  `ORIGIN_CEP`. Em produção: Correios (PAC, SEDEX, Mini Envios) + Loggi (Express, Ponto), via `MELHOR_ENVIO_SERVICES`, e o
   prazo mostrado soma `SHIPPING_HANDLING_DAYS` (padrão 2) pra banda postar. Sem token, cai no mock.
   O envio é **manual**: a banda compra a etiqueta no painel do Melhor Envio, posta na agência e
   coloca transportadora + código de rastreio no painel. O checkout coleta endereço completo e

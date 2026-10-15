@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="thumb">${escapeHtml(product.thumb_label)}</div>
         <h3>${escapeHtml(product.name)}</h3>
         <div class="price">${formatBRL(product.price_cents)}</div>
-        <button type="button" class="btn btn--dark cart-add" style="margin-top:14px;"><span>Adicionar ao carrinho</span></button>
+        <button type="button" class="btn btn--outline cart-add" style="margin-top:14px;"><span>Adicionar ao carrinho</span></button>
       `;
       const addBtn = card.querySelector('.cart-add');
       addBtn.addEventListener('click', () => {

@@ -416,6 +416,8 @@ p{ margin:0 0 1em; }
   color: var(--black);
   cursor:pointer;
   transition: color .12s ease;
+  /* <button class="btn">: tira o fundo/borda padrão do navegador — a caixa é o ::before */
+  background:none; border:0; border-radius:0; appearance:none; -webkit-appearance:none;
 }
 .btn::before{
   content:"";

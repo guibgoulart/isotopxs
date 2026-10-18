@@ -74,6 +74,6 @@ test('camiseta exige tamanho do catálogo (P, M, G, GG); CD ignora tamanho', () 
   assert.deepEqual(ok.errors, []);
   assert.equal(ok.lineItems[0].size, 'GG');
   assert.equal(ok.lineItems[1].size, null);
-  assert.equal(lineItemName(ok.lineItems[0]), 'Camiseta ISOTOPXS — tamanho GG');
+  assert.equal(lineItemName(ok.lineItems[0]), 'Camiseta ISOTOPXS (tamanho GG)');
   assert.equal(lineItemName(ok.lineItems[1]), getProduct('cd').name);
 });

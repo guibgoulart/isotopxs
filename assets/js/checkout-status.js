@@ -15,7 +15,7 @@ function escapeHtml(value) {
 }
 
 const STATUS_LABEL = {
-  paid: { title: 'Pagamento aprovado', tone: 'Show — seu pedido está confirmado. A confirmação também foi pro seu e-mail.' },
+  paid: { title: 'Pagamento aprovado', tone: 'Show! Seu pedido está confirmado. A confirmação também foi pro seu e-mail.' },
   pending: { title: 'Pagamento em análise', tone: 'Assim que for aprovado, você recebe a confirmação por e-mail.' },
   failed: { title: 'Pagamento não aprovado', tone: 'Tente novamente ou use outro cartão.' },
   shipped: { title: 'Pedido enviado', tone: 'Seu pedido já foi postado e está a caminho.' },
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!orderId) {
     sub.textContent = 'Pedido não encontrado';
-    box.innerHTML = '<p class="lead">Não recebemos um número de pedido nessa página. Se você acabou de comprar algo, confira seu e-mail — a confirmação vem por lá.</p>';
+    box.innerHTML = '<p class="lead">Não recebemos um número de pedido nessa página. Se você acabou de comprar algo, confira seu e-mail, a confirmação vem por lá.</p>';
     return;
   }
 
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // tracking_url só chega aqui se for https:// (validado no painel, admin-orders).
     const trackingLink = order.tracking_url && /^https:\/\//.test(order.tracking_url)
-      ? ` — <a href="${escapeHtml(order.tracking_url)}" target="_blank" rel="noopener">rastrear</a>`
+      ? ` (<a href="${escapeHtml(order.tracking_url)}" target="_blank" rel="noopener">rastrear</a>)`
       : '';
     const trackingHtml = order.tracking_code
       ? `<p class="lead" style="margin-top:18px;">Código de rastreio${order.shipping_carrier ? ` (${escapeHtml(order.shipping_carrier)})` : ''}: <strong>${escapeHtml(order.tracking_code)}</strong>${trackingLink}</p>`
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="lead">${escapeHtml(info.tone)}</p>
       <div class="cart-summary" style="margin-top:22px;">
         ${itemsHtml}
-        <div class="cart-summary__row"><span>Frete — ${order.shipping ? escapeHtml(order.shipping.label) : ''}</span><strong>${order.shipping ? (order.shipping.price_cents ? formatBRL(order.shipping.price_cents) : 'Grátis') : ''}</strong></div>
+        <div class="cart-summary__row"><span>Frete - ${order.shipping ? escapeHtml(order.shipping.label) : ''}</span><strong>${order.shipping ? (order.shipping.price_cents ? formatBRL(order.shipping.price_cents) : 'Grátis') : ''}</strong></div>
         <div class="cart-summary__row cart-summary__row--total"><span>Total</span><strong>${formatBRL(order.total_cents)}</strong></div>
       </div>
       ${trackingHtml}

@@ -4,7 +4,7 @@ import { customerConfirmationEmail, bandNewOrderEmail, pickupWhatsAppUrl } from 
 
 const pickupOrder = {
   id: 'abcdef12-0000-0000-0000-000000000000',
-  items: [{ id: 'cd', name: 'CD Físico', qty: 1, unit_price_cents: 3500 }, { id: 'camiseta', name: 'Camiseta ISOTOPXS — tamanho M', size: 'M', qty: 1, unit_price_cents: 9000 }],
+  items: [{ id: 'cd', name: 'CD Físico', qty: 1, unit_price_cents: 3500 }, { id: 'camiseta', name: 'Camiseta ISOTOPXS (tamanho M)', size: 'M', qty: 1, unit_price_cents: 9000 }],
   total_cents: 3500,
   buyer: { name: 'Fulana de Tal', email: 'f@example.com', phone: '51999990000' },
   shipping: {
@@ -32,6 +32,6 @@ test('mensagem pronta do WhatsApp da retirada leva pedido, itens com tamanho e p
   const text = url.searchParams.get('text');
   assert.match(text, /^Oi, Deo! Aqui é Fulana\. /);
   assert.match(text, /pedido #ABCDEF12/);
-  assert.match(text, /1× Camiseta ISOTOPXS — tamanho M/);
+  assert.match(text, /1× Camiseta ISOTOPXS \(tamanho M\)/);
   assert.equal(pickupWhatsAppUrl({ ...pickupOrder, shipping: { pickup: true } }), null);
 });

@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (audioBtn && bgAudio) {
     audioBtn.addEventListener('click', () => {
       if (!bgAudio.src) {
-        audioBtn.textContent = '…';
+        audioBtn.textContent = '...';
         setTimeout(() => (audioBtn.textContent = '▶'), 1000);
         return;
       }

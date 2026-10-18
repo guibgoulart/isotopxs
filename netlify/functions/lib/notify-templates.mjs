@@ -35,8 +35,8 @@ export function addressLines(order) {
   const cep = formatCep(shipping.destination_cep);
   if (!a) return cep ? [`CEP ${cep}`] : [];
   return [
-    `${a.street}, ${a.number}${a.complement ? ` — ${a.complement}` : ''}`,
-    `${a.district} — ${a.city}/${a.state}`,
+    `${a.street}, ${a.number}${a.complement ? `, ${a.complement}` : ''}`,
+    `${a.district}, ${a.city}/${a.state}`,
     `CEP ${cep}`,
   ];
 }
@@ -50,9 +50,9 @@ function adminUrl(order, base) {
 }
 
 function itemsText(order) {
-  const lines = (order.items || []).map((it) => `${it.qty}x ${it.name} — ${formatBRL(it.unit_price_cents * it.qty)}`);
-  if (order.shipping) lines.push(`Frete (${order.shipping.label}) — ${formatBRL(order.shipping.price_cents)}`);
-  lines.push(`Total — ${formatBRL(order.total_cents)}`);
+  const lines = (order.items || []).map((it) => `${it.qty}x ${it.name}: ${formatBRL(it.unit_price_cents * it.qty)}`);
+  if (order.shipping) lines.push(`Frete - ${order.shipping.label}: ${formatBRL(order.shipping.price_cents)}`);
+  lines.push(`Total: ${formatBRL(order.total_cents)}`);
   return lines.join('\n');
 }
 
@@ -63,7 +63,7 @@ function itemsTable(order) {
     <td align="right" style="${cell}white-space:nowrap;">${formatBRL(it.unit_price_cents * it.qty)}</td></tr>`);
   if (order.shipping) {
     rows.push(`
-    <tr><td style="${cell}">Frete — ${esc(order.shipping.label)}</td>
+    <tr><td style="${cell}">Frete - ${esc(order.shipping.label)}</td>
     <td align="right" style="${cell}white-space:nowrap;">${formatBRL(order.shipping.price_cents)}</td></tr>`);
   }
   rows.push(`
@@ -120,7 +120,7 @@ ${body}
 
 export function customerConfirmationEmail(order, base) {
   const id = shortId(order.id);
-  const subject = `ISOTOPXS — pedido #${id} confirmado`;
+  const subject = `ISOTOPXS - pedido #${id} confirmado`;
   const html = layout({
     title: `Pedido #${id} confirmado`,
     preheader: 'Pagamento aprovado. A gente avisa quando o pacote sair.',
@@ -129,7 +129,7 @@ export function customerConfirmationEmail(order, base) {
 ${itemsTable(order)}
 ${isPickup(order)
     ? `<p style="margin:0 0 4px;font-weight:bold;">Retirada em Porto Alegre</p>
-<p style="margin:0;">Combina dia e lugar com o Deo pelo WhatsApp — a mensagem já vai com o seu pedido.</p>
+<p style="margin:0;">Combina dia e lugar com o Deo pelo WhatsApp, a mensagem já vai com o seu pedido.</p>
 ${pickupWhatsAppUrl(order) ? button(pickupWhatsAppUrl(order), 'Combinar retirada no WhatsApp') : `<p style="margin:0;">${esc(pickupText(order))}</p>`}`
     : `<p style="margin:0 0 4px;font-weight:bold;">Entrega</p>
 ${addressHtml(order)}
@@ -155,7 +155,7 @@ ${button(orderUrl(order, base), 'Acompanhar pedido')}
 export function customerShippedEmail(order, base) {
   const id = shortId(order.id);
   const carrier = order.shipping_carrier ? ` (${order.shipping_carrier})` : '';
-  const subject = `ISOTOPXS — pedido #${id} enviado`;
+  const subject = `ISOTOPXS - pedido #${id} enviado`;
 
   const trackingHtml = order.tracking_code
     ? `<p style="margin:0 0 6px;">Código de rastreio${esc(carrier)}:</p>
@@ -192,10 +192,10 @@ ${addressHtml(order)}
 export function bandNewOrderEmail(order, base) {
   const id = shortId(order.id);
   const buyer = order.buyer || {};
-  const subject = `Novo pedido pago #${id} — ${formatBRL(order.total_cents)}`;
+  const subject = `Novo pedido pago #${id} (${formatBRL(order.total_cents)})`;
   const html = layout({
     title: `Novo pedido pago #${id}`,
-    preheader: `${buyer.name || 'Cliente'} — ${formatBRL(order.total_cents)}`,
+    preheader: `${buyer.name || 'Cliente'}, ${formatBRL(order.total_cents)}`,
     body: `
 <p style="margin:0 0 12px;">Caiu um pedido pago na loja. Bora embalar.</p>
 ${itemsTable(order)}
@@ -203,7 +203,7 @@ ${itemsTable(order)}
 <p style="margin:0 0 14px;">${esc(buyer.name)}<br>${esc(buyer.email)}${buyer.phone ? `<br>${esc(buyer.phone)}` : ''}</p>
 ${isPickup(order)
     ? `<p style="margin:0 0 4px;font-weight:bold;">Retirada em Porto Alegre</p>
-<p style="margin:0;">Cliente vai retirar em mãos — combinar com ele(a) pelo telefone acima.</p>`
+<p style="margin:0;">Cliente vai retirar em mãos. Combinar com ele(a) pelo telefone acima.</p>`
     : `<p style="margin:0 0 4px;font-weight:bold;">Endereço de entrega</p>
 ${addressHtml(order)}`}
 ${button(adminUrl(order, base), 'Abrir no painel')}`,
@@ -233,7 +233,7 @@ export function bandNewOrderWhatsApp(order, base) {
   const a = order.shipping && order.shipping.address;
   const items = (order.items || []).map((it) => `${it.qty}x ${it.name}`).join('\n');
   return [
-    `ISOTOPXS — novo pedido pago #${shortId(order.id)}`,
+    `ISOTOPXS - novo pedido pago #${shortId(order.id)}`,
     items,
     `Total: ${formatBRL(order.total_cents)}${order.shipping ? ` (${order.shipping.label})` : ''}`,
     a ? `Destino: ${a.city}/${a.state}` : '',

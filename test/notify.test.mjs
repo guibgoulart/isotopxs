@@ -42,10 +42,10 @@ function makeOrder(overrides = {}) {
   return {
     id: '2a62bf14-7a1b-45b3-a9e0-3aabc6d888f6',
     status: 'paid',
-    items: [{ id: 'cd', name: 'CD Físico — qualquer frase fica melhor com foda-se no final', qty: 1, unit_price_cents: 3500 }],
+    items: [{ id: 'cd', name: 'CD Físico - qualquer frase fica melhor com foda-se no final', qty: 1, unit_price_cents: 3500 }],
     shipping: {
       destination_cep: '91910001',
-      label: 'Loggi Ponto — retirada em ponto de coleta',
+      label: 'Loggi Ponto (retirada em ponto de coleta)',
       price_cents: 1290,
       address: { street: 'Av. Ipiranga', number: '1000', complement: 'ap 2', district: 'Azenha', city: 'Porto Alegre', state: 'RS' },
     },
@@ -67,10 +67,10 @@ test('templates: valores do cliente são escapados no HTML e ficam crus no texto
 
 test('templates: confirmação traz itens, total, endereço e link do pedido', () => {
   const { subject, html, text } = customerConfirmationEmail(makeOrder(), 'https://isotopxs.com.br');
-  assert.equal(subject, 'ISOTOPXS — pedido #2A62BF14 confirmado');
+  assert.equal(subject, 'ISOTOPXS - pedido #2A62BF14 confirmado');
   assert.match(html, /R\$\s47,90/);
-  assert.match(text, /Total — R\$\s47,90/);
-  assert.ok(text.includes('Av. Ipiranga, 1000 — ap 2'));
+  assert.match(text, /Total: R\$\s47,90/);
+  assert.ok(text.includes('Av. Ipiranga, 1000, ap 2'));
   assert.ok(text.includes('https://isotopxs.com.br/checkout-status.html?order=2a62bf14-7a1b-45b3-a9e0-3aabc6d888f6'));
 });
 

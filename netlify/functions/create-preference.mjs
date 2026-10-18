@@ -131,7 +131,7 @@ export default withErrorReporting(async (req) => {
       ...(shippingOption.price_cents > 0
         ? [{
             id: `frete-${shippingOption.id}`,
-            title: `Frete — ${shippingOption.label}`,
+            title: `Frete - ${shippingOption.label}`,
             quantity: 1,
             unit_price: shippingOption.price_cents / 100,
             currency_id: 'BRL',

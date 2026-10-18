@@ -11,7 +11,7 @@ function getProduct(id) {
 
 // Nome que aparece no pedido, no Mercado Pago, nos e-mails e no painel: inclui o tamanho.
 function lineItemName({ product, size }) {
-  return size ? `${product.name} — tamanho ${size}` : product.name;
+  return size ? `${product.name} (tamanho ${size})` : product.name;
 }
 
 // items: [{id, qty, size?}] — vindo do cliente, portanto não confiável. Produto com `sizes` no

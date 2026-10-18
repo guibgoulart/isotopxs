@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function entryName(e) {
-    return e.size ? `${e.product.name} — tamanho ${e.size}` : e.product.name;
+    return e.size ? `${e.product.name} (tamanho ${e.size})` : e.product.name;
   }
 
   function cartPayload() {
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cart[key] = Math.min(qty, 20);
     }
     saveCart(cart);
-    invalidateShipping('O carrinho mudou — calcule o frete de novo.');
+    invalidateShipping('O carrinho mudou, calcule o frete de novo.');
     renderCart();
   }
 
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <strong>${escapeHtml(opt.label)}</strong>
           <small>${opt.pickup
             ? escapeHtml(opt.note || 'Grátis')
-            : `até ${Number(opt.eta_business_days) || 0} dia(s) útil(eis) — ${formatBRL(opt.price_cents)}`}</small>
+            : `até ${Number(opt.eta_business_days) || 0} dia(s) útil(eis) · ${formatBRL(opt.price_cents)}`}</small>
         </span>
       `;
       label.querySelector('input').addEventListener('change', () => {
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    shippingMsgEl.textContent = 'Calculando frete…';
+    shippingMsgEl.textContent = 'Calculando frete...';
     quoteBtn.setAttribute('aria-disabled', 'true');
     try {
       const res = await fetch('/.netlify/functions/shipping-quote', {
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    checkoutMsgEl.textContent = 'Redirecionando para o pagamento…';
+    checkoutMsgEl.textContent = 'Redirecionando para o pagamento...';
     checkoutBtn.setAttribute('aria-disabled', 'true');
     try {
       const res = await fetch('/.netlify/functions/create-preference', {

@@ -3,7 +3,7 @@
 
 const STATUS = {
   pending: 'Aguardando pagamento',
-  paid: 'Pago — a enviar',
+  paid: 'Pago (a enviar)',
   shipped: 'Enviado',
   delivered: 'Entregue',
   failed: 'Pagamento recusado',
@@ -66,8 +66,8 @@ function addressLines(order) {
   const cep = formatCep(shipping.destination_cep);
   if (!a) return [];
   return [
-    `${a.street}, ${a.number}${a.complement ? ` — ${a.complement}` : ''}`,
-    `${a.district} — ${a.city}/${a.state}`,
+    `${a.street}, ${a.number}${a.complement ? `, ${a.complement}` : ''}`,
+    `${a.district}, ${a.city}/${a.state}`,
     `CEP ${cep}`,
   ];
 }
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function loadOrders() {
-    orderList.innerHTML = '<p class="admin-empty">Carregando pedidos…</p>';
+    orderList.innerHTML = '<p class="admin-empty">Carregando pedidos...</p>';
     try {
       const data = await api('admin-orders');
       orders = data.orders || [];
@@ -222,21 +222,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const n = order.paid_notifications;
     const log = [
       order.paid_notified_at && `Pagamento confirmado em ${formatDate(order.paid_notified_at, true)}.`,
-      n && `Avisos do pagamento — e-mail pro cliente: ${channel(n.customer_email)} · e-mail pra banda: ${channel(n.band_email)} · WhatsApp: ${n.band_whatsapp && n.band_whatsapp.length ? n.band_whatsapp.map(channel).join(', ') : 'desligado'}.`,
+      n && `Avisos do pagamento: e-mail pro cliente: ${channel(n.customer_email)} · e-mail pra banda: ${channel(n.band_email)} · WhatsApp: ${n.band_whatsapp && n.band_whatsapp.length ? n.band_whatsapp.map(channel).join(', ') : 'desligado'}.`,
       order.shipped_email_sent_at && `E-mail de envio mandado em ${formatDate(order.shipped_email_sent_at, true)}${order.shipped_email_key ? ` (rastreio ${order.shipped_email_key})` : ' (sem código)'}.`,
       order.shipping_error && `Erro no envio automático: ${order.shipping_error}`,
       order.updated_at && `Última atualização em ${formatDate(order.updated_at, true)}.`,
     ].filter(Boolean);
 
     detailView.innerHTML = `
-      <button type="button" class="admin-link" id="back-btn">← Todos os pedidos</button>
+      <button type="button" class="admin-link" id="back-btn">Voltar pra lista</button>
       <div class="detail-head"><h2>#${escapeHtml(shortId(order.id))}</h2>${badge(order.status)}</div>
       <p class="detail-meta">Feito em ${escapeHtml(formatDate(order.created_at, true))}
         · Mercado Pago: ${escapeHtml(order.payment_status || 'sem pagamento')}${order.payment_id ? ` (nº ${escapeHtml(order.payment_id)})` : ''}</p>
 
       ${order.shipping_claim ? `
         <div class="admin-notice">
-          <p>A trava de envio automático deste pedido ficou presa${order.shipping_claim_at ? ` desde ${escapeHtml(formatDate(order.shipping_claim_at, true))}` : ''} (bug antigo, já corrigido). Não atrapalha o envio manual — dá pra liberar.</p>
+          <p>A trava de envio automático deste pedido ficou presa${order.shipping_claim_at ? ` desde ${escapeHtml(formatDate(order.shipping_claim_at, true))}` : ''} (bug antigo, já corrigido). Não atrapalha o envio manual, dá pra liberar.</p>
           <button type="button" class="admin-link" id="clear-claim-btn">Liberar trava</button>
         </div>` : ''}
 
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <h3>Itens</h3>
           <div class="cart-summary">
             ${items}
-            <div class="cart-summary__row"><span>Frete — ${escapeHtml(s.label || '')}</span><strong>${formatBRL(s.price_cents)}</strong></div>
+            <div class="cart-summary__row"><span>Frete - ${escapeHtml(s.label || '')}</span><strong>${formatBRL(s.price_cents)}</strong></div>
             <div class="cart-summary__row cart-summary__row--total"><span>Total</span><strong>${formatBRL(order.total_cents)}</strong></div>
           </div>
         </div>
@@ -263,9 +263,9 @@ document.addEventListener('DOMContentLoaded', () => {
             ? `<p>${lines.map(escapeHtml).join('<br>')}</p>
                <button type="button" class="admin-link" id="copy-address-btn">Copiar nome + endereço</button>`
             : s.pickup
-              ? '<p><strong>Retirada em Porto Alegre</strong> — combinar com o cliente pelo telefone. Quando entregar, marca como "Entregue".</p>'
+              ? '<p><strong>Retirada em Porto Alegre</strong>: combinar com o cliente pelo telefone. Quando entregar, marca como "Entregue".</p>'
               : `<p>Endereço não coletado (pedido de antes do formulário de endereço). Só o CEP: ${escapeHtml(formatCep(s.destination_cep))}.</p>`}
-          <p class="admin-hint" style="margin-top:10px !important;">Frete escolhido: ${escapeHtml(s.label || '—')}${s.eta_business_days ? ` · prazo informado: até ${Number(s.eta_business_days)} dia(s) útil(eis)` : ''}</p>
+          <p class="admin-hint" style="margin-top:10px !important;">Frete escolhido: ${escapeHtml(s.label || '-')}${s.eta_business_days ? ` · prazo informado: até ${Number(s.eta_business_days)} dia(s) útil(eis)` : ''}</p>
           <p class="admin-msg" id="copy-msg"></p>
           <details class="detail-edit"${editOpen ? ' open' : ''}>
             <summary>Corrigir dados do cliente / endereço</summary>
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <select name="status">${statusOptions}</select>
               </label>
               <label>Transportadora
-                <input name="shipping_carrier" maxlength="40" placeholder="Correios, Loggi, em mãos…" value="${escapeHtml(order.shipping_carrier || '')}">
+                <input name="shipping_carrier" maxlength="40" placeholder="Correios, Loggi, em mãos" value="${escapeHtml(order.shipping_carrier || '')}">
               </label>
             </div>
             <div class="admin-form__row">
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <input name="tracking_code" maxlength="64" autocomplete="off" value="${escapeHtml(order.tracking_code || '')}">
               </label>
               <label>Link de rastreio (opcional)
-                <input name="tracking_url" maxlength="500" placeholder="https://…" value="${escapeHtml(order.tracking_url || '')}">
+                <input name="tracking_url" maxlength="500" placeholder="https://" value="${escapeHtml(order.tracking_url || '')}">
               </label>
             </div>
             <label>Notas internas (só a banda vê)
@@ -358,21 +358,21 @@ document.addEventListener('DOMContentLoaded', () => {
       await navigator.clipboard.writeText(text);
       msg.textContent = 'Copiado.';
     } catch {
-      msg.textContent = 'Não deu pra copiar automaticamente — seleciona o texto acima.';
+      msg.textContent = 'Não deu pra copiar automaticamente. Seleciona o texto acima.';
     }
   }
 
   function describeNotifications(notifications) {
     const result = notifications && notifications.customer_email;
     if (result === 'sent') return ' E-mail de envio mandado pro cliente.';
-    if (result === 'failed') return ' Mas o e-mail pro cliente falhou — salva de novo pra tentar outra vez.';
+    if (result === 'failed') return ' Mas o e-mail pro cliente falhou. Salva de novo pra tentar outra vez.';
     if (result === 'skipped') return ' (E-mail desligado: cliente não foi avisado.)';
     return '';
   }
 
   async function patchOrder(id, body, msgEl) {
     msgEl.className = 'admin-msg';
-    msgEl.textContent = 'Salvando…';
+    msgEl.textContent = 'Salvando...';
     try {
       const data = await api('admin-orders', {
         method: 'PATCH',
@@ -441,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const input = $('login-password');
     loginMsg.className = 'admin-msg';
-    loginMsg.textContent = 'Entrando…';
+    loginMsg.textContent = 'Entrando...';
     try {
       await api('admin-session', {
         method: 'POST',

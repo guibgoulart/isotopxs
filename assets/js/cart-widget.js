@@ -87,7 +87,7 @@
         <ul class="nav-cart__list">
           ${list.map(({ product, size, qty }) => `
             <li class="nav-cart__row">
-              <span class="nav-cart__name">${escapeHtml(size ? `${product.name} — tamanho ${size}` : product.name)}<small>${qty} × ${formatBRL(product.price_cents)}</small></span>
+              <span class="nav-cart__name">${escapeHtml(size ? `${product.name} (tamanho ${size})` : product.name)}<small>${qty} × ${formatBRL(product.price_cents)}</small></span>
               <strong>${formatBRL(product.price_cents * qty)}</strong>
             </li>`).join('')}
         </ul>

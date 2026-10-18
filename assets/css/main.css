@@ -107,7 +107,7 @@ p{ margin:0 0 1em; }
 .nav__links{ display:flex; gap:clamp(14px,2.4vw,32px); list-style:none; margin:0; padding:0; }
 
 /* ---------- carrinho no topo (assets/js/cart-widget.js) ---------- */
-.nav-cart[hidden], #address-fields[hidden]{ display:none !important; }
+.nav-cart[hidden], #address-fields[hidden], #cart-total-row[hidden]{ display:none !important; }
 .nav-cart{ position:relative; margin-left: clamp(16px,2.4vw,32px); }
 .nav-cart__btn{
   position:relative; display:flex; align-items:center; justify-content:center;

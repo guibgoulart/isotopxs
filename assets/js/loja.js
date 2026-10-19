@@ -320,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error(data.error || 'Falha ao calcular frete');
 
       lastQuotedCep = cep;
+      invalidateShipping(); // a opção escolhida antes era de outra cotação
       shippingMsgEl.textContent = data.options.length
         ? ''
         : 'Nenhuma opção de entrega pra esse CEP. Chama a gente no Instagram que a gente resolve.';
@@ -404,7 +405,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   Object.keys(CEP_FIELDS).forEach((id) => field(id).addEventListener('input', () => autoFilled.delete(id)));
-  cepInput.addEventListener('input', fillAddressFromCep);
+  cepInput.addEventListener('input', () => {
+    fillAddressFromCep();
+    // Frete cotado pra outro CEP não vale mais: some o total e pede pra calcular de novo.
+    const cep = (cepInput.value || '').replace(/\D/g, '');
+    if (cep !== lastQuotedCep && (selectedShipping || shippingOptionsEl.childElementCount)) {
+      invalidateShipping('O CEP mudou, calcule o frete de novo.');
+    }
+  });
+
+  // Carrinho mexido em outra aba: recarrega daqui pra não mostrar total velho nem sobrescrever.
+  window.addEventListener('storage', (e) => {
+    if (e.key !== CART_KEY) return;
+    cart = loadCart();
+    invalidateShipping(selectedShipping || shippingOptionsEl.childElementCount ? 'O carrinho mudou, calcule o frete de novo.' : '');
+    renderCart();
+  });
 
   quoteBtn.addEventListener('click', quoteShipping);
   checkoutBtn.addEventListener('click', checkout);

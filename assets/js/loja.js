@@ -51,6 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let cart = loadCart();
   let selectedShipping = null; // { id, label, price_cents, eta_business_days }
   let lastQuotedCep = null;
+  let lastInvalidation = null; // por que o frete escolhido sumiu da última vez (vai no checkout_blocked)
+  let submitting = false;
 
   // Chave do carrinho: "id" ou "id:tamanho" (ex.: "camiseta:M"). Entrada sem tamanho válido de um
   // produto que exige tamanho (carrinho antigo salvo no navegador) é ignorada.
@@ -81,17 +83,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('address-fields').hidden = Boolean(selectedShipping && selectedShipping.pickup);
   }
 
-  function invalidateShipping(message) {
+  // A mensagem também aparece embaixo do botão: no celular o #shipping-msg fica bem acima, fora da tela.
+  function invalidateShipping(message, reason) {
+    const hadShipping = Boolean(selectedShipping || shippingOptionsEl.childElementCount);
     selectedShipping = null;
+    lastInvalidation = reason;
     syncAddressFields();
     shippingOptionsEl.innerHTML = '';
     totalRow.hidden = true;
     if (message) shippingMsgEl.textContent = message;
+    if (message && hadShipping) checkoutMsgEl.textContent = message;
     updateCheckoutAvailability();
   }
 
-  // Dados do comprador são validados no clique (com mensagem dizendo o que falta), não travando o
-  // botão em silêncio. O servidor (create-preference) valida tudo de novo.
+  // O botão fica apagado sem carrinho ou sem frete, mas continua clicável: o clique diz o que falta
+  // (checkout()), nunca trava em silêncio. O servidor (create-preference) valida tudo de novo.
   function updateCheckoutAvailability() {
     const hasItems = cartEntries().length > 0;
     const hasShipping = Boolean(selectedShipping);
@@ -136,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cart[key] = Math.min(qty, 20);
     }
     saveCart(cart);
-    invalidateShipping('O carrinho mudou, calcule o frete de novo.');
+    invalidateShipping('O carrinho mudou, calcule o frete de novo.', 'cart_changed');
     renderCart();
   }
 
@@ -285,6 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       label.querySelector('input').addEventListener('change', () => {
         selectedShipping = opt;
+        lastInvalidation = null;
+        checkoutMsgEl.textContent = '';
         syncAddressFields();
         totalRow.hidden = false;
         cartTotalEl.textContent = formatBRL(cartSubtotalCents() + opt.price_cents);
@@ -320,34 +328,58 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error(data.error || 'Falha ao calcular frete');
 
       lastQuotedCep = cep;
-      invalidateShipping(); // a opção escolhida antes era de outra cotação
+      invalidateShipping('', 'new_quote'); // a opção escolhida antes era de outra cotação
       shippingMsgEl.textContent = data.options.length
         ? ''
         : 'Nenhuma opção de entrega pra esse CEP. Chama a gente no Instagram que a gente resolve.';
       renderShippingOptions(data.options);
     } catch (err) {
       shippingMsgEl.textContent = `Não foi possível calcular o frete: ${err.message}`;
-      invalidateShipping();
+      invalidateShipping('', 'quote_error');
     } finally {
       quoteBtn.setAttribute('aria-disabled', 'false');
     }
   }
 
+  // Mostra o motivo embaixo do botão, leva até onde resolve (focusEl) e registra no PostHog.
+  function blockCheckout(reason, message, { focusEl = null, props = {} } = {}) {
+    checkoutMsgEl.textContent = message;
+    if (focusEl) {
+      shippingMsgEl.textContent = message;
+      focusEl.focus();
+    }
+    if (window.posthog) window.posthog.capture('checkout_blocked', { reason, last_invalidation: lastInvalidation, ...props });
+  }
+
   async function checkout() {
-    if (checkoutBtn.getAttribute('aria-disabled') === 'true') return;
-    if (!selectedShipping || lastQuotedCep !== (cepInput.value || '').replace(/\D/g, '')) {
-      checkoutMsgEl.textContent = 'Calcule o frete de novo antes de finalizar.';
+    if (submitting) return;
+    if (cartEntries().length === 0) {
+      blockCheckout('empty_cart', 'Seu carrinho está vazio. Adicione algo da vitrine acima.');
+      return;
+    }
+    if (!selectedShipping) {
+      const firstOption = shippingOptionsEl.querySelector('input');
+      if (firstOption) {
+        blockCheckout('no_shipping_option', 'Escolha uma opção de frete antes de finalizar.', { focusEl: firstOption });
+      } else {
+        blockCheckout('no_shipping_quote', 'Calcule o frete antes de finalizar.', { focusEl: quoteBtn });
+      }
+      return;
+    }
+    if (lastQuotedCep !== (cepInput.value || '').replace(/\D/g, '')) {
+      blockCheckout('cep_changed', 'Calcule o frete de novo antes de finalizar.', { focusEl: quoteBtn });
       return;
     }
 
     const buyer = readBuyer();
     const missing = missingBuyerFields(buyer);
     if (missing.length) {
-      checkoutMsgEl.textContent = `Faltou preencher: ${missing.join(', ')}.`;
+      blockCheckout('missing_fields', `Faltou preencher: ${missing.join(', ')}.`, { props: { missing_fields: missing } });
       return;
     }
 
     checkoutMsgEl.textContent = 'Redirecionando para o pagamento...';
+    submitting = true;
     checkoutBtn.setAttribute('aria-disabled', 'true');
     try {
       const res = await fetch('/.netlify/functions/create-preference', {
@@ -366,7 +398,8 @@ document.addEventListener('DOMContentLoaded', () => {
       window.location.href = data.init_point;
     } catch (err) {
       checkoutMsgEl.textContent = `Não foi possível iniciar o pagamento: ${err.message}`;
-      checkoutBtn.setAttribute('aria-disabled', 'false');
+      submitting = false;
+      updateCheckoutAvailability();
     }
   }
 
@@ -410,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Frete cotado pra outro CEP não vale mais: some o total e pede pra calcular de novo.
     const cep = (cepInput.value || '').replace(/\D/g, '');
     if (cep !== lastQuotedCep && (selectedShipping || shippingOptionsEl.childElementCount)) {
-      invalidateShipping('O CEP mudou, calcule o frete de novo.');
+      invalidateShipping('O CEP mudou, calcule o frete de novo.', 'cep_changed');
     }
   });
 
@@ -418,12 +451,20 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('storage', (e) => {
     if (e.key !== CART_KEY) return;
     cart = loadCart();
-    invalidateShipping(selectedShipping || shippingOptionsEl.childElementCount ? 'O carrinho mudou, calcule o frete de novo.' : '');
+    invalidateShipping(selectedShipping || shippingOptionsEl.childElementCount ? 'O carrinho mudou, calcule o frete de novo.' : '', 'cart_changed_other_tab');
     renderCart();
   });
 
   quoteBtn.addEventListener('click', quoteShipping);
   checkoutBtn.addEventListener('click', checkout);
+  // Voltar do Mercado Pago pelo botão do navegador restaura a página do cache com o botão ainda em
+  // "Redirecionando...": libera de novo.
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted || !submitting) return;
+    submitting = false;
+    checkoutMsgEl.textContent = '';
+    updateCheckoutAvailability();
+  });
   field('buyer-name').closest('.form').addEventListener('input', () => {
     if (checkoutMsgEl.textContent.startsWith('Faltou')) checkoutMsgEl.textContent = '';
   });

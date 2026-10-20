@@ -444,6 +444,10 @@ p{ margin:0 0 1em; }
 .btn--dark:hover::before{ background:#000; }
 
 .btn[aria-disabled="true"]{ opacity:.35; pointer-events:none; }
+/* "Finalizar compra" apagado ainda recebe o toque: o clique diz o que falta em vez de não fazer nada. */
+#checkout-btn[aria-disabled="true"]{ pointer-events:auto; cursor:not-allowed; }
+#checkout-btn[aria-disabled="true"]:hover{ color: var(--black); }
+#checkout-btn[aria-disabled="true"]:hover::before{ background: transparent; }
 
 /* ---------- full-bleed sections ---------- */
 .section{ padding: clamp(70px,10vw,130px) clamp(20px,5vw,60px); position:relative; }

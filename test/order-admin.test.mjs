@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildAdminPatch } from '../netlify/functions/lib/order-admin.mjs';
+import { buildAdminPatch, shipmentCreatedEvent } from '../netlify/functions/lib/order-admin.mjs';
 
 const paid = { id: 'x', status: 'paid', tracking_code: null };
 
@@ -66,4 +66,40 @@ test('buildAdminPatch: dados do cliente incompletos não salvam nada', () => {
   const { patch, errors } = buildAdminPatch(paid, { customer: { ...customer, cep: '123', address: { ...customer.address, city: '' } } });
   assert.match(errors[0], /cidade.*CEP/);
   assert.equal(patch.buyer, undefined);
+});
+
+const paidOrder = { id: 'ord-1', status: 'paid', tracking_code: null, buyer: { email: 'fulana@example.com' } };
+
+test('shipmentCreatedEvent: pedido pago que ganha rastreio vira shipment_created', () => {
+  const after = { ...paidOrder, status: 'shipped', tracking_code: 'AA123456789BR', shipping_carrier: 'Correios' };
+  assert.deepEqual(shipmentCreatedEvent(paidOrder, after), {
+    distinctId: 'fulana@example.com',
+    event: 'shipment_created',
+    properties: {
+      order_id: 'ord-1',
+      tracking_code: 'AA123456789BR',
+      carrier: 'Correios',
+      shipping_status: null,
+      order_status: 'shipped',
+      source: 'admin',
+    },
+  });
+});
+
+test('shipmentCreatedEvent: sem e-mail do comprador usa o id do pedido', () => {
+  const before = { ...paidOrder, buyer: null };
+  assert.equal(shipmentCreatedEvent(before, { ...before, status: 'delivered' }).distinctId, 'ord-1');
+});
+
+test('shipmentCreatedEvent: uma vez por pedido', () => {
+  const shipped = { ...paidOrder, status: 'shipped', tracking_code: 'AA1' };
+  assert.equal(shipmentCreatedEvent(shipped, { ...shipped, tracking_code: 'AA2' }), null);
+  assert.equal(shipmentCreatedEvent(shipped, { ...shipped, status: 'delivered' }), null);
+  const reopened = { ...paidOrder, shipment_captured_at: '2026-11-01T00:00:00.000Z' };
+  assert.equal(shipmentCreatedEvent(reopened, { ...reopened, status: 'shipped' }), null);
+});
+
+test('shipmentCreatedEvent: nada pra pedido que não foi enviado', () => {
+  assert.equal(shipmentCreatedEvent(paidOrder, { ...paidOrder, admin_notes: 'oi' }), null);
+  assert.equal(shipmentCreatedEvent(paidOrder, { ...paidOrder, status: 'cancelled', tracking_code: 'AA1' }), null);
 });

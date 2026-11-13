@@ -11,14 +11,25 @@
   // estoura erro ao fechar a página. Não é código nosso, então não vai pro error tracking.
   // Só descarta quando TODOS os frames são desse script: se um frame for do site, o erro passou
   // pelo nosso código e continua indo pro error tracking.
+  // Às vezes o erro chega sem frames, só como "Script error." (o navegador esconde os detalhes de
+  // script de outra origem). Nossos scripts são da mesma origem ou carregam com crossorigin, então
+  // esse erro no navegador do Instagram também vem do script injetado.
   function isInstagramBridgeError(event) {
-    if (!event || event.event !== "$exception") return false;
+    if (!event || event.event !== "$exception" || !event.properties) return false;
+    var exceptions = event.properties.$exception_list || [];
     var frames = [];
-    ((event.properties && event.properties.$exception_list) || []).forEach(function (exception) {
+    exceptions.forEach(function (exception) {
       var list = exception && exception.stacktrace && exception.stacktrace.frames;
       if (Array.isArray(list)) frames = frames.concat(list);
     });
-    return frames.length > 0 && frames.every(function (frame) {
+    if (frames.length === 0) {
+      var userAgent = event.properties.$raw_user_agent;
+      return typeof userAgent === "string" && userAgent.indexOf("Instagram") !== -1 &&
+        exceptions.length > 0 && exceptions.every(function (exception) {
+          return !!exception && exception.value === "Script error.";
+        });
+    }
+    return frames.every(function (frame) {
       return !!frame && typeof frame.filename === "string" && frame.filename.indexOf("iabjs://") === 0;
     });
   }

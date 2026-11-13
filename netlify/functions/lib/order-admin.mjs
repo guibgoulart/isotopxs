@@ -77,3 +77,25 @@ export function buildAdminPatch(order, body) {
   if (!errors.length && Object.keys(patch).length === 0) errors.push('nada pra atualizar');
   return { patch, errors };
 }
+
+const SHIPPED_STATUSES = new Set(['shipped', 'delivered']);
+
+// Evento `shipment_created` de quando a banda marca o envio no painel (o envio é manual, então é o
+// único lugar onde ele acontece). Só na passagem pra enviado/entregue e uma vez por pedido —
+// `shipment_captured_at` guarda que já foi; editar o rastreio depois não manda de novo.
+export function shipmentCreatedEvent(before, after) {
+  if (!before || !after || after.shipment_captured_at) return null;
+  if (SHIPPED_STATUSES.has(before.status) || !SHIPPED_STATUSES.has(after.status)) return null;
+  return {
+    distinctId: (after.buyer && after.buyer.email) || after.id,
+    event: 'shipment_created',
+    properties: {
+      order_id: after.id,
+      tracking_code: after.tracking_code || null,
+      carrier: after.shipping_carrier || null,
+      shipping_status: after.shipping_status || null,
+      order_status: after.status,
+      source: 'admin',
+    },
+  };
+}

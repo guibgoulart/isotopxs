@@ -1,14 +1,16 @@
 // API do painel de pedidos (admin.html). Tudo aqui exige sessão de admin (ver admin-session.mjs).
 //   GET   → todos os pedidos (mais recentes primeiro) + quais avisos estão configurados.
 //   PATCH → { id, status?, tracking_code?, tracking_url?, shipping_carrier?, admin_notes?,
-//             customer?: { name, email, phone, cep, address }, clear_shipping_claim? } — atualiza um pedido; manda o e-mail de "enviado" quando cabe.
+//             customer?: { name, email, phone, cep, address }, clear_shipping_claim? } — atualiza um pedido; manda o e-mail de "enviado" quando cabe
+//             e o evento `shipment_created` pro PostHog na primeira vez que o pedido vira enviado.
 import { getOrder, listOrders, updateOrder } from './lib/orders-store.mjs';
 import { isAdmin } from './lib/admin-auth.mjs';
-import { buildAdminPatch } from './lib/order-admin.mjs';
+import { buildAdminPatch, shipmentCreatedEvent } from './lib/order-admin.mjs';
 import { notifyOrderShipped, shouldSendShippedEmail } from './lib/notify.mjs';
 import { emailConfigured } from './lib/email.mjs';
 import { parseWhatsAppRecipients } from './lib/whatsapp.mjs';
 import { withErrorReporting } from './lib/sentry.mjs';
+import { posthog, flushPostHog } from './lib/posthog.mjs';
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -64,6 +66,13 @@ export default withErrorReporting(async (req) => {
         shipped_email_sent_at: new Date().toISOString(),
       });
     }
+  }
+
+  const shipmentEvent = posthog ? shipmentCreatedEvent(before, order) : null;
+  if (shipmentEvent) {
+    posthog.capture(shipmentEvent);
+    await flushPostHog();
+    order = await updateOrder(order.id, { shipment_captured_at: new Date().toISOString() });
   }
 
   return json({ order, notifications });

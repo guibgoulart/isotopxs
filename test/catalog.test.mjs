@@ -63,16 +63,16 @@ test('produto desativado no catálogo (active: false) não entra no carrinho', (
   assert.equal(errors.length, 1);
 });
 
-test('camiseta exige tamanho do catálogo (P, M, G, GG)', () => {
-  for (const size of [undefined, '', 'XG', 'G1']) {
+test('camiseta exige tamanho do catálogo (P, M, G)', () => {
+  for (const size of [undefined, '', 'XG', 'G1', 'GG']) {
     const { lineItems, errors } = priceCartItems([{ id: 'camiseta', qty: 1, size }]);
     assert.equal(lineItems.length, 0, `size=${size} deveria ser recusado`);
     assert.match(errors[0], /Tamanho inválido/);
   }
-  const ok = priceCartItems([{ id: 'camiseta', qty: 2, size: 'gg' }]);
+  const ok = priceCartItems([{ id: 'camiseta', qty: 2, size: 'g' }]);
   assert.deepEqual(ok.errors, []);
-  assert.equal(ok.lineItems[0].size, 'GG');
-  assert.equal(lineItemName(ok.lineItems[0]), 'Camiseta ISOTOPXS (tamanho GG)');
+  assert.equal(ok.lineItems[0].size, 'G');
+  assert.equal(lineItemName(ok.lineItems[0]), 'Camiseta ISOTOPXS (tamanho G)');
 });
 
 test('CD está fora de venda: o servidor recusa mesmo se o carrinho mandar', () => {

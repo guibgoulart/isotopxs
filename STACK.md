@@ -99,9 +99,9 @@ escolhida) ficam comentados no próprio arquivo (`.env.example`, `assets/js/anal
 ## Dados
 
 - `data/products.json` — catálogo (fonte de verdade também pro backend), com produtos e preços reais
-  desde 2026-10-13. Desde 2026-11-13 só a camiseta à venda (CD, adesivo, pôster e kit com
+  desde 2026-10-13. Desde 2026-11-13 só a camiseta à venda, sem GG (CD, adesivo, pôster e kit com
   `active: false`); `image`/`image_fit` dão a foto do card na loja. A camiseta tem `sizes`
-  (P, M, G, GG — obrigatório no carrinho e validado no servidor) e `size_chart` (tabela de medidas
+  (P, M, G — obrigatório no carrinho e validado no servidor) e `size_chart` (tabela de medidas
   que a loja mostra num modal). No carrinho a chave é `id:tamanho`. Pesos/dimensões são estimativas — conferir com o pacote real (o frete é cotado com eles).
 
 ## Analytics

@@ -71,6 +71,31 @@ test('before_send mantém exceção sem stacktrace e eventos que não são exce�
   assert.equal(before_send(null), null);
 });
 
+const INSTAGRAM_UA =
+  'Mozilla/5.0 (Linux; Android 14; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/157.0.0.0 Mobile Safari/537.36 Instagram 455.0.0.51.72 Android';
+
+function scriptErrorEvent(userAgent) {
+  return {
+    event: '$exception',
+    properties: {
+      $raw_user_agent: userAgent,
+      $exception_list: [{ type: 'Error', value: 'Script error.', mechanism: { synthetic: true } }],
+    },
+  };
+}
+
+test('before_send descarta "Script error." sem frames no navegador do Instagram', () => {
+  assert.equal(before_send(scriptErrorEvent(INSTAGRAM_UA)), null);
+});
+
+test('before_send mantém "Script error." fora do Instagram e outros erros sem frames no Instagram', () => {
+  const chrome = scriptErrorEvent('Mozilla/5.0 (Linux; Android 14) Chrome/157.0.0.0 Mobile Safari/537.36');
+  const outroErro = scriptErrorEvent(INSTAGRAM_UA);
+  outroErro.properties.$exception_list[0].value = "Cannot read properties of undefined (reading 'x')";
+  assert.equal(before_send(chrome), chrome);
+  assert.equal(before_send(outroErro), outroErro);
+});
+
 test('chamada ao posthog antes do script carregar entra na fila em vez de dar erro', () => {
   const { posthog } = loadAnalytics();
   posthog.capture('checkout_blocked', { reason: 'teste' });

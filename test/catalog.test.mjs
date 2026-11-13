@@ -6,26 +6,25 @@ const { priceCartItems, getProduct, lineItemName } = catalogPkg;
 
 test('priceCartItems soma subtotal e peso de itens válidos', () => {
   const { lineItems, subtotalCents, totalWeightG, errors } = priceCartItems([
-    { id: 'cd', qty: 3 },
+    { id: 'camiseta', qty: 3, size: 'P' },
     { id: 'camiseta', qty: 1, size: 'M' },
   ]);
 
-  const cd = getProduct('cd');
   const camiseta = getProduct('camiseta');
 
   assert.equal(errors.length, 0);
   assert.equal(lineItems.length, 2);
-  assert.equal(subtotalCents, cd.price_cents * 3 + camiseta.price_cents);
-  assert.equal(totalWeightG, cd.weight_g * 3 + camiseta.weight_g);
+  assert.equal(subtotalCents, camiseta.price_cents * 4);
+  assert.equal(totalWeightG, camiseta.weight_g * 4);
 });
 
 test('priceCartItems ignora o preço mandado pelo cliente — só usa o do catálogo', () => {
   const { lineItems, subtotalCents } = priceCartItems([
-    { id: 'cd', qty: 1, price_cents: 1 },
+    { id: 'camiseta', qty: 1, size: 'M', price_cents: 1 },
   ]);
 
-  assert.equal(lineItems[0].product.price_cents, getProduct('cd').price_cents);
-  assert.equal(subtotalCents, getProduct('cd').price_cents);
+  assert.equal(lineItems[0].product.price_cents, getProduct('camiseta').price_cents);
+  assert.equal(subtotalCents, getProduct('camiseta').price_cents);
 });
 
 test('priceCartItems rejeita id de produto inexistente', () => {
@@ -36,7 +35,7 @@ test('priceCartItems rejeita id de produto inexistente', () => {
 
 test('priceCartItems rejeita quantidade zero, negativa ou acima do limite', () => {
   for (const qty of [0, -1, 21]) {
-    const { lineItems, errors } = priceCartItems([{ id: 'cd', qty }]);
+    const { lineItems, errors } = priceCartItems([{ id: 'camiseta', qty, size: 'M' }]);
     assert.equal(lineItems.length, 0, `qty=${qty} deveria ser rejeitada`);
     assert.equal(errors.length, 1, `qty=${qty} deveria gerar 1 erro`);
   }
@@ -46,10 +45,10 @@ test('priceCartItems rejeita quantidade zero, negativa ou acima do limite', () =
 // qty fracionária não é rejeitada — é truncada silenciosamente. Sem risco financeiro (o preço é
 // sempre calculado sobre a qty já truncada), mas documentado aqui pra não virar surpresa.
 test('priceCartItems trunca quantidade fracionária em vez de rejeitar', () => {
-  const { lineItems, errors, subtotalCents } = priceCartItems([{ id: 'cd', qty: 1.9 }]);
+  const { lineItems, errors, subtotalCents } = priceCartItems([{ id: 'camiseta', qty: 1.9, size: 'M' }]);
   assert.equal(errors.length, 0);
   assert.equal(lineItems[0].qty, 1);
-  assert.equal(subtotalCents, getProduct('cd').price_cents * 1);
+  assert.equal(subtotalCents, getProduct('camiseta').price_cents * 1);
 });
 
 test('priceCartItems trata carrinho vazio ou malformado sem lançar', () => {
@@ -64,16 +63,21 @@ test('produto desativado no catálogo (active: false) não entra no carrinho', (
   assert.equal(errors.length, 1);
 });
 
-test('camiseta exige tamanho do catálogo (P, M, G, GG); CD ignora tamanho', () => {
+test('camiseta exige tamanho do catálogo (P, M, G, GG)', () => {
   for (const size of [undefined, '', 'XG', 'G1']) {
     const { lineItems, errors } = priceCartItems([{ id: 'camiseta', qty: 1, size }]);
     assert.equal(lineItems.length, 0, `size=${size} deveria ser recusado`);
     assert.match(errors[0], /Tamanho inválido/);
   }
-  const ok = priceCartItems([{ id: 'camiseta', qty: 2, size: 'gg' }, { id: 'cd', qty: 1, size: 'M' }]);
+  const ok = priceCartItems([{ id: 'camiseta', qty: 2, size: 'gg' }]);
   assert.deepEqual(ok.errors, []);
   assert.equal(ok.lineItems[0].size, 'GG');
-  assert.equal(ok.lineItems[1].size, null);
   assert.equal(lineItemName(ok.lineItems[0]), 'Camiseta ISOTOPXS (tamanho GG)');
-  assert.equal(lineItemName(ok.lineItems[1]), getProduct('cd').name);
+});
+
+test('CD está fora de venda: o servidor recusa mesmo se o carrinho mandar', () => {
+  assert.equal(getProduct('cd'), null);
+  const { lineItems, errors } = priceCartItems([{ id: 'cd', qty: 1 }]);
+  assert.equal(lineItems.length, 0);
+  assert.equal(errors.length, 1);
 });

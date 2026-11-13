@@ -42,6 +42,22 @@ test('before_send mantém erro do código do site', () => {
   assert.equal(before_send(event), event);
 });
 
+test('before_send mantém erro que passa pelo script do Instagram mas sai do código do site', () => {
+  const event = exceptionEvent([
+    'https://isotopxs.com.br/assets/js/loja.js',
+    'iabjs://navigation_performance_logger_android',
+  ]);
+  assert.equal(before_send(event), event);
+});
+
+test('before_send não quebra com frames ou exceções nulos', () => {
+  const event = {
+    event: '$exception',
+    properties: { $exception_list: [null, { stacktrace: { frames: [null, { filename: 'iabjs://x' }] } }] },
+  };
+  assert.equal(before_send(event), event);
+});
+
 test('before_send mantém exceção sem stacktrace e eventos que não são exceção', () => {
   const semStack = { event: '$exception', properties: { $exception_list: [{ type: 'Error' }] } };
   const pageview = { event: '$pageview', properties: { $current_url: 'https://isotopxs.com.br/loja' } };

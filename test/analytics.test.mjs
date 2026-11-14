@@ -6,8 +6,13 @@ import vm from 'node:vm';
 // Roda o analytics.js num contexto falso (sem o array.js do PostHog carregado) e devolve o window.
 function loadAnalytics() {
   const script = { parentNode: { insertBefore() {} } };
+  const created = [];
   const document = {
-    createElement: () => ({}),
+    createElement: () => {
+      const element = {};
+      created.push(element);
+      return element;
+    },
     getElementsByTagName: () => [script],
   };
   const window = {};
@@ -15,6 +20,7 @@ function loadAnalytics() {
   window.document = document;
   vm.createContext(window);
   vm.runInContext(readFileSync(new URL('../assets/js/analytics.js', import.meta.url), 'utf8'), window);
+  window.__createdElements = created;
   return window;
 }
 
@@ -100,4 +106,36 @@ test('chamada ao posthog antes do script carregar entra na fila em vez de dar er
   const { posthog } = loadAnalytics();
   posthog.capture('checkout_blocked', { reason: 'teste' });
   assert.equal(JSON.stringify(posthog[posthog.length - 1]), JSON.stringify(['capture', 'checkout_blocked', { reason: 'teste' }]));
+});
+
+test('PostHog passa pelo proxy em /eco, com ui_host apontando pro app', () => {
+  const window = loadAnalytics();
+  const config = window.posthog._i[0][1];
+  assert.equal(config.api_host, '/eco');
+  assert.equal(config.ui_host, 'https://us.posthog.com');
+  assert.equal(window.__createdElements[0].src, '/eco/static/array.js');
+});
+
+test('netlify.toml faz proxy de /eco pro PostHog, com a regra de static antes da geral', () => {
+  const toml = readFileSync(new URL('../netlify.toml', import.meta.url), 'utf8');
+  const rules = toml
+    .split('[[')
+    .filter((block) => block.startsWith('redirects]]'))
+    .map((block) => Object.fromEntries([...block.matchAll(/^\s*(\w+) = "?([^"\n]*)"?$/gm)].map((m) => [m[1], m[2]])));
+  const staticIndex = rules.findIndex((r) => r.from === '/eco/static/*');
+  const ingestIndex = rules.findIndex((r) => r.from === '/eco/*');
+  assert.ok(staticIndex !== -1 && ingestIndex !== -1);
+  assert.ok(staticIndex < ingestIndex);
+  assert.deepEqual(rules[staticIndex], {
+    from: '/eco/static/*',
+    to: 'https://us-assets.i.posthog.com/static/:splat',
+    status: '200',
+    force: 'true',
+  });
+  assert.deepEqual(rules[ingestIndex], {
+    from: '/eco/*',
+    to: 'https://us.i.posthog.com/:splat',
+    status: '200',
+    force: 'true',
+  });
 });

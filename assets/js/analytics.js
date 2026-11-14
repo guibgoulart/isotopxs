@@ -1,8 +1,11 @@
 // PostHog. Cole a Project API Key (começa com "phc_", em Project Settings → Project API Key)
-// e o host da sua região abaixo. Deixe POSTHOG_KEY vazio para desativar o tracking.
+// abaixo. Deixe POSTHOG_KEY vazio para desativar o tracking.
+// POSTHOG_HOST é o proxy em /eco (ver netlify.toml), que repassa pro PostHog US. POSTHOG_UI_HOST é
+// o app do PostHog, pros links da toolbar.
 (function () {
   var POSTHOG_KEY = "phc_kAuJjaDXgwYu27cche5VraHrRQmnsEJK2w3TqPvKKRrU";
-  var POSTHOG_HOST = "https://us.i.posthog.com";
+  var POSTHOG_HOST = "/eco";
+  var POSTHOG_UI_HOST = "https://us.posthog.com";
 
   if (!POSTHOG_KEY) return;
 
@@ -36,6 +39,7 @@
 
   posthog.init(POSTHOG_KEY, {
     api_host: POSTHOG_HOST,
+    ui_host: POSTHOG_UI_HOST,
     person_profiles: "identified_only",
     // Se o before_send der erro, o PostHog descarta o evento. Por isso, na dúvida, deixa passar.
     before_send: function (event) {

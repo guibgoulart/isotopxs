@@ -14,6 +14,21 @@
   status = 301
   force = true
 
+# Proxy do PostHog no próprio domínio: bloqueador de anúncio barra os hosts *.posthog.com, mas não
+# um caminho do site. A regra de static vem primeiro porque o snippet carrega o array.js (e o
+# PostHog depois carrega recorder etc.) de <api_host>/static/.
+[[redirects]]
+  from = "/eco/static/*"
+  to = "https://us-assets.i.posthog.com/static/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/eco/*"
+  to = "https://us.i.posthog.com/:splat"
+  status = 200
+  force = true
+
 # Headers de segurança aplicados a todo o site — a defesa mais direta contra defacement via XSS
 # (mesmo que algum dia entre uma injeção por engano, o CSP barra o script de rodar) e contra
 # clickjacking (frame-ancestors/X-Frame-Options). style-src precisa de 'unsafe-inline' porque o

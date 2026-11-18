@@ -117,7 +117,8 @@ test('PostHog passa pelo proxy em /eco, com ui_host apontando pro app', () => {
 });
 
 test('netlify.toml faz proxy de /eco pro PostHog, com a regra de static antes da geral', () => {
-  const toml = readFileSync(new URL('../netlify.toml', import.meta.url), 'utf8');
+  // Tira o \r: no Windows (core.autocrlf) o checkout vem com CRLF e o valor capturado sairia "200\r".
+  const toml = readFileSync(new URL('../netlify.toml', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
   const rules = toml
     .split('[[')
     .filter((block) => block.startsWith('redirects]]'))

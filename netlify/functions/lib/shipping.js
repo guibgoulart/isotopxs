@@ -28,13 +28,33 @@ const PICKUP_OPTION = {
   id: 'retirada_poa',
   carrier: 'retirada',
   service: 'Retirada',
-  label: 'Retirada em Porto Alegre (combinar com o Deo)',
+  label: 'Retirada em Porto Alegre ou Uber Flash (combinar com o Deo)',
   price_cents: 0,
   eta_business_days: null,
   pickup: true,
   whatsapp: PICKUP_WHATSAPP,
-  note: `Grátis. Depois de pagar, um botão abre o WhatsApp do Deo (${PICKUP_PHONE}) com o pedido já escrito pra combinar dia e lugar.`,
+  note: `Retirada grátis. Também dá pra combinar entrega por Uber Flash. Depois de pagar, um botão abre o WhatsApp do Deo (${PICKUP_PHONE}) com o pedido já escrito pra combinar dia e lugar.`,
 };
+
+// Taxa de serviço: R$ 10 por pedido enviado que tem camiseta.
+// Uma vez por pedido, não por camiseta. Retirada não paga. Entra somada no price_cents da opção de
+// frete, então o total da loja, o pedido salvo e a cobrança do Mercado Pago batem sem mais nada;
+// service_fee_cents fica na opção pra tela mostrar quanto do valor é taxa.
+const SERVICE_FEE_CENTS = 1000;
+const SERVICE_FEE_PRODUCT_IDS = new Set(['camiseta']);
+
+function serviceFeeCents(items) {
+  const hasFeeItem = (Array.isArray(items) ? items : []).some(
+    (it) => it && it.product && SERVICE_FEE_PRODUCT_IDS.has(it.product.id) && Number(it.qty) > 0
+  );
+  return hasFeeItem ? SERVICE_FEE_CENTS : 0;
+}
+
+function withServiceFee(options, items) {
+  const fee = serviceFeeCents(items);
+  if (!fee) return options;
+  return options.map((opt) => ({ ...opt, price_cents: opt.price_cents + fee, service_fee_cents: fee }));
+}
 
 function isPickup(optionId) {
   return optionId === PICKUP_OPTION.id;
@@ -227,7 +247,7 @@ async function quote(params) {
   let options;
   if (usingMelhorEnvio()) options = await quoteViaMelhorEnvio(params);
   else options = usingRealLoggi() ? await quoteViaLoggiApi(params) : mockQuote(params);
-  return [...options, { ...PICKUP_OPTION }];
+  return [...withServiceFee(options, params.items), { ...PICKUP_OPTION }];
 }
 
 async function createShipment(order) {

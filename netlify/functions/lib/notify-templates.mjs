@@ -143,7 +143,7 @@ ${button(orderUrl(order, base), 'Acompanhar pedido')}
     itemsText(order),
     '',
     ...(isPickup(order)
-      ? ['Retirada em Porto Alegre: combina dia e lugar com o Deo pelo WhatsApp.', pickupWhatsAppUrl(order) || pickupText(order)]
+      ? ['Retirada em Porto Alegre ou entrega por Uber Flash: combina com o Deo pelo WhatsApp.', pickupWhatsAppUrl(order) || pickupText(order)]
       : ['Entrega:', ...addressLines(order), '', 'Agora a gente embala e posta. Quando sair, você recebe outro e-mail com o código de rastreio.']),
     `Acompanhar pedido: ${orderUrl(order, base)}`,
     '',

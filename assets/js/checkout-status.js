@@ -65,9 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<p class="lead" style="margin-top:18px;">${escapeHtml(order.shipping.note || 'Retirada em Porto Alegre, combinada com a banda.')}</p>`;
     }
     const items = (order.items || []).map((it) => `${Number(it.qty) || 0}× ${it.name}`).join(', ');
-    const message = `Oi, Deo! Comprei no site da ISOTOPXS o pedido #${String(order.id || '').slice(0, 8).toUpperCase()} (${items}) com retirada em Porto Alegre. Quando e onde dá pra retirar?`;
+    const message = `Oi, Deo! Comprei no site da ISOTOPXS o pedido #${String(order.id || '').slice(0, 8).toUpperCase()} (${items}) com retirada em Porto Alegre. Quando e onde dá pra retirar? (Ou dá pra mandar por Uber Flash?)`;
     const href = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
-    return `<p class="lead" style="margin-top:18px;">Retirada em Porto Alegre: combina dia e lugar com o Deo. A mensagem já vai com o seu pedido.</p>
+    return `<p class="lead" style="margin-top:18px;">Retirada em Porto Alegre ou entrega por Uber Flash: combina com o Deo. A mensagem já vai com o seu pedido.</p>
       <p style="margin-top:14px;"><a class="btn btn--dark" href="${escapeHtml(href)}" target="_blank" rel="noopener"><span>Combinar retirada no WhatsApp</span></a></p>`;
   }
 

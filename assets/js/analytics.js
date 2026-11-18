@@ -14,10 +14,12 @@
   // estoura erro ao fechar a página. Não é código nosso, então não vai pro error tracking.
   // Só descarta quando TODOS os frames são desse script: se um frame for do site, o erro passou
   // pelo nosso código e continua indo pro error tracking.
-  // Às vezes o erro chega sem frames, só como "Script error." (o navegador esconde os detalhes de
-  // script de outra origem). Nossos scripts são da mesma origem ou carregam com crossorigin, então
-  // esse erro no navegador do Instagram também vem do script injetado.
-  function isInstagramBridgeError(event) {
+  // "Script error." sem frames é o navegador escondendo um erro de script de outra origem. Os scripts
+  // do site são da mesma origem (o PostHog também, via proxy /eco) ou carregam com crossorigin (Sentry),
+  // então esse erro nunca é nosso e não traz nada pra investigar: vem de script injetado (navegador do
+  // Instagram/Facebook, extensão, bloqueador). Descarta em qualquer navegador, não só no Instagram:
+  // o do iOS chega com user agent de Safari comum.
+  function isForeignScriptError(event) {
     if (!event || event.event !== "$exception" || !event.properties) return false;
     var exceptions = event.properties.$exception_list || [];
     var frames = [];
@@ -26,11 +28,9 @@
       if (Array.isArray(list)) frames = frames.concat(list);
     });
     if (frames.length === 0) {
-      var userAgent = event.properties.$raw_user_agent;
-      return typeof userAgent === "string" && userAgent.indexOf("Instagram") !== -1 &&
-        exceptions.length > 0 && exceptions.every(function (exception) {
-          return !!exception && exception.value === "Script error.";
-        });
+      return exceptions.length > 0 && exceptions.every(function (exception) {
+        return !!exception && /^Script error\.?$/.test(exception.value);
+      });
     }
     return frames.every(function (frame) {
       return !!frame && typeof frame.filename === "string" && frame.filename.indexOf("iabjs://") === 0;
@@ -44,7 +44,7 @@
     // Se o before_send der erro, o PostHog descarta o evento. Por isso, na dúvida, deixa passar.
     before_send: function (event) {
       try {
-        return isInstagramBridgeError(event) ? null : event;
+        return isForeignScriptError(event) ? null : event;
       } catch (e) {
         return event;
       }

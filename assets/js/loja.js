@@ -286,7 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <strong>${escapeHtml(opt.label)}</strong>
           <small>${opt.pickup
             ? escapeHtml(opt.note || 'Grátis')
-            : `até ${Number(opt.eta_business_days) || 0} dia(s) útil(eis) · ${formatBRL(opt.price_cents)}`}</small>
+            : `até ${Number(opt.eta_business_days) || 0} dia(s) útil(eis) · ${formatBRL(opt.price_cents)}${opt.service_fee_cents
+              ? ` (inclui ${formatBRL(opt.service_fee_cents)} de taxa de serviço)`
+              : ''}`}</small>
         </span>
       `;
       label.querySelector('input').addEventListener('change', () => {

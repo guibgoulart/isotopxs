@@ -90,16 +90,23 @@ function scriptErrorEvent(userAgent) {
   };
 }
 
-test('before_send descarta "Script error." sem frames no navegador do Instagram', () => {
+const IOS_SAFARI_UA =
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1';
+
+test('before_send descarta "Script error." sem frames em qualquer navegador', () => {
   assert.equal(before_send(scriptErrorEvent(INSTAGRAM_UA)), null);
+  // O que chegou de link na bio do Instagram no iPhone veio com user agent de Safari comum.
+  assert.equal(before_send(scriptErrorEvent(IOS_SAFARI_UA)), null);
+  assert.equal(before_send(scriptErrorEvent(undefined)), null);
 });
 
-test('before_send mantém "Script error." fora do Instagram e outros erros sem frames no Instagram', () => {
-  const chrome = scriptErrorEvent('Mozilla/5.0 (Linux; Android 14) Chrome/157.0.0.0 Mobile Safari/537.36');
+test('before_send mantém outros erros sem frames e "Script error." que tem frame do site', () => {
   const outroErro = scriptErrorEvent(INSTAGRAM_UA);
   outroErro.properties.$exception_list[0].value = "Cannot read properties of undefined (reading 'x')";
-  assert.equal(before_send(chrome), chrome);
+  const comFrame = scriptErrorEvent(IOS_SAFARI_UA);
+  comFrame.properties.$exception_list[0].stacktrace = { frames: [{ filename: 'https://isotopxs.com.br/assets/js/loja.js' }] };
   assert.equal(before_send(outroErro), outroErro);
+  assert.equal(before_send(comFrame), comFrame);
 });
 
 test('chamada ao posthog antes do script carregar entra na fila em vez de dar erro', () => {

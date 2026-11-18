@@ -112,3 +112,29 @@ test('retirada em Porto Alegre sempre aparece por último, grátis e com o conta
   assert.equal(isPickup('retirada_poa'), true);
   assert.equal(isPickup('me_1'), false);
 });
+
+test('pedido enviado com camiseta paga R$ 10 de taxa de serviço, uma vez por pedido; retirada não paga', async () => {
+  const camiseta = { id: 'camiseta', price_cents: 7000, weight_g: 200 };
+  const params = (items) => ({ originCep: '91910001', destinationCep: '01310100', weightG: 400, items });
+  const semTaxa = await quote(params([{ product: { id: 'outro', price_cents: 100, weight_g: 400 }, qty: 1 }]));
+  const umaCamiseta = await quote(params([{ product: camiseta, qty: 1 }]));
+  const duasCamisetas = await quote(params([{ product: camiseta, qty: 1, size: 'P' }, { product: camiseta, qty: 1, size: 'M' }]));
+
+  for (const options of [umaCamiseta, duasCamisetas]) {
+    withoutPickup(options).forEach((opt, i) => {
+      assert.equal(opt.service_fee_cents, 1000);
+      assert.equal(opt.price_cents, withoutPickup(semTaxa)[i].price_cents + 1000);
+    });
+    const pickup = options.find((o) => o.pickup);
+    assert.equal(pickup.price_cents, 0);
+    assert.equal(pickup.service_fee_cents, undefined);
+  }
+  withoutPickup(semTaxa).forEach((opt) => assert.equal(opt.service_fee_cents, undefined));
+});
+
+test('opção de retirada avisa que dá pra combinar entrega por Uber Flash', async () => {
+  const options = await quote({ originCep: '91910001', destinationCep: '01310100', weightG: 100 });
+  const pickup = options.find((o) => o.pickup);
+  assert.match(pickup.label, /Uber Flash/);
+  assert.match(pickup.note, /Uber Flash/);
+});

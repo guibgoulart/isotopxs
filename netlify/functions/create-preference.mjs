@@ -102,6 +102,7 @@ export default withErrorReporting(async (req) => {
       option_id: shippingOption.id,
       label: shippingOption.label,
       price_cents: shippingOption.price_cents,
+      service_fee_cents: shippingOption.service_fee_cents || undefined,
       eta_business_days: shippingOption.eta_business_days,
       pickup: pickup || undefined,
       note: shippingOption.note || undefined,
@@ -131,7 +132,7 @@ export default withErrorReporting(async (req) => {
       ...(shippingOption.price_cents > 0
         ? [{
             id: `frete-${shippingOption.id}`,
-            title: `Frete - ${shippingOption.label}`,
+            title: `${shippingOption.service_fee_cents ? 'Frete + taxa de serviço' : 'Frete'} - ${shippingOption.label}`,
             quantity: 1,
             unit_price: shippingOption.price_cents / 100,
             currency_id: 'BRL',
